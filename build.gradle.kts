@@ -6,5 +6,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.6.0"
 }
 
-
+klint{
+verbose.set(true)
+}
 
