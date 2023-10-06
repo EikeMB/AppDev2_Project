@@ -3,6 +3,9 @@ name: Deploy Workflow
 # Step 1: Choose the branch or branches you want to run this workflow
 on:
   pull_request:
+    paths:
+      - "**/*.kt"
+      - ".github/workflows/ktlint.yml"
 
 jobs:   
   build-gradle-project:
@@ -22,3 +25,12 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+  ktlint:
+     runs-on: ubuntu-latest
+
+     steps:
+       - name: "checkout"
+         uses: actions/checkout@v2.3.2
+
+       - name: "ktlint"
+         uses: fabiocapasso93/gha-kotlin-linter@v1.0
