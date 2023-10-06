@@ -8,7 +8,8 @@ How to install and launch your application. These should include instructions fo
 - (by Sprint 1) building and running your release from source code (i.e. your github repo)
 
 ## Screenshots of application
-- (by Sprint 1): Screenshots from each of the main screens of your application.
+![app](https://github.com/EikeMB/AppDev2_Project/assets/98343869/0143e44e-d11a-47bd-a776-caf594d1c0c0)
+
 
 ## Team members
 Eike Morgado Bodecker: eike.morgadobodecker@bell.net
