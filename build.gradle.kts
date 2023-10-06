@@ -1,7 +1,7 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
-    id("com.android.application") version "8.1.2" apply false
+    id("com.android.application") version "17" apply false
     id("org.jetbrains.kotlin.android") version "1.8.10" apply false
     application
     kotlin("jvm") version "1.3.10"
