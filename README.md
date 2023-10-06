@@ -13,4 +13,4 @@ How to install and launch your application. These should include instructions fo
 ## Team members
 Eike Morgado Bodecker: eike.morgadobodecker@bell.net
 Yensan Nguyen: yensannguyen@gmail.com
-Jiahao Yu: (Temp)
+Jiahao Yu: kevinyjh7@gmail.com
