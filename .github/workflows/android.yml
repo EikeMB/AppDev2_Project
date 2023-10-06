@@ -3,9 +3,6 @@ name: Deploy Workflow
 # Step 1: Choose the branch or branches you want to run this workflow
 on:
   pull_request:
-    paths:
-      - "**/*.kt"
-      - ".github/workflows/ktlint.yml"
 
 jobs:   
   build-gradle-project:
