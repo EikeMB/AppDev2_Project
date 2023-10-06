@@ -10,10 +10,10 @@ plugins {
 buildscript {
   repositories {
     maven {
-      url("https://plugins.gradle.org/m2/")
+      url "https://plugins.gradle.org/m2/"
     }
   }
   dependencies {
-    classpath("org.jlleitschuh.gradle:ktlint-gradle:7.1.0")
+    classpath "org.jlleitschuh.gradle:ktlint-gradle:7.1.0"
   }
 }
