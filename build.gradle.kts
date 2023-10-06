@@ -1,10 +1,9 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
     application
     kotlin("jvm")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
 application {
