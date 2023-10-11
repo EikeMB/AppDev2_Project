@@ -1,4 +1,4 @@
-package com.example.appdev2_app
+package com.example.appdev2_assignment2
 
 import org.junit.Test
 
