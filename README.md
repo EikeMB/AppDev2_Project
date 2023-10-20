@@ -1,4 +1,4 @@
-# The objectively best car builder
+# The car builder
 
 ## Goal
 A application that lets you choose different parts of a car to create a custom car. Similar to a pc partpicker
