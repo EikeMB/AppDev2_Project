@@ -138,38 +138,7 @@ fun MyApp(){
 /*
 Composable to display all cars in a list
  */
-@Composable
-fun Cars(chosenCompany:String){
-    LazyColumn(){
-        items( cars.filter { car -> car.company.name == chosenCompany }){ car ->
-            Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier.padding(10.dp)
 
-            ) {
-                Card{
-                    Row(modifier = Modifier
-                        .padding(dimensionResource(id = R.dimen.padding_medium))
-                        .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween){
-                        Image(painter = painterResource(id = car.image),
-                            contentDescription ="",
-                            modifier = Modifier
-                                .clip(
-                                    CircleShape
-                                )
-                                .size(100.dp),
-                            contentScale = ContentScale.Crop)
-                        Text(car.company.name + " " + car.name,
-                            modifier = Modifier.align(alignment = Alignment.CenterVertically),
-                            color = MaterialTheme.colorScheme.onBackground)
-                    }
-                }
-
-            }
-        }
-    }
-}
 
 /*
 Displays the app title
@@ -201,33 +170,7 @@ fun Page1() {
 
 
     ){
-        var clicked by rememberSaveable{mutableStateOf(false)}
-
-        var chosenCompany by rememberSaveable{ mutableStateOf("")}
-
-        Row(Modifier.padding(10.dp), horizontalArrangement = Arrangement.SpaceEvenly){
-
-            for(company in carCompanies){
-                Button(onClick = { clicked = true
-                    chosenCompany = company.name}, modifier = Modifier.size(120.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background)
-                ) {
-                    Column(modifier = Modifier.align(alignment = Alignment.CenterVertically)) {
-                        Image(painter = painterResource(id = company.logo),
-                            contentDescription ="" )
-                        Text(company.name,
-                            modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
-                            color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.bodyMedium)
-                    }
-
-                }
-            }
-        }
-
-        if(clicked){
-            Cars(chosenCompany)
-        }
+        Text(text = "Second Page")
     }
 
 }
