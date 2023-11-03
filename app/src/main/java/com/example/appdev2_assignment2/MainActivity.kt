@@ -61,9 +61,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.compose.AppDev2_Assignment2Theme
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
@@ -91,8 +93,8 @@ Composable made up of the full page
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp(){
-
-    var A by rememberSaveable { mutableStateOf(1) }
+    
+    val navController = rememberNavController()
 
     Scaffold(
         topBar = {
@@ -107,24 +109,20 @@ fun MyApp(){
                     .padding(paddingValues),
                         color = MaterialTheme.colorScheme.background
             ) {
-                if(A == 1){
-                    Page1()
-                }
-                else{
-                    Title()
-                }
+
+                Router(navController)
 
             }
         },
         bottomBar = {
             BottomAppBar {
-                IconButton(onClick = { A = 2 } ,modifier = Modifier.weight(1f)) {
+                IconButton(onClick = { navController.navigate("MainScreenRoute")} ,modifier = Modifier.weight(1f)) {
                     Icon(Icons.Filled.Home, contentDescription = "Home")
                 }
-                IconButton(onClick = {  A = 1  },modifier = Modifier.weight(1f)) {
+                IconButton(onClick = { navController.navigate("AboutScreenRoute") },modifier = Modifier.weight(1f)) {
                     Icon(Icons.Filled.Build, contentDescription = "Create")
                 }
-                IconButton(onClick = { /*TODO*/ },modifier = Modifier.weight(1f)) {
+                IconButton(onClick = {  },modifier = Modifier.weight(1f)) {
                     Icon(Icons.Filled.Person, contentDescription = "User")
                 }
                 IconButton(onClick = { /*TODO*/ },modifier = Modifier.weight(1f)) {
@@ -135,14 +133,8 @@ fun MyApp(){
     )
 }
 
-/*
-Composable to display all cars in a list
- */
 
 
-/*
-Displays the app title
- */
 @Composable
 fun Title(){
     Row(
@@ -170,9 +162,19 @@ fun Page1() {
 
 
     ){
-        Text(text = "Second Page")
+
+        Text(text = "First Page")
     }
 
+}
+
+@Composable
+fun Router(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = "MainScreenRoute") {
+        composable("MainScreenRoute") { Page1() }
+        composable("AboutScreenRoute") { Title() }
+
+    }
 }
 
 
