@@ -134,6 +134,7 @@ fun MyApp(){
 }
 
 
+
 @Composable
 fun Title(){
     Row(
@@ -161,6 +162,7 @@ fun Page1() {
 
 
     ){
+
         Text(text = "First Page")
     }
 
@@ -171,6 +173,7 @@ fun Router(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "MainScreenRoute") {
         composable("MainScreenRoute") { Page1() }
         composable("AboutScreenRoute") { Title() }
+
     }
 }
 
