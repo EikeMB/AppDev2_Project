@@ -9,3 +9,5 @@ import androidx.compose.ui.res.painterResource
 class Car(var name:String, var parts: List<CarPart>, var vin:Int) {
 }
 
+
+
