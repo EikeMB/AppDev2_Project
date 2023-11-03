@@ -17,18 +17,35 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -46,6 +63,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.AppDev2_Assignment2Theme
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,16 +88,122 @@ class MainActivity : ComponentActivity() {
 /*
 Composable made up of the full page
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp(){
+
+    var A by rememberSaveable { mutableStateOf(1) }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                { Title() }
+            )
+        },
+        content = { paddingValues ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                        color = MaterialTheme.colorScheme.background
+            ) {
+                if(A == 1){
+                    Page1()
+                }
+                else{
+                    Title()
+                }
+
+            }
+        },
+        bottomBar = {
+            BottomAppBar {
+                IconButton(onClick = { A = 2 } ,modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Filled.Home, contentDescription = "Home")
+                }
+                IconButton(onClick = {  A = 1  },modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Filled.Build, contentDescription = "Create")
+                }
+                IconButton(onClick = { /*TODO*/ },modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Filled.Person, contentDescription = "User")
+                }
+                IconButton(onClick = { /*TODO*/ },modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Filled.Face, contentDescription = "About Us")
+                }
+            }
+        }
+    )
+}
+
+/*
+Composable to display all cars in a list
+ */
+@Composable
+fun Cars(chosenCompany:String){
+    LazyColumn(){
+        items( cars.filter { car -> car.company.name == chosenCompany }){ car ->
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.padding(10.dp)
+
+            ) {
+                Card{
+                    Row(modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.padding_medium))
+                        .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween){
+                        Image(painter = painterResource(id = car.image),
+                            contentDescription ="",
+                            modifier = Modifier
+                                .clip(
+                                    CircleShape
+                                )
+                                .size(100.dp),
+                            contentScale = ContentScale.Crop)
+                        Text(car.company.name + " " + car.name,
+                            modifier = Modifier.align(alignment = Alignment.CenterVertically),
+                            color = MaterialTheme.colorScheme.onBackground)
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+/*
+Displays the app title
+ */
+@Composable
+fun Title(){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(50.dp)
+    ) {
+        Text(
+            text = "Title",
+            modifier = Modifier.weight(3f)
+        )
+        Text(
+            text = "Name",
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+fun Page1() {
+
     Column (
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxSize()
+
+
     ){
         var clicked by rememberSaveable{mutableStateOf(false)}
 
         var chosenCompany by rememberSaveable{ mutableStateOf("")}
-
-        Title()
 
         Row(Modifier.padding(10.dp), horizontalArrangement = Arrangement.SpaceEvenly){
 
@@ -104,50 +229,9 @@ fun MyApp(){
             Cars(chosenCompany)
         }
     }
+
 }
 
-/*
-Composable to display all cars in a list
- */
-@Composable
-fun Cars(chosenCompany:String){
-    LazyColumn(){
-        items( cars.filter { car -> car.company.name == chosenCompany }){ car ->
-            Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier.padding(10.dp)
 
-            ) {
-                Card{
-                    Row(modifier = Modifier
-                        .padding(dimensionResource(id = R.dimen.padding_medium))
-                        .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween){
-                        Image(painter = painterResource(id = car.image),
-                            contentDescription ="",
-                            modifier = Modifier
-                            .clip(
-                                CircleShape
-                            )
-                            .size(100.dp),
-                            contentScale = ContentScale.Crop)
-                        Text(car.company.name + " " + car.name,
-                            modifier = Modifier.align(alignment = Alignment.CenterVertically),
-                            color = MaterialTheme.colorScheme.onBackground)
-                    }
-                }
 
-            }
-        }
-    }
-}
 
-/*
-Displays the app title
- */
-@Composable
-fun Title(){
-    Text("Pick a Car Company",
-        style = MaterialTheme.typography.titleLarge,
-        modifier = Modifier.padding(20.dp))
-}
