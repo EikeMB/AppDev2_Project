@@ -263,18 +263,6 @@ fun SignUpScreen(
 
         //Input box for Confirm Password
         TextField(
-            value = password,
-            onValueChange = { newText ->
-                password = newText
-            },
-            placeholder = { Text("Enter your Password") }, // Add the placeholder
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        //Input box for Confirm Password
-        TextField(
             value = confirmPassword,
             onValueChange = { newText ->
                 confirmPassword = newText
@@ -301,7 +289,20 @@ fun SignUpScreen(
 
         //Button for Signup
         Button(
-            onClick = onContinueClicked,
+            onClick = {
+                // Perform validation here
+                if (validateInput(username, password, confirmPassword, Age)) {
+                    // Navigate to the next screen if validation is successful
+                    //navController.navigate("NextScreenRoute")
+                    onContinueClicked()
+                } else {
+                    // Restart the signup process if validation fails
+                    username = ""
+                    password = ""
+                    confirmPassword = ""
+                    Age = "18"
+                }
+            },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
             Text("Sign up")
@@ -335,6 +336,20 @@ fun ImageChangingButton() {
             modifier = Modifier.size(100.dp)
         )
     }
+}
+
+fun validateInput(
+    username: String,
+    password: String,
+    confirmPassword: String,
+    age: String
+): Boolean {
+    val isUsernameValid = username.isNotEmpty()
+    val isPasswordValid = password.isNotEmpty()
+    val doesPasswordsMatch = password == confirmPassword
+    val isAgeValid = age.toIntOrNull() != null
+
+    return isUsernameValid && isPasswordValid && doesPasswordsMatch && isAgeValid
 }
 
 @Composable
