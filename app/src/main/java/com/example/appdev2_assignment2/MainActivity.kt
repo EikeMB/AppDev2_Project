@@ -61,6 +61,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -70,6 +71,10 @@ import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.navigation.NavController
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +86,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MyApp()
+                    StartupPage()
 
                 }
             }
@@ -90,18 +95,34 @@ class MainActivity : ComponentActivity() {
 
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StartupPage() {
+
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "LoginScreenRoute") {
+        composable("LoginScreenRoute") {
+            LoginScreen(navController)
+        }
+        composable("SignUpScreenRoute") {
+            SignUpScreen(navController)
+        }
+        composable("MainScreenRoute") {
+            MyApp()
+        }
+    }
+}
+
+
 /*
 Composable made up of the full page
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp() {
-    var showTitleScreen by rememberSaveable { mutableStateOf(true) }
     val navController = rememberNavController()
-
-    if (showTitleScreen) {
-        SignUpScreen(onContinueClicked = { showTitleScreen = false })
-    } else {
 
     Scaffold(
         topBar = {
@@ -142,13 +163,12 @@ fun MyApp() {
             }
         }
     )
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    onContinueClicked: () -> Unit,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     var username by remember { mutableStateOf("") }
@@ -195,15 +215,14 @@ fun LoginScreen(
         //Button for Login
         Button(
             modifier = Modifier.padding(vertical = 10.dp),
-            onClick = onContinueClicked,
+            onClick = { navController.navigate("MainScreenRoute") },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
             Text("Login")
         }
 
-        //Button for Signup
         Button(
-            onClick = onContinueClicked,
+            onClick = { navController.navigate("SignUpScreenRoute") },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
             Text("Sign up")
@@ -214,7 +233,7 @@ fun LoginScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
-    onContinueClicked: () -> Unit,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     var username by remember { mutableStateOf("") }
@@ -255,6 +274,7 @@ fun SignUpScreen(
             onValueChange = { newText ->
                 password = newText
             },
+            visualTransformation = PasswordVisualTransformation(),
             placeholder = { Text("Enter your Password") }, // Add the placeholder
             modifier = Modifier
                 .fillMaxWidth()
@@ -293,8 +313,8 @@ fun SignUpScreen(
                 // Perform validation here
                 if (validateInput(username, password, confirmPassword, Age)) {
                     // Navigate to the next screen if validation is successful
-                    //navController.navigate("NextScreenRoute")
-                    onContinueClicked()
+                    navController.navigate("LoginScreenRoute")
+                    //onContinueClicked()
                 } else {
                     // Restart the signup process if validation fails
                     username = ""
@@ -311,7 +331,7 @@ fun SignUpScreen(
         //Button for Login
         Button(
             modifier = Modifier.padding(vertical = 10.dp),
-            onClick = onContinueClicked,
+            onClick = {navController.navigate("LoginScreenRoute")},
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
             Text("Login")
