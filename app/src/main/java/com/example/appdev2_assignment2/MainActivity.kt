@@ -226,7 +226,7 @@ fun SignUpScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(1.dp),
+            .padding(50.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -234,7 +234,7 @@ fun SignUpScreen(
         // Title
         Text(
             text = "App Title", // Your title text
-            modifier = Modifier.padding(top = 50.dp, bottom = 50.dp)
+            modifier = Modifier.padding(top = 15.dp, bottom = 25.dp)
         )
 
         //Input box for Username
