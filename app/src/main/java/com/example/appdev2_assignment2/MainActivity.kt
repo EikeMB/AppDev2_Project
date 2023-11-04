@@ -41,6 +41,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -58,6 +59,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -92,9 +94,13 @@ Composable made up of the full page
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApp(){
-    
+fun MyApp() {
+    var showTitleScreen by rememberSaveable { mutableStateOf(true) }
     val navController = rememberNavController()
+
+    if (showTitleScreen) {
+        LoginScreen(onContinueClicked = { showTitleScreen = false })
+    } else {
 
     Scaffold(
         topBar = {
@@ -107,7 +113,7 @@ fun MyApp(){
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
-                        color = MaterialTheme.colorScheme.background
+                color = MaterialTheme.colorScheme.background
             ) {
 
                 Router(navController)
@@ -116,23 +122,93 @@ fun MyApp(){
         },
         bottomBar = {
             BottomAppBar {
-                IconButton(onClick = { navController.navigate("MainScreenRoute")} ,modifier = Modifier.weight(1f)) {
+                IconButton(onClick = { navController.navigate("MainScreenRoute") },
+                    modifier = Modifier.weight(1f)) {
                     Icon(Icons.Filled.Home, contentDescription = "Home")
                 }
-                IconButton(onClick = { navController.navigate("AboutScreenRoute") },modifier = Modifier.weight(1f)) {
+                IconButton(
+                    onClick = { navController.navigate("AboutScreenRoute") },
+                    modifier = Modifier.weight(1f)
+                ) {
                     Icon(Icons.Filled.Build, contentDescription = "Create")
                 }
-                IconButton(onClick = {  },modifier = Modifier.weight(1f)) {
+                IconButton(onClick = { }, modifier = Modifier.weight(1f)) {
                     Icon(Icons.Filled.Person, contentDescription = "User")
                 }
-                IconButton(onClick = { /*TODO*/ },modifier = Modifier.weight(1f)) {
+                IconButton(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
                     Icon(Icons.Filled.Face, contentDescription = "About Us")
                 }
             }
         }
     )
+    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LoginScreen(
+    onContinueClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(50.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        // Title
+        Text(
+            text = "App Title", // Your title text
+            modifier = Modifier.padding(top = 50.dp, bottom = 125.dp)
+        )
+
+        //Input box for Username
+        TextField(
+            value = username,
+            onValueChange = { newText ->
+                username = newText
+            },
+            placeholder = { Text("Enter your Username") }, // Add the placeholder
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        //Input box for Password
+        TextField(
+            value = password,
+            onValueChange = { newText ->
+                password = newText
+            },
+            placeholder = { Text("Enter your Password") }, // Add the placeholder
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        //Button for Login
+        Button(
+            modifier = Modifier.padding(vertical = 10.dp),
+            onClick = onContinueClicked,
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
+        ) {
+            Text("Login")
+        }
+
+        //Button for Signup
+        Button(
+            onClick = onContinueClicked,
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
+        ) {
+            Text("Sign up")
+        }
+    }
+}
 
 
 @Composable
