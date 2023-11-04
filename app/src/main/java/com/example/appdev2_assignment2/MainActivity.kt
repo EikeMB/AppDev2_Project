@@ -2,6 +2,7 @@ package com.example.appdev2_assignment2
 
 import android.os.Bundle
 import android.widget.Button
+import android.widget.NumberPicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -99,7 +100,7 @@ fun MyApp() {
     val navController = rememberNavController()
 
     if (showTitleScreen) {
-        LoginScreen(onContinueClicked = { showTitleScreen = false })
+        SignUpScreen(onContinueClicked = { showTitleScreen = false })
     } else {
 
     Scaffold(
@@ -210,6 +211,131 @@ fun LoginScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SignUpScreen(
+    onContinueClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var Age by remember { mutableStateOf("18") }
+    var userImage by remember { mutableStateOf("") }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(1.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        // Title
+        Text(
+            text = "App Title", // Your title text
+            modifier = Modifier.padding(top = 50.dp, bottom = 50.dp)
+        )
+
+        //Input box for Username
+        TextField(
+            value = username,
+            onValueChange = { newText ->
+                username = newText
+            },
+            placeholder = { Text("Enter your Username") }, // Add the placeholder
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        //Input box for Password
+        TextField(
+            value = password,
+            onValueChange = { newText ->
+                password = newText
+            },
+            placeholder = { Text("Enter your Password") }, // Add the placeholder
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        //Input box for Confirm Password
+        TextField(
+            value = password,
+            onValueChange = { newText ->
+                password = newText
+            },
+            placeholder = { Text("Enter your Password") }, // Add the placeholder
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        //Input box for Confirm Password
+        TextField(
+            value = confirmPassword,
+            onValueChange = { newText ->
+                confirmPassword = newText
+            },
+            placeholder = { Text("Enter your Confirm Password") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        //Input box for Age
+        TextField(
+            value = Age,
+            onValueChange = { newText ->
+                Age = newText
+            },
+            placeholder = { Text("Enter your Age") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        ImageChangingButton();
+
+        //Button for Signup
+        Button(
+            onClick = onContinueClicked,
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
+        ) {
+            Text("Sign up")
+        }
+
+        //Button for Login
+        Button(
+            modifier = Modifier.padding(vertical = 10.dp),
+            onClick = onContinueClicked,
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
+        ) {
+            Text("Login")
+        }
+    }
+}
+
+@Composable
+fun ImageChangingButton() {
+    //current image change on click
+    var isImage1Visible by remember { mutableStateOf(true) }
+    val currentImage = if (isImage1Visible) R.drawable.ferrari else R.drawable.mercedes
+
+    Button(
+        onClick = {
+            isImage1Visible = !isImage1Visible
+        }
+    ) {
+        Image(
+            painter = painterResource(id = currentImage),
+            contentDescription = "Image",
+            modifier = Modifier.size(100.dp)
+        )
+    }
+}
 
 @Composable
 fun Title(){
