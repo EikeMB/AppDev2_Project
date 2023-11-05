@@ -182,13 +182,13 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // Title
+        // TITLE
         Text(
             text = "App Title", // Your title text
             modifier = Modifier.padding(top = 50.dp, bottom = 125.dp)
         )
 
-        //Input box for Username
+        //USERNAME INPUT
         TextField(
             value = username,
             onValueChange = { newText ->
@@ -200,30 +200,30 @@ fun LoginScreen(
                 .padding(8.dp)
         )
 
-        //Input box for Password
+        //PASSWORD INPUT
         TextField(
             value = password,
             onValueChange = { newText ->
                 password = newText
             },
+            visualTransformation = PasswordVisualTransformation(),
             placeholder = { Text("Enter your Password") }, // Add the placeholder
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         )
 
-        //Button for Login
+        //LOGIN BUTTON
         Button(
             modifier = Modifier.padding(vertical = 10.dp),
             onClick = { navController.navigate("MainScreenRoute") },
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
             Text("Login")
         }
 
+        //SIGN UP BUTTON
         Button(
             onClick = { navController.navigate("SignUpScreenRoute") },
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
             Text("Sign up")
         }
@@ -239,8 +239,14 @@ fun SignUpScreen(
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var Age by remember { mutableStateOf("18") }
-    var userImage by remember { mutableStateOf("") }
+    var age by remember { mutableStateOf("18") }
+
+    // ERROR INPUT FIELD
+    var usernameError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    var confirmPasswordError by remember { mutableStateOf<String?>(null) }
+    var ageError by remember { mutableStateOf<String?>(null) }
+
 
     Column(
         modifier = modifier
@@ -250,87 +256,101 @@ fun SignUpScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // Title
+        // TITLE
         Text(
             text = "App Title", // Your title text
-            modifier = Modifier.padding(top = 15.dp, bottom = 25.dp)
+            modifier = Modifier.padding(bottom = 20.dp)
         )
 
-        //Input box for Username
+        // USERNAME INPUT
         TextField(
             value = username,
             onValueChange = { newText ->
                 username = newText
             },
-            placeholder = { Text("Enter your Username") }, // Add the placeholder
+            label = { Text("Enter your Username") }, // Add the placeholder
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
+            isError = usernameError != null,
         )
+        usernameError?.let { error ->
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
+        }
 
-        //Input box for Password
+        //PASSWORD INPUT
         TextField(
             value = password,
             onValueChange = { newText ->
                 password = newText
             },
             visualTransformation = PasswordVisualTransformation(),
-            placeholder = { Text("Enter your Password") }, // Add the placeholder
+            label = { Text("Enter your Password") }, // Add the placeholder
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
+            isError = passwordError != null,
         )
+        passwordError?.let { error ->
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
+        }
 
-        //Input box for Confirm Password
+        //CONFIRM PASSWORD
         TextField(
             value = confirmPassword,
             onValueChange = { newText ->
                 confirmPassword = newText
             },
-            placeholder = { Text("Enter your Confirm Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            label  = { Text("Enter your Confirm Password") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
+            isError = confirmPasswordError != null,
         )
+        confirmPasswordError?.let { error ->
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(8.dp))
+        }
 
-        //Input box for Age
+        //AGE BOX
         TextField(
-            value = Age,
+            value = age,
             onValueChange = { newText ->
-                Age = newText
+                age = newText
             },
-            placeholder = { Text("Enter your Age") },
+            label = { Text("Enter your Age") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
+            isError = ageError != null,
         )
+        ageError?.let { error ->
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
+        }
 
+        //USER'S IMAGE
         ImageChangingButton();
 
-        //Button for Signup
+        //REGISTER BUTTON
         Button(
+            modifier = Modifier.padding(vertical = 10.dp),
             onClick = {
-                // Perform validation here
-                if (validateInput(username, password, confirmPassword, Age)) {
-                    // Navigate to the next screen if validation is successful
+                if (validateInputSignUp(username, password, confirmPassword, age)) {
                     navController.navigate("LoginScreenRoute")
-                    //onContinueClicked()
                 } else {
-                    // Restart the signup process if validation fails
-                    username = ""
-                    password = ""
-                    confirmPassword = ""
-                    Age = "18"
+                    usernameError = if (username.isEmpty()) "Username required" else null
+                    passwordError = if (password.isEmpty()) "Password  required" else null
+                    confirmPasswordError = if (password != confirmPassword) "Confirm Password does not match Password" else null
+                    ageError = if (age.isEmpty() || age.toIntOrNull() == null) "Invalid age" else null
                 }
             },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
-            Text("Sign up")
+            Text("Register")
         }
 
-        //Button for Login
+        //LOGIN BUTTON
         Button(
-            modifier = Modifier.padding(vertical = 10.dp),
             onClick = {navController.navigate("LoginScreenRoute")},
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
@@ -341,7 +361,6 @@ fun SignUpScreen(
 
 @Composable
 fun ImageChangingButton() {
-    //current image change on click
     var isImage1Visible by remember { mutableStateOf(true) }
     val currentImage = if (isImage1Visible) R.drawable.ferrari else R.drawable.mercedes
 
@@ -353,12 +372,12 @@ fun ImageChangingButton() {
         Image(
             painter = painterResource(id = currentImage),
             contentDescription = "Image",
-            modifier = Modifier.size(100.dp)
+            modifier = Modifier.size(50.dp)
         )
     }
 }
 
-fun validateInput(
+fun validateInputSignUp(
     username: String,
     password: String,
     confirmPassword: String,
