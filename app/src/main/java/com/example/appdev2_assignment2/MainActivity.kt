@@ -1,6 +1,7 @@
 package com.example.appdev2_assignment2
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.NumberPicker
 import androidx.activity.ComponentActivity
@@ -67,18 +68,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.compose.AppDev2_Assignment2Theme
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.ktx.firestore
 
 
 class MainActivity : ComponentActivity() {
+
+    private val db = Firebase.firestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             AppDev2_Assignment2Theme {
                 // A surface container using the 'background' color from the theme
@@ -100,6 +106,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartupPage() {
+
 
     val navController = rememberNavController()
 
@@ -421,6 +428,9 @@ fun Page1() {
     ){
 
         Text(text = "First Page")
+
+
+
     }
 
 }
