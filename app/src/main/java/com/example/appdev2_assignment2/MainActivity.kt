@@ -10,14 +10,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -72,16 +75,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.CardElevation
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.firestore.ktx.firestore
 
 
 class MainActivity : ComponentActivity() {
-
-    private val db = Firebase.firestore
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -427,13 +430,39 @@ fun Page1() {
 
     ){
 
-        Text(text = "First Page")
+
+        CarList()
 
 
 
     }
 
 }
+
+@Composable
+fun CarCard(car:Car){
+    Card(
+        modifier = Modifier
+            .width(200.dp)
+            .padding(8.dp)
+    ) {
+        Text(text = car.name)
+        Text(text = car.vin.toString())
+    }
+}
+
+@Composable
+fun CarList() {
+    val viewModel: CarListViewModel = viewModel()
+    val cars = viewModel.cars
+    
+    LazyRow(modifier = Modifier.fillMaxSize()){
+        items(cars){ car ->
+            CarCard(car)
+        }
+    }
+}
+
 
 @Composable
 fun Router(navController: NavHostController) {
