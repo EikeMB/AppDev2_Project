@@ -3,6 +3,7 @@ package com.example.appdev2_assignment2
 import android.os.Bundle
 import android.widget.Button
 import android.widget.NumberPicker
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -74,11 +75,17 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lateinit var auth: FirebaseAuth
+
+        auth = Firebase.auth
         setContent {
             AppDev2_Assignment2Theme {
                 // A surface container using the 'background' color from the theme
@@ -86,7 +93,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    StartupPage()
+                    StartupPage(auth)
 
                 }
             }
@@ -98,19 +105,19 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartupPage() {
+fun StartupPage(auth: FirebaseAuth) {
 
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "LoginScreenRoute") {
         composable("LoginScreenRoute") {
-            LoginScreen(navController)
+            LoginScreen(navController, auth = auth)
         }
         composable("SignUpScreenRoute") {
-            SignUpScreen(navController)
+            SignUpScreen(navController, auth = auth)
         }
         composable("MainScreenRoute") {
-            MyApp()
+            MyApp1()
         }
     }
 }
@@ -121,7 +128,7 @@ Composable made up of the full page
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApp() {
+fun MyApp1() {
     val navController = rememberNavController()
 
     Scaffold(
@@ -169,7 +176,8 @@ fun MyApp() {
 @Composable
 fun LoginScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    auth: FirebaseAuth
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -216,7 +224,12 @@ fun LoginScreen(
         //LOGIN BUTTON
         Button(
             modifier = Modifier.padding(vertical = 10.dp),
-            onClick = { navController.navigate("MainScreenRoute") },
+            onClick = {
+
+                signIn(username, password, auth, navController)
+
+
+            },
         ) {
             Text("Login")
         }
@@ -230,11 +243,36 @@ fun LoginScreen(
     }
 }
 
+fun signIn(email:String, password:String, auth: FirebaseAuth, navController: NavController){
+    auth.signInWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val user = auth.currentUser
+                navController.navigate("MainScreenRoute")
+            } else {
+                navController.navigate("SignUpScreenRoute")
+            }
+        }
+}
+
+fun signUp(email:String, password:String, auth: FirebaseAuth, navController: NavController){
+    auth.createUserWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val user = auth.currentUser
+                navController.navigate("MainScreenRoute")
+            } else {
+                navController.navigate("SignInScreenRoute")
+            }
+        }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    auth: FirebaseAuth
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -343,6 +381,7 @@ fun SignUpScreen(
                     confirmPasswordError = if (password != confirmPassword) "Confirm Password does not match Password" else null
                     ageError = if (age.isEmpty() || age.toIntOrNull() == null) "Invalid age" else null
                 }
+                signUp(username, password, auth, navController)
             },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
