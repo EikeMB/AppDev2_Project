@@ -1,87 +1,63 @@
 package com.example.appdev2_assignment2
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.NumberPicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.compose.AppDev2_Assignment2Theme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.CardElevation
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QueryDocumentSnapshot
+import kotlinx.coroutines.tasks.await
 
 
 class MainActivity : ComponentActivity() {
@@ -104,8 +80,80 @@ class MainActivity : ComponentActivity() {
     }
 
 }
+fun parseCar(docSnapshot: DocumentSnapshot): Car {
+    val name = docSnapshot.getString("name") ?: ""
+    val vin = docSnapshot.getLong("vin")?.toInt() ?: 0
+    val parts = (docSnapshot.get("parts") as? List<Map<*, *>>)?.map { parseCarPart(it) } ?: emptyList()
+    return Car(name, parts, vin)
+}
 
+fun parseCarPart(partData: Map<*, *>): CarPart {
+    val name = partData["name"] as? String ?: ""
+    val image = (partData["image"] as? Number)?.toInt() ?: 0
+    val modelNum = (partData["modelNum"] as? Number)?.toInt() ?: 0
+    val description = partData["description"] as? String ?: ""
+    val carPartTypeStr = partData["type"] as? String ?: ""
+    val carPartType = CarPartType.valueOf(carPartTypeStr)
 
+    return CarPart(name, image, modelNum, description, carPartType)
+}
+@Composable
+fun FirestoreDataList() {
+    var cars by remember { mutableStateOf(emptyList<Car>()) }
+    var searchText by remember { mutableStateOf("") }
+
+    val firestore = FirebaseFirestore.getInstance()
+
+    // Fetch data from Firestore when the Composable is first displayed
+    LaunchedEffect(Unit) {
+        val querySnapshot = firestore.collection("cars").get().await()
+        cars = querySnapshot.documents.map { documentSnapshot ->  parseCar(documentSnapshot)}
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+
+        LazyRow(
+            contentPadding = PaddingValues(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(cars) { car ->
+                Card(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(200.dp)
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxSize(),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = car.name
+                            )
+                            Text(
+                                text = "VIN: ${car.vin}"
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            car.parts.forEach { carPart ->
+                                Text(
+                                    text = carPart.name
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartupPage() {
@@ -431,7 +479,7 @@ fun Page1() {
     ){
 
 
-        CarList()
+        FirestoreDataList()
 
 
 
@@ -439,29 +487,6 @@ fun Page1() {
 
 }
 
-@Composable
-fun CarCard(car:Car){
-    Card(
-        modifier = Modifier
-            .width(200.dp)
-            .padding(8.dp)
-    ) {
-        Text(text = car.name)
-        Text(text = car.vin.toString())
-    }
-}
-
-@Composable
-fun CarList() {
-    val viewModel: CarListViewModel = viewModel()
-    val cars = viewModel.cars
-    
-    LazyRow(modifier = Modifier.fillMaxSize()){
-        items(cars){ car ->
-            CarCard(car)
-        }
-    }
-}
 
 
 @Composable
