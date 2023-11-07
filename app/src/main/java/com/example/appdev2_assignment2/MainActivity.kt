@@ -73,7 +73,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -117,24 +119,38 @@ fun StartupPage(auth: FirebaseAuth) {
             SignUpScreen(navController, auth = auth)
         }
         composable("MainScreenRoute") {
-            MyApp1()
+            HomeScreen()
         }
     }
 }
 
-
+@Composable
+fun TopBar(){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp),
+        horizontalArrangement = Arrangement.End
+    ){
+        Image(
+            painter = painterResource(id = R.drawable.profileicon),
+            contentDescription = null,
+            modifier = Modifier.size(48.dp)
+        )
+    }
+}
 /*
 Composable made up of the full page
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApp1() {
+fun HomeScreen() {
     val navController = rememberNavController()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                { Title() }
+                { TopBar() }
             )
         },
         content = { paddingValues ->
