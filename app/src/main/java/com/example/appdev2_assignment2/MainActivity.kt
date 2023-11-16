@@ -87,6 +87,7 @@ import com.example.appdev2_assignment2.CRUD.getCarsFromUser
 import com.example.appdev2_assignment2.auth.signIn
 import com.example.appdev2_assignment2.auth.signOut
 import com.example.appdev2_assignment2.auth.signUp
+import com.example.appdev2_assignment2.ui.UserProfilePage
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -190,7 +191,7 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
                 ) {
                     Icon(Icons.Filled.Build, contentDescription = "Create")
                 }
-                IconButton(onClick = { }, modifier = Modifier.weight(1f)) {
+                IconButton(onClick = { navController.navigate("UserProfileRoute")}, modifier = Modifier.weight(1f)) {
                     Icon(Icons.Filled.Person, contentDescription = "User")
                 }
                 IconButton(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
@@ -527,9 +528,20 @@ fun Router(navController: NavHostController, auth: FirebaseAuth) {
     NavHost(navController = navController, startDestination = "MainScreenRoute") {
         composable("MainScreenRoute") { Page1(auth, navController) }
         composable("AboutScreenRoute") { Title(auth, navController) }
-
+        composable("UserProfileRoute") {
+            val user = auth.currentUser?.email?.let { User(it) }
+            if (user != null) {
+                UserProfilePage(
+                    user = user,
+                    onProfilePictureChange = { /* implement the logic */ },
+                    onNameChange = { /* implement the logic */ },
+                    onAgeChange = { /* implement the logic */ },
+                    onPasswordChange = { /* implement the logic */ },
+                    onApplyChanges = { /* implement the logic */ },
+                )
+            }
     }
-}
+}}
 
 
 
