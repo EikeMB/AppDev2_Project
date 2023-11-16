@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -153,7 +154,9 @@ fun TopBar() {
         Image(
             painter = painterResource(id = R.drawable.profileicon),
             contentDescription = null,
-            modifier = Modifier.size(48.dp).weight(1f)
+            modifier = Modifier
+                .size(48.dp)
+                .weight(1f)
         )
         Column {
             Text(
@@ -481,13 +484,10 @@ fun Page1(auth: FirebaseAuth, navController: NavController) {
     Column (
         modifier = Modifier
             .fillMaxSize()
-
-
     ){
 
         var cars by remember { mutableStateOf<List<Car>>(emptyList())}
         var loading by remember { mutableStateOf(true)}
-
 
         LaunchedEffect(Unit){
             val user = auth.currentUser?.email?.let { User(it) }
@@ -497,25 +497,31 @@ fun Page1(auth: FirebaseAuth, navController: NavController) {
                 cars = userCars!!
                 loading = false
             }
-
         }
-        
+        Text(text = "Your customized cars: ", Modifier.padding(vertical = 20.dp))
         Box{
             if(loading){
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
             else{
-                LazyRowCars(cars = cars)
+                UserCarsList(cars = cars)
             }
         }
     }
 }
 
 @Composable
-fun LazyRowCars(cars: List<Car>){
-    LazyRow {
-        items(cars) { car ->
-            CarCard(car = car)
+fun UserCarsList(cars: List<Car>) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 300.dp)
+            .background(Color.Blue)
+    ) {
+        LazyRow {
+            items(cars) { car ->
+                CarCard(car = car)
+            }
         }
     }
 }
@@ -524,17 +530,27 @@ fun LazyRowCars(cars: List<Car>){
 fun CarCard(car: Car){
     Card(
         modifier = Modifier
-            .padding(8.dp)
-            .size(200.dp, 250.dp)
+            .padding(15.dp)
+            .height(230.dp)
+            .width(200.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(horizontal = 15.dp, vertical = 5.dp)
         ) {
-            Text(text = car.name, style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "VIN: ${car.vin}", style = MaterialTheme.typography.bodyMedium)
+            Image(
+                painter = painterResource(id = R.drawable.amggtblackseries),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth() // Image occupies full width available
+                    .height(150.dp) // Adjust the height as per your preference
+            )
+            Spacer(modifier = Modifier.height(8.dp)) // Add space between Image and Text elements
+            Text(text = "Name: Bob")
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = car.name)
+            // Text(text = "VIN: ${car.vin}", style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
@@ -554,6 +570,15 @@ fun Router(navController: NavHostController, auth: FirebaseAuth) {
 fun TopBarPreview() {
     AppDev2_Assignment2Theme {
         TopBar()
+    }
+}
+
+@Preview
+@Composable
+fun CarCardPreview() {
+    val car = Car("mamadou1@bell.net", "nissan skyline r34", parts1,123) // Replace with your actual car details
+    AppDev2_Assignment2Theme {
+        CarCard(car = car)
     }
 }
 
