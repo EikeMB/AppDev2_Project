@@ -1,34 +1,145 @@
 package com.example.appdev2_assignment2
 
-open class CarPart(var modelNum: Int, var description: String) {
+data class CarPart(var name:String, var image:Int, var modelNum: Int, var description: String, var type: PartType) {
 
-
-    lateinit var combatibilityList: List<CarPart>
 }
 
+enum class PartType {
+    Body, Engine, Wheels, Aerodynamics, Interior, Accessories
+}
+
+
 var parts1: List<CarPart> = listOf(
-    Body("R34", 0, 0, "Body of a nissan skyline r34"),
-    Engine("V12", 0, 1, "V12 Engine"),
-    Wheels("Alloy Wheels", 0, 2, "High-performance alloy wheels"),
-    Aerodynamics("Spoiler", 0, 3, "Aerodynamic spoiler for improved downforce"),
-    Interior("Leather Seats", 0, 4, "Luxurious leather seats"),
-    Accessories("GPS Navigation", 0, 5, "Advanced GPS navigation system"),
+    CarPart(
+        name = "Body Part 1",
+        image = 0, // Replace with your actual image resource
+        modelNum = 101,
+        description = "Description for Body Part 1",
+        type = PartType.Body
+    ),
+    CarPart(
+        name = "Engine Part 1",
+        image = 0, // Replace with your actual image resource
+        modelNum = 201,
+        description = "Description for Engine Part 1",
+        type = PartType.Engine
+    ),
+    CarPart(
+        name = "Wheels Part 1",
+        image = 0, // Replace with your actual image resource
+        modelNum = 301,
+        description = "Description for Wheels Part 1",
+        type = PartType.Wheels
+    ),
+    CarPart(
+        name = "Aerodynamics Part 1",
+        image = 0, // Replace with your actual image resource
+        modelNum = 401,
+        description = "Description for Aerodynamics Part 1",
+        type = PartType.Aerodynamics
+    ),
+    CarPart(
+        name = "Interior Part 1",
+        image = 0, // Replace with your actual image resource
+        modelNum = 501,
+        description = "Description for Interior Part 1",
+        type = PartType.Interior
+    ),
+    CarPart(
+        name = "Accessories Part 1",
+        image = 0, // Replace with your actual image resource
+        modelNum = 601,
+        description = "Description for Accessories Part 1",
+        type = PartType.Accessories
+    )
 )
 
 var parts2: List<CarPart> = listOf(
-    Body("Ferrari F430 Body", 0, 6, "Sleek body for Ferrari F430"),
-    Engine("Turbocharged V8", 0, 7, "Turbocharged V8 Engine"),
-    Wheels("Performance Tires", 0, 8, "High-performance tires for superior grip"),
-    Aerodynamics("Front Splitter", 0, 9, "Front splitter for enhanced aerodynamics"),
-    Interior("Carbon Fiber Trim", 0, 10, "Carbon fiber interior trim for a sporty look"),
-    Accessories("Premium Sound System", 0, 11, "High-end premium sound system"),
+    CarPart(
+        name = "Body Part 2",
+        image = 0,
+        modelNum = 102,
+        description = "Description for Body Part 2",
+        type = PartType.Body
+    ),
+    CarPart(
+        name = "Engine Part 2",
+        image = 0,
+        modelNum = 202,
+        description = "Description for Engine Part 2",
+        type = PartType.Engine
+    ),
+    CarPart(
+        name = "Wheels Part 2",
+        image = 0,
+        modelNum = 302,
+        description = "Description for Wheels Part 2",
+        type = PartType.Wheels
+    ),
+    CarPart(
+        name = "Aerodynamics Part 2",
+        image = 0,
+        modelNum = 402,
+        description = "Description for Aerodynamics Part 2",
+        type = PartType.Aerodynamics
+    ),
+    CarPart(
+        name = "Interior Part 2",
+        image = 0,
+        modelNum = 502,
+        description = "Description for Interior Part 2",
+        type = PartType.Interior
+    ),
+    CarPart(
+        name = "Accessories Part 2",
+        image = 0,
+        modelNum = 602,
+        description = "Description for Accessories Part 2",
+        type = PartType.Accessories
+    )
 )
 
 var parts3: List<CarPart> = listOf(
-    Body("2023 Porsche 911 GT3", 0, 101, "Aerodynamically designed body for the Porsche 911 GT3"),
-    Engine("Mercedes-AMG GT 4.0L V8", 0, 102, "4.0-liter V8 engine from the Mercedes-AMG GT"),
-    Wheels("BBS Forged Alloy Wheels", 0, 103, "High-performance BBS forged alloy wheels"),
-    Aerodynamics("Carbon Fiber Front Splitter", 0, 104, "Carbon fiber front splitter for improved downforce"),
-    Interior("Recaro Racing Seats", 0, 105, "Sporty and comfortable Recaro racing seats"),
-    Accessories("Bose Surround Sound System", 0, 106, "Premium Bose surround sound audio system")
+    CarPart(
+        name = "Body Part 3",
+        image = 0,
+        modelNum = 103,
+        description = "Description for Body Part 3",
+        type = PartType.Body
+    ),
+    CarPart(
+        name = "Engine Part 3",
+        image = 0,
+        modelNum = 203,
+        description = "Description for Engine Part 3",
+        type = PartType.Engine
+    ),
+    CarPart(
+        name = "Wheels Part 3",
+        image = 0,
+        modelNum = 303,
+        description = "Description for Wheels Part 3",
+        type = PartType.Wheels
+    ),
+    CarPart(
+        name = "Aerodynamics Part 3",
+        image = 0,
+        modelNum = 403,
+        description = "Description for Aerodynamics Part 3",
+        type = PartType.Aerodynamics
+    ),
+    CarPart(
+        name = "Interior Part 3",
+        image = 0,
+        modelNum = 503,
+        description = "Description for Interior Part 3",
+        type = PartType.Interior
+    ),
+    CarPart(
+        name = "Accessories Part 3",
+        image = 0,
+        modelNum = 603,
+        description = "Description for Accessories Part 3",
+        type = PartType.Accessories
+    )
 )
