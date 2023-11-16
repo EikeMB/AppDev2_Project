@@ -3,7 +3,8 @@ import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.gms.google-services") version "4.4.0"
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -54,9 +55,11 @@ android {
 
 dependencies {
 
+
+    implementation("com.google.firebase:firebase-firestore-ktx:24.9.1")
     implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
-    implementation(("com.google.firebase:firebase-firestore:24.9.1"))
-    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.firebaseui:firebase-ui-auth:7.2.0")
+
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.7.2")
