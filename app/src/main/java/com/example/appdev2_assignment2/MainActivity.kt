@@ -148,6 +148,7 @@ fun TopBar() {
         Text(
             text = "Title",
             modifier = Modifier.weight(3f),
+            fontSize = 24.sp
         )
         Image(
             painter = painterResource(id = R.drawable.profileicon),
@@ -157,9 +158,11 @@ fun TopBar() {
         Column {
             Text(
                 text = "Name",
+                fontSize = 16.sp
             )
             Text(
                 text = "Age",
+                fontSize = 14.sp
             )
         }
     }
@@ -176,7 +179,9 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
     Scaffold(
         topBar = {
             TopAppBar(
-                { TopBar() }
+                title = { TopBar() },
+                colors = TopAppBarDefaults.smallTopAppBarColors(MaterialTheme.colorScheme.primary),
+
             )
         },
         content = { paddingValues ->
