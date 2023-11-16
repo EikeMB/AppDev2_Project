@@ -52,32 +52,86 @@ suspend fun getCarsFromUser(user: User): List<Car> = withContext(Dispatchers.IO)
 }
 
 
-fun addCar(carToAdd: Car){
-    val db = FirebaseFirestore.getInstance()
+suspend fun getAllCars(): List<Car> = withContext(Dispatchers.IO){
 
-    val collection = db.collection("cars")
+    val cars = mutableListOf<Car>()
 
-    val car = hashMapOf(
-        "user" to carToAdd.userEmail,
-        "name" to carToAdd.name,
-        "parts" to carToAdd.parts.map { part ->
-            mapOf(
-                "name" to part.name,
-                "image" to part.image,
-                "modelNum" to part.modelNum,
-                "description" to part.description,
-                "type" to part.type
-            )
-        },
-        "vin" to carToAdd.vin
-    )
+    try {
+        val db = FirebaseFirestore.getInstance()
 
+        val collection = db.collection("cars")
 
-    collection.add(car)
-        .addOnSuccessListener {
-            println("success add")
+        val querySnapshot = collection.get().await()
+
+        for (document in querySnapshot.documents){
+            val user = document.getString("user") ?: ""
+            val name = document.getString("name") ?: ""
+            val vin = document.getLong("vin")?.toInt() ?: 0
+
+            val partsList = mutableListOf<CarPart>()
+            val partsArray = document.get("parts") as? List<Map<String, Any>> ?: emptyList()
+
+            for (partMap in partsArray) {
+                val part = CarPart(
+                    name = partMap["name"] as? String ?: "",
+                    image = (partMap["image"] as? Long)?.toInt() ?: 0,
+                    modelNum = (partMap["modelNum"] as? Long)?.toInt() ?: 0,
+                    description = partMap["description"] as? String ?: "",
+                    type = PartType.valueOf(partMap["type"] as? String ?: "Body")
+                )
+                partsList.add(part)
+            }
+
+            val car = Car(user, name, partsList, vin)
+            cars.add(car)
         }
-        .addOnFailureListener {
-            println("fail add")
-        }
+    }catch (exception: Exception){
+        println(exception.message)
+    }
+
+
+
+    return@withContext cars
+}
+
+suspend fun addCar(carToAdd: Car){
+    try {
+        val db = FirebaseFirestore.getInstance()
+
+        val collection = db.collection("cars")
+
+        val car = hashMapOf(
+            "user" to carToAdd.userEmail,
+            "name" to carToAdd.name,
+            "parts" to carToAdd.parts.map { part ->
+                mapOf(
+                    "name" to part.name,
+                    "image" to part.image,
+                    "modelNum" to part.modelNum,
+                    "description" to part.description,
+                    "type" to part.type
+                )
+            },
+            "vin" to carToAdd.vin
+        )
+
+
+        collection.document(carToAdd.name).set(car).await()
+    }catch (e: Exception){
+
+    }
+}
+
+suspend fun deleteCar(carToDelete: Car){
+    try {
+        val db = FirebaseFirestore.getInstance()
+
+        val collection = db.collection("cars")
+
+        val document = collection.document(carToDelete.name)
+
+        document.delete().await()
+    }catch (e: Exception){
+
+    }
 }

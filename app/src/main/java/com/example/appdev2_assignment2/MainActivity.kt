@@ -63,13 +63,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.appdev2_assignment2.CRUD.addCar
+import com.example.appdev2_assignment2.CRUD.addPart
+import com.example.appdev2_assignment2.CRUD.deleteCar
 import com.example.appdev2_assignment2.CRUD.getCarsFromUser
 import com.example.appdev2_assignment2.auth.signIn
 import com.example.appdev2_assignment2.auth.signOut
 import com.example.appdev2_assignment2.auth.signUp
+import com.example.appdev2_assignment2.Car
+import com.example.appdev2_assignment2.CarPart
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -95,80 +100,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-}
-fun parseCar(docSnapshot: DocumentSnapshot): Car {
-    val name = docSnapshot.getString("name") ?: ""
-    val vin = docSnapshot.getLong("vin")?.toInt() ?: 0
-    val parts = (docSnapshot.get("parts") as? List<Map<*, *>>)?.map { parseCarPart(it) } ?: emptyList()
-    return Car(name, parts, vin)
-}
-
-fun parseCarPart(partData: Map<*, *>): CarPart {
-    val name = partData["name"] as? String ?: ""
-    val image = (partData["image"] as? Number)?.toInt() ?: 0
-    val modelNum = (partData["modelNum"] as? Number)?.toInt() ?: 0
-    val description = partData["description"] as? String ?: ""
-    val carPartTypeStr = partData["type"] as? String ?: ""
-    val carPartType = CarPartType.valueOf(carPartTypeStr)
-
-    return CarPart(name, image, modelNum, description, carPartType)
-}
-@Composable
-fun FirestoreDataList() {
-    var cars by remember { mutableStateOf(emptyList<Car>()) }
-    var searchText by remember { mutableStateOf("") }
-
-    val firestore = FirebaseFirestore.getInstance()
-
-    // Fetch data from Firestore when the Composable is first displayed
-    LaunchedEffect(Unit) {
-        val querySnapshot = firestore.collection("cars").get().await()
-        cars = querySnapshot.documents.map { documentSnapshot ->  parseCar(documentSnapshot)}
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-
-        LazyRow(
-            contentPadding = PaddingValues(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(cars) { car ->
-                Card(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(200.dp)
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxSize(),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = car.name
-                            )
-                            Text(
-                                text = "VIN: ${car.vin}"
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            car.parts.forEach { carPart ->
-                                Text(
-                                    text = carPart.name
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -264,7 +195,7 @@ fun LoginScreen(
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-
+    
 
     Column(
         modifier = modifier
