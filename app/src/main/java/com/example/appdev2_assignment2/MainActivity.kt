@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -507,6 +508,41 @@ fun Page1(auth: FirebaseAuth, navController: NavController) {
                 UserCarsList(cars = cars)
             }
         }
+        Text(text = "See other customized car: ", Modifier.padding(10.dp))
+        UserCarsListVertical(cars = cars)
+    }
+}
+
+@Composable
+fun UserCarsListVertical(cars: List<Car>) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 16.dp)
+            .background(Color.Blue)
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            itemsIndexed(cars) { index, car ->
+                if (index % 2 == 0) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        CarCard(car = car)
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        CarCard(car = car)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -528,7 +564,7 @@ fun CarCard(car: Car){
         modifier = Modifier
             .padding(15.dp)
             .height(230.dp)
-            .width(200.dp)
+            .width(170.dp)
     ) {
         Column(
             modifier = Modifier
