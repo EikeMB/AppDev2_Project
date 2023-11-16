@@ -138,20 +138,33 @@ fun StartupPage(auth: FirebaseAuth) {
 }
 
 @Composable
-fun TopBar(){
+fun TopBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp),
-        horizontalArrangement = Arrangement.End
-    ){
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Title",
+            modifier = Modifier.weight(3f),
+        )
         Image(
             painter = painterResource(id = R.drawable.profileicon),
             contentDescription = null,
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier.size(48.dp).weight(1f)
         )
+        Column {
+            Text(
+                text = "Name",
+            )
+            Text(
+                text = "Age",
+            )
+        }
     }
 }
+
 /*
 Composable made up of the full page
  */
@@ -491,7 +504,6 @@ fun Page1(auth: FirebaseAuth, navController: NavController) {
             }
         }
     }
-
 }
 
 @Composable
@@ -531,6 +543,14 @@ fun Router(navController: NavHostController, auth: FirebaseAuth) {
     }
 }
 
+
+@Preview
+@Composable
+fun TopBarPreview() {
+    AppDev2_Assignment2Theme {
+        TopBar()
+    }
+}
 
 
 
