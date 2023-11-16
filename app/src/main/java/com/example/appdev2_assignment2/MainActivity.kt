@@ -3,20 +3,24 @@ package com.example.appdev2_assignment2
 import android.os.Bundle
 import android.widget.Button
 import android.widget.NumberPicker
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -72,13 +76,31 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.appdev2_assignment2.CRUD.addCar
+import com.example.appdev2_assignment2.CRUD.getCarsFromUser
+import com.example.appdev2_assignment2.auth.signIn
+import com.example.appdev2_assignment2.auth.signOut
+import com.example.appdev2_assignment2.auth.signUp
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lateinit var auth: FirebaseAuth
+
+        auth = Firebase.auth
         setContent {
             AppDev2_Assignment2Theme {
                 // A surface container using the 'background' color from the theme
@@ -86,7 +108,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    StartupPage()
+                    StartupPage(auth)
 
                 }
             }
@@ -98,36 +120,50 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartupPage() {
+fun StartupPage(auth: FirebaseAuth) {
 
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "LoginScreenRoute") {
         composable("LoginScreenRoute") {
-            LoginScreen(navController)
+            LoginScreen(navController, auth = auth)
         }
         composable("SignUpScreenRoute") {
-            SignUpScreen(navController)
+            SignUpScreen(navController, auth = auth)
         }
         composable("MainScreenRoute") {
-            MyApp()
+            HomeScreen(navController, auth = auth)
         }
     }
 }
 
-
+@Composable
+fun TopBar(){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp),
+        horizontalArrangement = Arrangement.End
+    ){
+        Image(
+            painter = painterResource(id = R.drawable.profileicon),
+            contentDescription = null,
+            modifier = Modifier.size(48.dp)
+        )
+    }
+}
 /*
 Composable made up of the full page
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApp() {
+fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
     val navController = rememberNavController()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                { Title() }
+                { TopBar() }
             )
         },
         content = { paddingValues ->
@@ -138,7 +174,7 @@ fun MyApp() {
                 color = MaterialTheme.colorScheme.background
             ) {
 
-                Router(navController)
+                Router(navController, auth)
 
             }
         },
@@ -169,10 +205,13 @@ fun MyApp() {
 @Composable
 fun LoginScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    auth: FirebaseAuth
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+
 
     Column(
         modifier = modifier
@@ -216,7 +255,12 @@ fun LoginScreen(
         //LOGIN BUTTON
         Button(
             modifier = Modifier.padding(vertical = 10.dp),
-            onClick = { navController.navigate("MainScreenRoute") },
+            onClick = {
+
+                signIn(auth, username, password, navController)
+
+
+            },
         ) {
             Text("Login")
         }
@@ -230,11 +274,14 @@ fun LoginScreen(
     }
 }
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    auth: FirebaseAuth
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -343,6 +390,7 @@ fun SignUpScreen(
                     confirmPasswordError = if (password != confirmPassword) "Confirm Password does not match Password" else null
                     ageError = if (age.isEmpty() || age.toIntOrNull() == null) "Invalid age" else null
                 }
+                signUp(auth, username, password, navController)
             },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
@@ -392,7 +440,7 @@ fun validateInputSignUp(
 }
 
 @Composable
-fun Title(){
+fun Title(auth: FirebaseAuth, navController: NavController){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -410,7 +458,7 @@ fun Title(){
 }
 
 @Composable
-fun Page1() {
+fun Page1(auth: FirebaseAuth, navController: NavController) {
 
     Column (
         modifier = Modifier
@@ -419,16 +467,66 @@ fun Page1() {
 
     ){
 
-        Text(text = "First Page")
+        var cars by remember { mutableStateOf<List<Car>>(emptyList())}
+        var loading by remember { mutableStateOf(true)}
+
+
+        LaunchedEffect(Unit){
+            val user = auth.currentUser?.email?.let { User(it) }
+            val userCars = user?.let { getCarsFromUser(it) }
+
+            withContext(Dispatchers.Main){
+                cars = userCars!!
+                loading = false
+            }
+
+        }
+        
+        Box{
+            if(loading){
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            else{
+                LazyRowCars(cars = cars)
+            }
+        }
     }
 
 }
 
 @Composable
-fun Router(navController: NavHostController) {
+fun LazyRowCars(cars: List<Car>){
+    LazyRow {
+        items(cars) { car ->
+            CarCard(car = car)
+        }
+    }
+}
+
+@Composable
+fun CarCard(car: Car){
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .size(200.dp, 250.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Text(text = car.name, style = MaterialTheme.typography.bodyLarge)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = "VIN: ${car.vin}", style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+}
+
+@Composable
+fun Router(navController: NavHostController, auth: FirebaseAuth) {
     NavHost(navController = navController, startDestination = "MainScreenRoute") {
-        composable("MainScreenRoute") { Page1() }
-        composable("AboutScreenRoute") { Title() }
+        composable("MainScreenRoute") { Page1(auth, navController) }
+        composable("AboutScreenRoute") { Title(auth, navController) }
 
     }
 }
