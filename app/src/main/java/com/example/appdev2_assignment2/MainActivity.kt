@@ -498,7 +498,7 @@ fun Page1(auth: FirebaseAuth, navController: NavController) {
                 loading = false
             }
         }
-        Text(text = "Your customized cars: ", Modifier.padding(vertical = 20.dp))
+        Text(text = "Your customized cars: ", Modifier.padding(10.dp))
         Box{
             if(loading){
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -511,17 +511,13 @@ fun Page1(auth: FirebaseAuth, navController: NavController) {
 }
 
 @Composable
-fun UserCarsList(cars: List<Car>) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 300.dp)
-            .background(Color.Blue)
-    ) {
-        LazyRow {
-            items(cars) { car ->
-                CarCard(car = car)
-            }
+fun UserCarsList(cars: List<Car>){
+    LazyRow(
+        modifier = Modifier.fillMaxWidth()
+        .background(Color.Blue))
+    {
+        items(cars) { car ->
+            CarCard(car = car)
         }
     }
 }
