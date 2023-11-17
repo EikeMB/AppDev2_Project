@@ -444,7 +444,7 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
 
     val user = auth.currentUser?.email?.let { User(it) }
 
-  
+
 
     LaunchedEffect(Unit){
         carViewModel.getCarsForUser(user!!)
