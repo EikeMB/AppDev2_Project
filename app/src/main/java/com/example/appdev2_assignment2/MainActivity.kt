@@ -515,6 +515,7 @@ fun Page1(auth: FirebaseAuth, navController: NavController) {
 
 @Composable
 fun UserCarsListVertical(cars: List<Car>) {
+    var previousCar by remember { mutableStateOf<Car?>(null) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -526,19 +527,19 @@ fun UserCarsListVertical(cars: List<Car>) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(cars) { index, car ->
-                if (index % 2 == 0) {
+                if (index % 2 != 0) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
                         CarCard(car = car)
+                        CarCard(car = cars[index - 1])
                     }
-                } else {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        CarCard(car = car)
+                }
+                else{
+                    val isLastItem = index == cars.lastIndex
+                    if (isLastItem) {
+                         CarCard(car = car)
                     }
                 }
             }
