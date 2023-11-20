@@ -375,8 +375,6 @@ fun SignUpScreen(
             Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
         }
 
-        //USER'S IMAGE
-        ImageChangingButton();
 
         //REGISTER BUTTON
         Button(
@@ -404,24 +402,6 @@ fun SignUpScreen(
         ) {
             Text("Login")
         }
-    }
-}
-
-@Composable
-fun ImageChangingButton() {
-    var isImage1Visible by remember { mutableStateOf(true) }
-    val currentImage = if (isImage1Visible) R.drawable.ferrari else R.drawable.mercedes
-
-    Button(
-        onClick = {
-            isImage1Visible = !isImage1Visible
-        }
-    ) {
-        Image(
-            painter = painterResource(id = currentImage),
-            contentDescription = "Image",
-            modifier = Modifier.size(50.dp)
-        )
     }
 }
 
