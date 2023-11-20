@@ -1,15 +1,11 @@
 package com.example.appdev2_assignment2
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.Button
-import android.widget.NumberPicker
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,79 +14,63 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.compose.AppDev2_Assignment2Theme
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.asFlow
 import androidx.navigation.NavController
-import com.example.appdev2_assignment2.CRUD.addCar
-import com.example.appdev2_assignment2.CRUD.getCarsFromUser
+import com.example.appdev2_assignment2.CRUD.CarRepositoryFirestore
 import com.example.appdev2_assignment2.auth.signIn
-import com.example.appdev2_assignment2.auth.signOut
 import com.example.appdev2_assignment2.auth.signUp
+import com.example.appdev2_assignment2.CarPart
+import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -101,6 +81,9 @@ class MainActivity : ComponentActivity() {
         lateinit var auth: FirebaseAuth
 
         auth = Firebase.auth
+
+        var carRepository = CarRepositoryFirestore(FirebaseFirestore.getInstance())
+        var carViewModel = CarViewModel(carRepository)
         setContent {
             AppDev2_Assignment2Theme {
                 // A surface container using the 'background' color from the theme
@@ -108,7 +91,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    StartupPage(auth)
+                    StartupPage(auth, carViewModel)
 
                 }
             }
@@ -116,11 +99,10 @@ class MainActivity : ComponentActivity() {
     }
 
 }
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartupPage(auth: FirebaseAuth) {
+fun StartupPage(auth: FirebaseAuth, viewModel: CarViewModel) {
+
 
     val navController = rememberNavController()
 
@@ -132,7 +114,7 @@ fun StartupPage(auth: FirebaseAuth) {
             SignUpScreen(navController, auth = auth)
         }
         composable("MainScreenRoute") {
-            HomeScreen(navController, auth = auth)
+            HomeScreen(navController, auth = auth, viewModel)
         }
     }
 }
@@ -157,7 +139,7 @@ Composable made up of the full page
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
+fun HomeScreen(navController: NavController, auth: FirebaseAuth, viewModel: CarViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -174,7 +156,7 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
                 color = MaterialTheme.colorScheme.background
             ) {
 
-                Router(navController, auth)
+                Router(navController, auth, viewModel)
 
             }
         },
@@ -210,7 +192,6 @@ fun LoginScreen(
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
 
 
     Column(
@@ -437,8 +418,24 @@ fun Title(auth: FirebaseAuth, navController: NavController){
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun Page1(auth: FirebaseAuth, navController: NavController) {
+fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel) {
+
+    val user = auth.currentUser?.email?.let { User(it) }
+
+
+
+    LaunchedEffect(Unit){
+        carViewModel.getCarsForUser(user!!)
+
+    }
+    LaunchedEffect(Unit){
+        carViewModel.getAllCars()
+    }
+
+    val cars by carViewModel.userCars.collectAsState(initial = emptyList())
+    val allCars by carViewModel.allCars.collectAsState(initial = emptyList())
 
     Column (
         modifier = Modifier
@@ -447,37 +444,25 @@ fun Page1(auth: FirebaseAuth, navController: NavController) {
 
     ){
 
-        var cars by remember { mutableStateOf<List<Car>>(emptyList())}
-        var loading by remember { mutableStateOf(true)}
 
 
-        LaunchedEffect(Unit){
-            val user = auth.currentUser?.email?.let { User(it) }
-            val userCars = user?.let { getCarsFromUser(it) }
-
-            withContext(Dispatchers.Main){
-                cars = userCars!!
-                loading = false
-            }
-
-        }
         
-        Box{
-            if(loading){
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-            else{
-                LazyRowCars(cars = cars)
-            }
-        }
+        LazyRowCars(cars = cars)
+        
+        LazyRowCars(cars = allCars)
+
+
+
     }
 
 }
 
+
+
 @Composable
 fun LazyRowCars(cars: List<Car>){
     LazyRow {
-        items(cars) { car ->
+        items(cars){ car ->
             CarCard(car = car)
         }
     }
@@ -503,9 +488,9 @@ fun CarCard(car: Car){
 }
 
 @Composable
-fun Router(navController: NavHostController, auth: FirebaseAuth) {
+fun Router(navController: NavHostController, auth: FirebaseAuth, viewModel: CarViewModel) {
     NavHost(navController = navController, startDestination = "MainScreenRoute") {
-        composable("MainScreenRoute") { Page1(auth, navController) }
+        composable("MainScreenRoute") { Page1(auth, navController, viewModel) }
         composable("AboutScreenRoute") { Title(auth, navController) }
 
     }
