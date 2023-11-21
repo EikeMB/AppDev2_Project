@@ -5,6 +5,7 @@ import com.example.appdev2_assignment2.CarPart
 import com.example.appdev2_assignment2.PartType
 import com.example.appdev2_assignment2.User
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -38,25 +39,9 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
             if(snapshot != null){
                 var cars: MutableList<Car> = mutableListOf()
                 for(document in snapshot.documents){
-                    val user = document.getString("user") ?: ""
-                    val name = document.getString("name") ?: ""
-                    val vin = document.getLong("vin")?.toInt() ?: 0
 
-                    val partsList = mutableListOf<CarPart>()
-                    val partsArray = document.get("parts") as? List<Map<String, Any>> ?: emptyList()
 
-                    for (partMap in partsArray) {
-                        val part = CarPart(
-                            name = partMap["name"] as? String ?: "",
-                            image = (partMap["image"] as? Long)?.toInt() ?: 0,
-                            modelNum = (partMap["modelNum"] as? Long)?.toInt() ?: 0,
-                            description = partMap["description"] as? String ?: "",
-                            type = PartType.valueOf(partMap["type"] as? String ?: "Body")
-                        )
-                        partsList.add(part)
-                    }
-
-                    val car = Car(user, name, partsList, vin)
+                    val car = convertSnapshotToCar(document)
                     cars.add(car)
                 }
                 if(cars != null){
@@ -85,26 +70,8 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
                 if(snapshot != null){
                         var cars: MutableList<Car> = mutableListOf()
                         for (document in snapshot.documents) {
-                            val user = document.getString("user") ?: ""
-                            val name = document.getString("name") ?: ""
-                            val vin = document.getLong("vin")?.toInt() ?: 0
 
-                            val partsList = mutableListOf<CarPart>()
-                            val partsArray =
-                                document.get("parts") as? List<Map<String, Any>> ?: emptyList()
-
-                            for (partMap in partsArray) {
-                                val part = CarPart(
-                                    name = partMap["name"] as? String ?: "",
-                                    image = (partMap["image"] as? Long)?.toInt() ?: 0,
-                                    modelNum = (partMap["modelNum"] as? Long)?.toInt() ?: 0,
-                                    description = partMap["description"] as? String ?: "",
-                                    type = PartType.valueOf(partMap["type"] as? String ?: "Body")
-                                )
-                                partsList.add(part)
-                            }
-
-                            val car = Car(user, name, partsList, vin)
+                            val car = convertSnapshotToCar(document)
                             cars.add(car)
                         }
                     if(cars != null){
@@ -122,6 +89,30 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
         awaitClose{ subscription.remove() }
     }
 
+    override suspend fun getCar(name: String): Flow<Car> = callbackFlow{
+        val docRef = dbCars.document(name)
+        val subscription = docRef.addSnapshotListener { snapshot, error ->
+            if(error != null){
+                println("Listen failed: $error")
+                return@addSnapshotListener
+            }
+            if(snapshot != null && snapshot.exists()){
+                val car = convertSnapshotToCar(snapshot)
+                if(car != null){
+                    println("Real-time update to part")
+                    trySend(car)
+                }else{
+                    println("Part has becom null")
+                    trySend(Car("", "", listOf(), 0))
+                }
+            }else{
+                println("Part does not exist")
+                trySend(Car("", "", listOf(), 0))
+            }
+        }
+        awaitClose { subscription.remove() }
+    }
+
     override suspend fun delete(car: Car) {
         dbCars.document(car.name)
             .delete()
@@ -130,11 +121,34 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
     }
 }
 
+fun convertSnapshotToCar(document: DocumentSnapshot): Car{
+    val user = document.getString("user") ?: ""
+    val name = document.getString("name") ?: ""
+    val vin = document.getLong("vin")?.toInt() ?: 0
+
+    val partsList = mutableListOf<CarPart>()
+    val partsArray =
+        document.get("parts") as? List<Map<String, Any>> ?: emptyList()
+
+    for (partMap in partsArray) {
+        val part = CarPart(
+            name = partMap["name"] as? String ?: "",
+            image = (partMap["image"] as? Long)?.toInt() ?: 0,
+            modelNum = (partMap["modelNum"] as? Long)?.toInt() ?: 0,
+            description = partMap["description"] as? String ?: "",
+            type = PartType.valueOf(partMap["type"] as? String ?: "Body")
+        )
+        partsList.add(part)
+    }
+
+    return Car(user, name, partsList, vin)
+}
 
 interface CarRepository{
     suspend fun addCar(car: Car)
     suspend fun getCars(user: User): Flow<List<Car>>
     suspend fun getCars(): Flow<List<Car>>
+    suspend fun getCar(name: String): Flow<Car>
 
     suspend fun delete(car: Car)
 }

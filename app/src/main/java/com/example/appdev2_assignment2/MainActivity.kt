@@ -59,6 +59,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.lifecycle.asFlow
 import androidx.navigation.NavController
+import com.example.appdev2_assignment2.CRUD.CarPartRepositoryFirestore
 import com.example.appdev2_assignment2.CRUD.CarRepositoryFirestore
 import com.example.appdev2_assignment2.auth.signIn
 import com.example.appdev2_assignment2.auth.signUp
@@ -433,6 +434,14 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     LaunchedEffect(Unit){
         carViewModel.getAllCars()
     }
+
+    val repository: CarPartRepositoryFirestore = CarPartRepositoryFirestore(FirebaseFirestore.getInstance())
+    var parts: Flow<List<CarPart>>? = null
+    LaunchedEffect(Unit){
+         parts = repository.getParts()
+    }
+
+    println(parts)
 
     val cars by carViewModel.userCars.collectAsState(initial = emptyList())
     val allCars by carViewModel.allCars.collectAsState(initial = emptyList())
