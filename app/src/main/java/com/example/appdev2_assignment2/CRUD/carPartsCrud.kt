@@ -3,54 +3,146 @@ package com.example.appdev2_assignment2.CRUD
 import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.CarPart
 import com.example.appdev2_assignment2.PartType
+import com.example.appdev2_assignment2.User
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.channels.awaitClose
+import org.w3c.dom.Document
 
 
-suspend fun addPart(part: CarPart){
-    try {
-        val db = FirebaseFirestore.getInstance()
+class CarPartRepositoryFirestore(val db: FirebaseFirestore): CarPartRepository{
 
-        val collection = db.collection("parts")
+    val dbParts = db.collection("parts")
 
-        val partToAdd = hashMapOf(
-            "name" to part.name,
-            "image" to part.image,
-            "modelNum" to part.modelNum,
-            "description" to part.description,
-            "type" to part.type
-        )
-
-        collection.document(part.name).set(partToAdd).await()
-    }catch(e: Exception){
-
+    override suspend fun addCarPart(part: CarPart) {
+        dbParts.document(part.name).set(part)
+            .addOnSuccessListener {
+                println("Success adding carPart")
+            }
+            .addOnFailureListener {e ->
+                println("Failure adding carPart. Error: $e")
+            }
     }
+
+    override suspend fun getParts(): Flow<List<CarPart>>  = callbackFlow{
+        val subscription = dbParts
+            .addSnapshotListener { snapshot, error ->
+                if(error != null){
+                    println("Listen fail: $error")
+                    return@addSnapshotListener
+                }
+                if(snapshot != null){
+                    var parts: MutableList<CarPart> = mutableListOf()
+                    for(document in snapshot.documents){
+
+
+                        val part = convertSnapshotToCarPart(document)
+                        parts.add(part)
+                    }
+                    if(parts != null){
+                        println("Real-time update to part")
+                        trySend(parts)
+                    }else{
+                        println("Parts has become null")
+                        trySend(listOf<CarPart>())
+                    }
+
+                }else{
+                    println("Parts collection does not exist")
+                    trySend(listOf<CarPart>())
+                }
+            }
+        awaitClose { subscription.remove()}
+    }
+
+    override suspend fun getPart(name: String): Flow<CarPart>  = callbackFlow{
+        val docRef = dbParts.document(name)
+        val subscription = docRef.addSnapshotListener { snapshot, error ->
+            if(error != null){
+                println("Listen failed: $error")
+                return@addSnapshotListener
+            }
+            if(snapshot != null && snapshot.exists()){
+                val part = convertSnapshotToCarPart(snapshot)
+                if(part != null){
+                    println("Real-time update to part")
+                    trySend(part)
+                }else{
+                    println("Part has becom null")
+                    trySend(CarPart("", 0, 0, "", PartType.Body))
+                }
+            }else{
+                println("Part does not exist")
+                trySend(CarPart("", 0, 0, "", PartType.Body))
+            }
+        }
+        awaitClose { subscription.remove() }
+    }
+
+    override suspend fun getPartsOfType(type: PartType): Flow<List<CarPart>>  = callbackFlow{
+        val subscription = dbParts
+            .whereEqualTo("type", type.name)
+            .addSnapshotListener { snapshot, error ->
+                if(error != null){
+                    println("Listen failed: $error")
+                    return@addSnapshotListener
+                }
+
+                if(snapshot != null){
+                    var parts: MutableList<CarPart> = mutableListOf()
+                    for(document in snapshot.documents){
+
+                        val part = convertSnapshotToCarPart(document)
+                        parts.add(part)
+                    }
+                    if(parts != null){
+                        println("Real-time update to part")
+                        trySend(parts)
+                    }else{
+                        println("Parts has become null")
+                        trySend(listOf<CarPart>())
+                    }
+                }else{
+                    println("Parts collection does not exist")
+                    trySend(listOf<CarPart>())
+                }
+            }
+        awaitClose { subscription.remove() }
+    }
+
+    override suspend fun delete(carPart: CarPart) {
+        dbParts.document(carPart.name)
+            .delete()
+            .addOnSuccessListener { println("Car part ${carPart.name} successfully deleted") }
+            .addOnFailureListener { error -> println("Error deleting car part ${carPart.name}: $error") }
+    }
+
 }
 
-suspend fun getAllParts(): List<CarPart> = withContext(Dispatchers.IO){
-    val parts = mutableListOf<CarPart>()
 
-    try {
-        val db = FirebaseFirestore.getInstance()
 
-        val collection = db.collection("parts")
+fun convertSnapshotToCarPart(document: DocumentSnapshot): CarPart{
+    val name = document.getString("name") ?: ""
+    val image = document.getLong("image")?.toInt() ?: 0
+    val modelNum = document.getLong("modelNum")?.toInt() ?: 0
+    val description = document.getString("description") ?: ""
+    val type = PartType.valueOf(document.getString("type") ?: "Body")
 
-        val querySnapshot = collection.get().await()
+    return CarPart(name, image, modelNum, description, type)
+}
 
-        for (document in querySnapshot.documents) {
-            val name = document.getString("name") ?: ""
-            val image = document.getLong("image")?.toInt() ?: 0
-            val modelNum = document.getLong("modelNum")?.toInt() ?: 0
-            val description = document.getString("description") ?: ""
-            val type = PartType.valueOf(document.get("type") as String)
+interface CarPartRepository{
 
-            val part = CarPart(name, image, modelNum, description, type)
-
-            parts.add(part)
-        }
-    }catch(e:Exception){}
-
-    return@withContext(parts)
+    suspend fun addCarPart(part: CarPart)
+    suspend fun getParts(): Flow<List<CarPart>>
+    suspend fun getPart(name: String): Flow<CarPart>
+    suspend fun getPartsOfType(type: PartType): Flow<List<CarPart>>
+    suspend fun delete(carPart: CarPart)
 }
