@@ -64,6 +64,7 @@ import com.example.appdev2_assignment2.CRUD.CarRepositoryFirestore
 import com.example.appdev2_assignment2.auth.signIn
 import com.example.appdev2_assignment2.auth.signUp
 import com.example.appdev2_assignment2.CarPart
+import com.example.appdev2_assignment2.ViewModels.CarPartViewModel
 import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -83,8 +84,14 @@ class MainActivity : ComponentActivity() {
 
         auth = Firebase.auth
 
-        var carRepository = CarRepositoryFirestore(FirebaseFirestore.getInstance())
+        val db = FirebaseFirestore.getInstance()
+
+
+        var carRepository = CarRepositoryFirestore(db)
         var carViewModel = CarViewModel(carRepository)
+
+        var carPartRepository = CarPartRepositoryFirestore(db)
+        var carPartViewModel = CarPartViewModel(carPartRepository)
         setContent {
             AppDev2_Assignment2Theme {
                 // A surface container using the 'background' color from the theme
@@ -92,7 +99,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    StartupPage(auth, carViewModel)
+                    StartupPage(auth, carViewModel, carPartViewModel)
 
                 }
             }
@@ -102,7 +109,7 @@ class MainActivity : ComponentActivity() {
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartupPage(auth: FirebaseAuth, viewModel: CarViewModel) {
+fun StartupPage(auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel) {
 
 
     val navController = rememberNavController()
@@ -115,7 +122,7 @@ fun StartupPage(auth: FirebaseAuth, viewModel: CarViewModel) {
             SignUpScreen(navController, auth = auth)
         }
         composable("MainScreenRoute") {
-            HomeScreen(navController, auth = auth, viewModel)
+            HomeScreen(navController, auth = auth, carViewModel, partViewModel)
         }
     }
 }
@@ -140,7 +147,7 @@ Composable made up of the full page
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, auth: FirebaseAuth, viewModel: CarViewModel) {
+fun HomeScreen(navController: NavController, auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -157,7 +164,7 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth, viewModel: CarV
                 color = MaterialTheme.colorScheme.background
             ) {
 
-                Router(navController, auth, viewModel)
+                Router(navController, auth, carViewModel, partViewModel)
 
             }
         },
@@ -421,7 +428,7 @@ fun Title(auth: FirebaseAuth, navController: NavController){
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel) {
+fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel) {
 
     val user = auth.currentUser?.email?.let { User(it) }
 
@@ -435,13 +442,9 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
         carViewModel.getAllCars()
     }
 
-    val repository: CarPartRepositoryFirestore = CarPartRepositoryFirestore(FirebaseFirestore.getInstance())
-    var parts: Flow<List<CarPart>>? = null
-    LaunchedEffect(Unit){
-         parts = repository.getParts()
-    }
 
-    println(parts)
+
+
 
     val cars by carViewModel.userCars.collectAsState(initial = emptyList())
     val allCars by carViewModel.allCars.collectAsState(initial = emptyList())
@@ -453,13 +456,9 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
 
     ){
 
-
-
-        
         LazyRowCars(cars = cars)
         
         LazyRowCars(cars = allCars)
-
 
 
     }
@@ -497,9 +496,9 @@ fun CarCard(car: Car){
 }
 
 @Composable
-fun Router(navController: NavHostController, auth: FirebaseAuth, viewModel: CarViewModel) {
+fun Router(navController: NavHostController, auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel) {
     NavHost(navController = navController, startDestination = "MainScreenRoute") {
-        composable("MainScreenRoute") { Page1(auth, navController, viewModel) }
+        composable("MainScreenRoute") { Page1(auth, navController, carViewModel, partViewModel) }
         composable("AboutScreenRoute") { Title(auth, navController) }
 
     }
