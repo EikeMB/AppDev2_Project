@@ -121,10 +121,10 @@ fun StartupPage(auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: C
 
     NavHost(navController = navController, startDestination = "LoginScreenRoute") {
         composable("LoginScreenRoute") {
-            LoginScreen(navController, auth = auth)
+            LoginScreen(navController, auth = auth, userViewModel = userViewModel)
         }
         composable("SignUpScreenRoute") {
-            SignUpScreen(navController, auth = auth)
+            SignUpScreen(navController, auth = auth, userViewModel = userViewModel)
         }
         composable("MainScreenRoute") {
             HomeScreen(navController, auth = auth, carViewModel, partViewModel, userViewModel)
@@ -201,7 +201,8 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth, carViewModel: C
 fun LoginScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    auth: FirebaseAuth
+    auth: FirebaseAuth,
+    userViewModel: UserViewModel
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -275,7 +276,8 @@ fun LoginScreen(
 fun SignUpScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    auth: FirebaseAuth
+    auth: FirebaseAuth,
+    userViewModel: UserViewModel
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -382,6 +384,7 @@ fun SignUpScreen(
                     confirmPasswordError = if (password != confirmPassword) "Confirm Password does not match Password" else null
                     ageError = if (age.isEmpty() || age.toIntOrNull() == null) "Invalid age" else null
                 }
+                userViewModel.addUser(AppUser(username, username, age.toInt(), 0))
                 signUp(auth, username, password, navController)
             },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
@@ -448,14 +451,10 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     }
 
 
-    LaunchedEffect(Unit){
-        userViewModel.getAllUsers()
-    }
 
 
     val cars by carViewModel.userCars.collectAsState(initial = emptyList())
     val allCars by carViewModel.allCars.collectAsState(initial = emptyList())
-    val users by userViewModel.allUsers.collectAsState(initial = emptyList())
 
     Column (
         modifier = Modifier
@@ -463,22 +462,10 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
 
 
     ){
-/*
+
         LazyRowCars(cars = cars)
         
-        LazyRowCars(cars = allCars)*/
-
-        LazyRow{
-            items(users){ user ->
-                Card {
-                    Text(user.name)
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Text(user.email)
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    user.age
-                }
-            }
-        }
+        LazyRowCars(cars = allCars)
 
     }
 
