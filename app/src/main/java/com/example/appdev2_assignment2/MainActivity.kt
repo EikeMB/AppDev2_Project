@@ -61,11 +61,13 @@ import androidx.lifecycle.asFlow
 import androidx.navigation.NavController
 import com.example.appdev2_assignment2.CRUD.CarPartRepositoryFirestore
 import com.example.appdev2_assignment2.CRUD.CarRepositoryFirestore
+import com.example.appdev2_assignment2.CRUD.UserRepositoryFirestore
 import com.example.appdev2_assignment2.auth.signIn
 import com.example.appdev2_assignment2.auth.signUp
 import com.example.appdev2_assignment2.CarPart
 import com.example.appdev2_assignment2.ViewModels.CarPartViewModel
 import com.example.appdev2_assignment2.ViewModels.CarViewModel
+import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -92,6 +94,9 @@ class MainActivity : ComponentActivity() {
 
         var carPartRepository = CarPartRepositoryFirestore(db)
         var carPartViewModel = CarPartViewModel(carPartRepository)
+
+        var userRepository = UserRepositoryFirestore(db)
+        var userViewModel = UserViewModel(userRepository)
         setContent {
             AppDev2_Assignment2Theme {
                 // A surface container using the 'background' color from the theme
@@ -99,7 +104,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    StartupPage(auth, carViewModel, carPartViewModel)
+                    StartupPage(auth, carViewModel, carPartViewModel, userViewModel)
 
                 }
             }
@@ -109,20 +114,20 @@ class MainActivity : ComponentActivity() {
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartupPage(auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel) {
+fun StartupPage(auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
 
 
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "LoginScreenRoute") {
         composable("LoginScreenRoute") {
-            LoginScreen(navController, auth = auth)
+            LoginScreen(navController, auth = auth, userViewModel = userViewModel)
         }
         composable("SignUpScreenRoute") {
-            SignUpScreen(navController, auth = auth)
+            SignUpScreen(navController, auth = auth, userViewModel = userViewModel)
         }
         composable("MainScreenRoute") {
-            HomeScreen(navController, auth = auth, carViewModel, partViewModel)
+            HomeScreen(navController, auth = auth, carViewModel, partViewModel, userViewModel)
         }
     }
 }
@@ -147,7 +152,7 @@ Composable made up of the full page
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel) {
+fun HomeScreen(navController: NavController, auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -164,7 +169,7 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth, carViewModel: C
                 color = MaterialTheme.colorScheme.background
             ) {
 
-                Router(navController, auth, carViewModel, partViewModel)
+                Router(navController, auth, carViewModel, partViewModel, userViewModel)
 
             }
         },
@@ -196,7 +201,8 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth, carViewModel: C
 fun LoginScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    auth: FirebaseAuth
+    auth: FirebaseAuth,
+    userViewModel: UserViewModel
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -270,7 +276,8 @@ fun LoginScreen(
 fun SignUpScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    auth: FirebaseAuth
+    auth: FirebaseAuth,
+    userViewModel: UserViewModel
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -377,6 +384,7 @@ fun SignUpScreen(
                     confirmPasswordError = if (password != confirmPassword) "Confirm Password does not match Password" else null
                     ageError = if (age.isEmpty() || age.toIntOrNull() == null) "Invalid age" else null
                 }
+                userViewModel.addUser(AppUser(username, username, age.toInt(), 0))
                 signUp(auth, username, password, navController)
             },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
@@ -428,7 +436,7 @@ fun Title(auth: FirebaseAuth, navController: NavController){
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel) {
+fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
 
     val user = auth.currentUser?.email?.let { User(it) }
 
@@ -441,7 +449,6 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     LaunchedEffect(Unit){
         carViewModel.getAllCars()
     }
-
 
 
 
@@ -459,7 +466,6 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
         LazyRowCars(cars = cars)
         
         LazyRowCars(cars = allCars)
-
 
     }
 
@@ -496,9 +502,9 @@ fun CarCard(car: Car){
 }
 
 @Composable
-fun Router(navController: NavHostController, auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel) {
+fun Router(navController: NavHostController, auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
     NavHost(navController = navController, startDestination = "MainScreenRoute") {
-        composable("MainScreenRoute") { Page1(auth, navController, carViewModel, partViewModel) }
+        composable("MainScreenRoute") { Page1(auth, navController, carViewModel, partViewModel, userViewModel) }
         composable("AboutScreenRoute") { Title(auth, navController) }
 
     }

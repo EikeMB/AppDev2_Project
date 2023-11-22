@@ -88,7 +88,8 @@ class UserRepositoryFirestore(var db: FirebaseFirestore):UserRepository {
 fun convertDocumentToUser(document: DocumentSnapshot): AppUser{
     var name = document.getString("name") ?: ""
     var email = document.getString("email") ?: ""
-    var age = document.getLong("age")?.toByte() ?: 0
+    var age = document.getLong("age")?.toInt() ?: 0
+
     var picture = document.getLong("picture")?.toInt() ?: 0
 
     return AppUser(email, name, age, picture)
