@@ -24,7 +24,7 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
                 println("Car saved")
             }
             .addOnFailureListener { e ->
-                println("Error saving profile: $e")
+                println("Error saving car: $e")
             }
     }
 
