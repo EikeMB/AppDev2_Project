@@ -29,20 +29,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserProfilePage(
-    user: User,
+    user: AppUser,
     onProfilePictureChange: () -> Unit,
     onNameChange: () -> Unit,
     onAgeChange: () -> Unit,
     onPasswordChange: () -> Unit,
     onApplyChanges: () -> Unit
 )  {
-    // TODO: Implement UI for the user profile page
 
     var isChangingName by remember { mutableStateOf(false) }
     var newName by remember {
@@ -131,15 +131,15 @@ fun UserProfilePage(
         }
 
         // User's Password (masked with *)
-        Text("Password: ${"*".repeat(user.password.length)}")
-
-        // Change Password Button
-        Button(
-            onClick = { onPasswordChange() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Change Password")
-        }
+//        Text("Password: ${"*".repeat(user.password.length)}")
+//
+//        // Change Password Button
+//        Button(
+//            onClick = { onPasswordChange() },
+//            modifier = Modifier.fillMaxWidth()
+//        ) {
+//            Text("Change Password")
+//        }
 
         // Apply Changes Button
        /* Button(

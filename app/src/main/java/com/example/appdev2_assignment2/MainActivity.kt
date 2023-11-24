@@ -600,9 +600,15 @@ fun Router(navController: NavHostController, auth: FirebaseAuth, carViewModel: C
         composable("AboutScreenRoute") { Title(auth, navController) }
         composable("UserProfileRoute") {
             val user = auth.currentUser?.email?.let { User(it) }
-            if (user != null) {
+            LaunchedEffect(Unit){
+                userViewModel.getUser(user!!.email)
+            }
+
+            val appUser by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0,0))
+
+            if (appUser != null) {
                 UserProfilePage(
-                    user = user,
+                    user = appUser,
                     onProfilePictureChange = { /* implement the logic */ },
                     onNameChange = { /* implement the logic */ },
                     onAgeChange = { /* implement the logic */ },
