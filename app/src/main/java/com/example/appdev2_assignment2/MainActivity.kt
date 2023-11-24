@@ -82,6 +82,7 @@ import com.example.appdev2_assignment2.CarPart
 import com.example.appdev2_assignment2.ViewModels.CarPartViewModel
 import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
+import com.example.appdev2_assignment2.ui.AboutUsPage
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -227,7 +228,7 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth, carViewModel: C
                 IconButton(onClick = { navController.navigate("UserProfileRoute")}, modifier = Modifier.weight(1f)) {
                     Icon(Icons.Filled.Person, contentDescription = "User")
                 }
-                IconButton(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
+                IconButton(onClick = { navController.navigate("AboutUsScreenRoute")}, modifier = Modifier.weight(1f)) {
                     Icon(Icons.Filled.Face, contentDescription = "About Us")
                 }
             }
@@ -617,6 +618,8 @@ fun Router(navController: NavHostController, auth: FirebaseAuth, carViewModel: C
                 )
             }
     }
+        composable("AboutUsScreenRoute") { AboutUsPage() }
+
 }}
 
 
