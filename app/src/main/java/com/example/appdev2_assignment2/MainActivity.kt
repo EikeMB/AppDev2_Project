@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -58,6 +60,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -65,6 +68,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.asFlow
 import androidx.navigation.NavController
 import com.example.appdev2_assignment2.CRUD.CarPartRepositoryFirestore
@@ -105,6 +110,11 @@ class MainActivity : ComponentActivity() {
 
         var userRepository = UserRepositoryFirestore(db)
         var userViewModel = UserViewModel(userRepository)
+
+
+        for(car in cars){
+            carViewModel.addCar(car)
+        }
         setContent {
             AppDev2_Assignment2Theme {
                 // A surface container using the 'background' color from the theme
@@ -282,7 +292,6 @@ fun LoginScreen(
 
                 signIn(auth, username, password, navController)
 
-
             },
         ) {
             Text("Login")
@@ -296,7 +305,6 @@ fun LoginScreen(
         }
     }
 }
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -487,29 +495,14 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
         modifier = Modifier
             .fillMaxSize()
     ){
-        var cars by remember { mutableStateOf<List<Car>>(emptyList())}
-        var loading by remember { mutableStateOf(true)}
 
-        LaunchedEffect(Unit){
-            val user = auth.currentUser?.email?.let { User(it) }
-            val userCars = user?.let { getCarsFromUser(it) }
 
-            withContext(Dispatchers.Main){
-                cars = userCars!!
-                loading = false
-            }
-        }
         Text(text = "Your customized cars: ", Modifier.padding(10.dp))
         Box{
-            if(loading){
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-            else{
-                UserCarsList(cars = cars)
-            }
+            UserCarsList(cars = cars)
         }
         Text(text = "See other customized car: ", Modifier.padding(10.dp))
-        UserCarsListVertical(cars = cars)
+        UserCarsListVertical(cars = allCars)
     }
 }
 
@@ -517,7 +510,6 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
 
 @Composable
 fun UserCarsListVertical(cars: List<Car>) {
-    var previousCar by remember { mutableStateOf<Car?>(null) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -552,8 +544,9 @@ fun UserCarsListVertical(cars: List<Car>) {
 @Composable
 fun UserCarsList(cars: List<Car>){
     LazyRow(
-        modifier = Modifier.fillMaxWidth()
-        .background(Color.Blue))
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Blue))
     {
         items(cars) { car ->
             CarCard(car = car)
@@ -563,6 +556,17 @@ fun UserCarsList(cars: List<Car>){
 
 @Composable
 fun CarCard(car: Car){
+    var image: Int = 0
+
+    for(part in car.parts){
+        if(part.type == PartType.Body){
+            image = part.image
+        }
+    }
+
+
+
+
     Card(
         modifier = Modifier
             .padding(15.dp)
@@ -575,14 +579,12 @@ fun CarCard(car: Car){
                 .padding(horizontal = 15.dp, vertical = 5.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.amggtblackseries),
+                painter = painterResource(id = image),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth() // Image occupies full width available
                     .height(150.dp) // Adjust the height as per your preference
             )
-            Spacer(modifier = Modifier.height(8.dp)) // Add space between Image and Text elements
-            Text(text = "Name: Bob")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = car.name)
             // Text(text = "VIN: ${car.vin}", style = MaterialTheme.typography.bodyMedium)
@@ -607,7 +609,7 @@ fun TopBarPreview() {
         TopBar()
     }
 }
-
+/*
 @Preview
 @Composable
 fun CarCardPreview() {
@@ -616,6 +618,6 @@ fun CarCardPreview() {
         CarCard(car = car)
     }
 }
-
+*/
 
 

@@ -26,7 +26,7 @@ class UserViewModel(private val userRepository: UserRepositoryFirestore): ViewMo
         }
     }
 
-    suspend fun getUser(user: AppUser){
+    suspend fun getUser(user: String){
         viewModelScope.launch {
             userRepository.getUser(user).collect() { user ->
                 _activeUser.value = user
