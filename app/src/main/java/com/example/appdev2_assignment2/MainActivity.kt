@@ -420,8 +420,9 @@ fun SignUpScreen(
                     confirmPasswordError = if (password != confirmPassword) "Confirm Password does not match Password" else null
                     ageError = if (age.isEmpty() || age.toIntOrNull() == null) "Invalid age" else null
                 }
-                userViewModel.addUser(AppUser(username, username, age.toInt(), 0))
+
                 signUp(auth, username, password, navController)
+                userViewModel.addUser(AppUser(username, username, age.toInt(), 0))
             },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
