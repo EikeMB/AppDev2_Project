@@ -122,7 +122,7 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
 }
 
 fun convertSnapshotToCar(document: DocumentSnapshot): Car{
-    val user = document.getString("user") ?: ""
+    val user = document.getString("userEmail") ?: ""
     val name = document.getString("name") ?: ""
     val vin = document.getLong("vin")?.toInt() ?: 0
 

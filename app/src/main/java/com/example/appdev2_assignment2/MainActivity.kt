@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,8 +16,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Face
@@ -50,6 +60,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -57,6 +68,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.asFlow
 import androidx.navigation.NavController
 import com.example.appdev2_assignment2.CRUD.CarPartRepositoryFirestore
@@ -98,6 +111,11 @@ class MainActivity : ComponentActivity() {
 
         var userRepository = UserRepositoryFirestore(db)
         var userViewModel = UserViewModel(userRepository)
+
+
+        for(car in cars){
+            carViewModel.addCar(car)
+        }
         setContent {
             AppDev2_Assignment2Theme {
                 // A surface container using the 'background' color from the theme
@@ -134,20 +152,38 @@ fun StartupPage(auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: C
 }
 
 @Composable
-fun TopBar(){
+fun TopBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp),
-        horizontalArrangement = Arrangement.End
-    ){
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Title",
+            modifier = Modifier.weight(3f),
+            fontSize = 24.sp
+        )
         Image(
             painter = painterResource(id = R.drawable.profileicon),
             contentDescription = null,
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier
+                .size(48.dp)
+                .weight(1f)
         )
+        Column {
+            Text(
+                text = "Name",
+                fontSize = 16.sp
+            )
+            Text(
+                text = "Age",
+                fontSize = 14.sp
+            )
+        }
     }
 }
+
 /*
 Composable made up of the full page
  */
@@ -159,7 +195,9 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth, carViewModel: C
     Scaffold(
         topBar = {
             TopAppBar(
-                { TopBar() }
+                title = { TopBar() },
+                colors = TopAppBarDefaults.smallTopAppBarColors(MaterialTheme.colorScheme.primary),
+
             )
         },
         content = { paddingValues ->
@@ -255,7 +293,6 @@ fun LoginScreen(
 
                 signIn(auth, username, password, navController)
 
-
             },
         ) {
             Text("Login")
@@ -269,7 +306,6 @@ fun LoginScreen(
         }
     }
 }
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -372,7 +408,6 @@ fun SignUpScreen(
             Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
         }
 
-
         //REGISTER BUTTON
         Button(
             modifier = Modifier.padding(vertical = 10.dp),
@@ -460,24 +495,61 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     Column (
         modifier = Modifier
             .fillMaxSize()
-
-
     ){
 
-        LazyRowCars(cars = cars)
-        
-        LazyRowCars(cars = allCars)
 
+        Text(text = "Your customized cars: ", Modifier.padding(10.dp))
+        Box{
+            UserCarsList(cars = cars)
+        }
+        Text(text = "See other customized car: ", Modifier.padding(10.dp))
+        UserCarsListVertical(cars = allCars)
     }
-
 }
 
 
 
 @Composable
-fun LazyRowCars(cars: List<Car>){
-    LazyRow {
-        items(cars){ car ->
+fun UserCarsListVertical(cars: List<Car>) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 16.dp)
+            .background(Color.Blue)
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            itemsIndexed(cars) { index, car ->
+                if (index % 2 != 0) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        CarCard(car = car)
+                        CarCard(car = cars[index - 1])
+                    }
+                }
+                else{
+                    val isLastItem = index == cars.lastIndex
+                    if (isLastItem) {
+                         CarCard(car = car)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun UserCarsList(cars: List<Car>){
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Blue))
+    {
+        items(cars) { car ->
             CarCard(car = car)
         }
     }
@@ -485,19 +557,38 @@ fun LazyRowCars(cars: List<Car>){
 
 @Composable
 fun CarCard(car: Car){
+    var image: Int = 0
+
+    for(part in car.parts){
+        if(part.type == PartType.Body){
+            image = part.image
+        }
+    }
+
+
+
+
     Card(
         modifier = Modifier
-            .padding(8.dp)
-            .size(200.dp, 250.dp)
+            .padding(15.dp)
+            .height(230.dp)
+            .width(170.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(horizontal = 15.dp, vertical = 5.dp)
         ) {
-            Text(text = car.name, style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "VIN: ${car.vin}", style = MaterialTheme.typography.bodyMedium)
+            Image(
+                painter = painterResource(id = image),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth() // Image occupies full width available
+                    .height(150.dp) // Adjust the height as per your preference
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = car.name)
+            // Text(text = "VIN: ${car.vin}", style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
@@ -523,5 +614,22 @@ fun Router(navController: NavHostController, auth: FirebaseAuth, carViewModel: C
 }}
 
 
+@Preview
+@Composable
+fun TopBarPreview() {
+    AppDev2_Assignment2Theme {
+        TopBar()
+    }
+}
+/*
+@Preview
+@Composable
+fun CarCardPreview() {
+    val car = Car("mamadou1@bell.net", "nissan skyline r34", parts1,123) // Replace with your actual car details
+    AppDev2_Assignment2Theme {
+        CarCard(car = car)
+    }
+}
+*/
 
 

@@ -52,8 +52,8 @@ class UserRepositoryFirestore(var db: FirebaseFirestore):UserRepository {
         awaitClose { subscription.remove()}
     }
 
-    override suspend fun getUser(user: AppUser): Flow<AppUser>  = callbackFlow{
-        val docRef = dbUsers.document(user.name)
+    override suspend fun getUser(user: String): Flow<AppUser>  = callbackFlow{
+        val docRef = dbUsers.document(user)
         val subscription = docRef.addSnapshotListener { snapshot, error ->
             if(error != null){
                 println("Listen failed: $error")
@@ -97,6 +97,6 @@ fun convertDocumentToUser(document: DocumentSnapshot): AppUser{
 interface UserRepository{
     suspend fun addUser(user: AppUser)
     suspend fun getUsers(): Flow<List<AppUser>>
-    suspend fun getUser(user: AppUser): Flow<AppUser>
+    suspend fun getUser(user: String): Flow<AppUser>
     suspend fun delete(user: AppUser)
 }
