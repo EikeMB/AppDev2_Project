@@ -77,6 +77,7 @@ import com.example.appdev2_assignment2.CRUD.CarRepositoryFirestore
 import com.example.appdev2_assignment2.CRUD.UserRepositoryFirestore
 import com.example.appdev2_assignment2.auth.signIn
 import com.example.appdev2_assignment2.auth.signUp
+import com.example.appdev2_assignment2.ui.UserProfilePage
 import com.example.appdev2_assignment2.CarPart
 import com.example.appdev2_assignment2.ViewModels.CarPartViewModel
 import com.example.appdev2_assignment2.ViewModels.CarViewModel
@@ -223,7 +224,7 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth, carViewModel: C
                 ) {
                     Icon(Icons.Filled.Build, contentDescription = "Create")
                 }
-                IconButton(onClick = { }, modifier = Modifier.weight(1f)) {
+                IconButton(onClick = { navController.navigate("UserProfileRoute")}, modifier = Modifier.weight(1f)) {
                     Icon(Icons.Filled.Person, contentDescription = "User")
                 }
                 IconButton(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
@@ -597,9 +598,26 @@ fun Router(navController: NavHostController, auth: FirebaseAuth, carViewModel: C
     NavHost(navController = navController, startDestination = "MainScreenRoute") {
         composable("MainScreenRoute") { Page1(auth, navController, carViewModel, partViewModel, userViewModel) }
         composable("AboutScreenRoute") { Title(auth, navController) }
+        composable("UserProfileRoute") {
+            val user = auth.currentUser?.email?.let { User(it) }
+            LaunchedEffect(Unit){
+                userViewModel.getUser(user!!.email)
+            }
 
+            val appUser by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0,0))
+
+            if (appUser != null) {
+                UserProfilePage(
+                    user = appUser,
+                    onProfilePictureChange = { /* implement the logic */ },
+                    onNameChange = { /* implement the logic */ },
+                    onAgeChange = { /* implement the logic */ },
+                    onPasswordChange = { /* implement the logic */ },
+                    onApplyChanges = { /* implement the logic */ },
+                )
+            }
     }
-}
+}}
 
 
 @Preview
