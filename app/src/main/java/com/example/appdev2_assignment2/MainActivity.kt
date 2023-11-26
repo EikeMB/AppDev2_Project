@@ -27,6 +27,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
@@ -509,6 +511,51 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
 }
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
+@Composable
+fun CreatePage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val creating = true
+        //PARTS
+
+        //BUTTONS
+        IconButton(
+            onClick = {
+                navController.popBackStack()
+            },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+        }
+
+        //Later change the if statement to if we modify or create
+        IconButton(
+            onClick = {
+                if (creating) {
+                    navController.navigate("MainScreenRoute")
+                } else {
+                    navController.navigate("UserProfileRoute")
+                }
+
+                //Later change it to summary page of the car
+                //navController.navigate("UserProfileRoute")
+            },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            val icon = if (creating) Icons.Filled.ArrowForward else Icons.Filled.Person
+            Icon(icon, contentDescription = "Next")
+        }
+    }
+
+
+}
+
 
 @Composable
 fun UserCarsListVertical(cars: List<Car>) {
@@ -598,7 +645,7 @@ fun CarCard(car: Car){
 fun Router(navController: NavHostController, auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
     NavHost(navController = navController, startDestination = "MainScreenRoute") {
         composable("MainScreenRoute") { Page1(auth, navController, carViewModel, partViewModel, userViewModel) }
-        composable("AboutScreenRoute") { Title(auth, navController) }
+        composable("AboutScreenRoute") { CreatePage(auth, navController, carViewModel, partViewModel, userViewModel) }
         composable("UserProfileRoute") {
             val user = auth.currentUser?.email?.let { User(it) }
             LaunchedEffect(Unit){
