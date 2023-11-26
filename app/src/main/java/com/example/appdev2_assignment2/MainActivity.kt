@@ -4,8 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +18,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -37,6 +42,7 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -62,13 +68,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -510,19 +522,83 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     }
 }
 
+data class CarPartsa(
+    val type: String,
+    val name: String,
+    val price: Double,
+    val model: String,
+    val description: String
+)
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun CreatePage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel){
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+//        horizontalArrangement = Arrangement.SpaceBetween,
+//        verticalAlignment = Alignment.CenterVertically
     ) {
+        val partsList: List<CarPartsa> = listOf(
+            CarPartsa(
+                type = "wheel",
+                name = "Alloy Wheel Type A",
+                price = 199.99,
+                model = "AW100",
+                description = "Premium alloy wheel for smooth driving experience."
+            ),
+            CarPartsa(
+                type = "wheel",
+                name = "Sporty Tire Type B",
+                price = 149.99,
+                model = "ST200",
+                description = "High-performance sporty tire for enhanced grip."
+            ),
+            CarPartsa(
+                type = "engine",
+                name = "Turbocharged Engine V2",
+                price = 2999.99,
+                model = "TE500",
+                description = "Powerful turbocharged engine for maximum performance."
+            ),
+            CarPartsa(
+                type = "engine",
+                name = "Electric Motor EMX",
+                price = 3999.99,
+                model = "EMX800",
+                description = "Efficient electric motor for eco-friendly driving."
+            ),
+            CarPartsa(
+                type = "power",
+                name = "Performance Exhaust PE-1",
+                price = 799.99,
+                model = "PE-1",
+                description = "Enhanced performance exhaust system for better horsepower."
+            ),
+            CarPartsa(
+                type = "power",
+                name = "Nitrous Oxide Injection Kit",
+                price = 599.99,
+                model = "NOX-500",
+                description = "Nitrous oxide injection kit for instant power boost."
+            )
+        )
         val creating = true
         //PARTS
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+        ) {
+            items(partsList.filter { it.type == "wheel" }) { part ->
+                // Composable for displaying wheel parts
+                // Modify this according to your design and data
+                //Text(text = "Wheel Part: ${part.name}")
+                PartInfo(part = part)
+            }
+        }
 
         //BUTTONS
         IconButton(
@@ -556,6 +632,17 @@ fun CreatePage(auth: FirebaseAuth, navController: NavController, carViewModel: C
 
 }
 
+@Composable
+private fun PartInfo(part: CarPartsa) {
+    Surface(
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth().padding(24.dp)) {
+            Text(text = part.name)
+        }
+    }
+}
 
 @Composable
 fun UserCarsListVertical(cars: List<Car>) {
