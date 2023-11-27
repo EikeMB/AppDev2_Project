@@ -68,7 +68,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -585,20 +587,24 @@ fun CreatePage(auth: FirebaseAuth, navController: NavController, carViewModel: C
             )
         )
         val creating = true
-        //PARTS
+        val indexOfWheelPart = partsList.indexOfFirst { it.type == "wheel" }
+        val (selectedOption, onOptionSelected) = remember { mutableStateOf(partsList[indexOfWheelPart] ) }
 
-        LazyColumn(
+        //PARTS
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1f)
         ) {
-            items(partsList.filter { it.type == "wheel" }) { part ->
-                // Composable for displaying wheel parts
-                // Modify this according to your design and data
-                //Text(text = "Wheel Part: ${part.name}")
-                PartInfo(part = part)
+            partsList.filter { it.type == "wheel" }.forEach { part ->
+                PartInfo(part = part,
+                    selectedOption = selectedOption,
+                    onOptionSelected = onOptionSelected)
             }
+
         }
+
+        //DiSPLAY CHOSEN PART HERE
 
         //BUTTONS
         IconButton(
@@ -633,13 +639,39 @@ fun CreatePage(auth: FirebaseAuth, navController: NavController, carViewModel: C
 }
 
 @Composable
-private fun PartInfo(part: CarPartsa) {
+private fun PartInfo(
+    part: CarPartsa,
+    selectedOption: CarPartsa,
+    onOptionSelected: (CarPartsa) -> Unit
+) {
+    val expanded = remember { mutableStateOf(false) }
+    val extraPadding = if (expanded.value) 48.dp else 0.dp
+
     Surface(
-        color = MaterialTheme.colorScheme.primary,
+        color = MaterialTheme.colorScheme.secondary,
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(24.dp)) {
-            Text(text = part.name)
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(24.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding(bottom = extraPadding)
+            ){
+                RadioButton(
+                    selected = (part == selectedOption),
+                    onClick = { onOptionSelected(part) },
+                    modifier = Modifier.padding(end = 16.dp)
+                )
+                Text(text = part.name)
+            }
+
+            ElevatedButton(
+                onClick = { expanded.value = !expanded.value }
+            ) {
+                Text(if (expanded.value) "Show less" else "Show more")
+            }
         }
     }
 }
