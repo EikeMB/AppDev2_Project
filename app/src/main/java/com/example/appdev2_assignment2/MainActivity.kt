@@ -106,8 +106,11 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 
@@ -489,22 +492,22 @@ fun Title(auth: FirebaseAuth, navController: NavController){
     }
 }
 
-@SuppressLint("StateFlowValueCalledInComposition")
+@SuppressLint("StateFlowValueCalledInComposition", "CoroutineCreationDuringComposition")
 @Composable
 fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
 
     val user = auth.currentUser?.email?.let { User(it) }
 
+    val coroutineScope = rememberCoroutineScope()
 
 
-    LaunchedEffect(Unit){
-        carViewModel.getCarsForUser(user!!)
 
+    coroutineScope.launch {
+            coroutineScope {
+                launch { carViewModel.getCarsForUser(user!!) }
+                launch { carViewModel.getAllCars() }
+            }
     }
-    LaunchedEffect(Unit){
-        carViewModel.getAllCars()
-    }
-
 
 
 
@@ -516,7 +519,6 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
             .fillMaxSize()
     ){
 
-
         Text(text = "Your customized cars: ", Modifier.padding(10.dp))
         Box{
             UserCarsList(cars = cars)
@@ -526,122 +528,87 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     }
 }
 
-data class CarPartsa(
-    val type: String,
-    val name: String,
-    val price: Double,
-    val model: String,
-    val description: String
-)
-
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun CreatePage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel){
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-//        horizontalArrangement = Arrangement.SpaceBetween,
-//        verticalAlignment = Alignment.CenterVertically
+private fun partSection(partsList: List<CarPart>, selectedOption: CarPart, onOptionSelected: (CarPart) -> Unit){
+    val expanded = remember { mutableStateOf(false) }
+
+    Surface(
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
-        val partsList: List<CarPartsa> = listOf(
-            CarPartsa(
-                type = "wheel",
-                name = "Alloy Wheel Type A",
-                price = 199.99,
-                model = "AW100",
-                description = "Premium alloy wheel for smooth driving experience."
-            ),
-            CarPartsa(
-                type = "wheel",
-                name = "Sporty Tire Type B",
-                price = 149.99,
-                model = "ST200",
-                description = "High-performance sporty tire for enhanced grip."
-            ),
-            CarPartsa(
-                type = "engine",
-                name = "Turbocharged Engine V2",
-                price = 2999.99,
-                model = "TE500",
-                description = "Powerful turbocharged engine for maximum performance."
-            ),
-            CarPartsa(
-                type = "engine",
-                name = "Electric Motor EMX",
-                price = 3999.99,
-                model = "EMX800",
-                description = "Efficient electric motor for eco-friendly driving."
-            ),
-            CarPartsa(
-                type = "power",
-                name = "Performance Exhaust PE-1",
-                price = 799.99,
-                model = "PE-1",
-                description = "Enhanced performance exhaust system for better horsepower."
-            ),
-            CarPartsa(
-                type = "power",
-                name = "Nitrous Oxide Injection Kit",
-                price = 599.99,
-                model = "NOX-500",
-                description = "Nitrous oxide injection kit for instant power boost."
-            )
-        )
-        val creating = true
-        LaunchedEffect(Unit){
-            partViewModel.getPartsOfType(PartType.Wheels)
-        }
-
-        var parts = partViewModel.typeParts.collectAsState(initial = emptyList())
-        val (selectedOption, onOptionSelected) = remember { mutableStateOf(parts.value[0] ) }
-
-        //PARTS
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
+            modifier = Modifier.padding(12.dp),
+            //verticalAlignment = Alignment.CenterVertically
         ) {
-
-            for(part in parts.value){
-                PartInfo(part = part, selectedOption = selectedOption, onOptionSelected = onOptionSelected)
+            Row(modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth()
+            ){
+                Text(text = "Wheels")
             }
-
-        }
-
-        //DiSPLAY CHOSEN PART HERE
-
-        //BUTTONS
-        IconButton(
-            onClick = {
-                navController.popBackStack()
-            },
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-        }
-
-        //Later change the if statement to if we modify or create
-        IconButton(
-            onClick = {
-                if (creating) {
-                    navController.navigate("MainScreenRoute")
-                } else {
-                    navController.navigate("UserProfileRoute")
+            if (expanded.value) {
+                for(part in partsList){
+                    PartInfo(part = part, selectedOption = selectedOption, onOptionSelected = onOptionSelected)
                 }
-
-                //Later change it to summary page of the car
-                //navController.navigate("UserProfileRoute")
-            },
-            modifier = Modifier.padding(16.dp)
+            }
+        }
+        IconButton(
+            onClick = { expanded.value = !expanded.value }
         ) {
-            val icon = if (creating) Icons.Filled.ArrowForward else Icons.Filled.Person
-            Icon(icon, contentDescription = "Next")
+            Icon(
+                imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                contentDescription = if (expanded.value) {
+                    stringResource(R.string.show_less)
+                }
+                else { stringResource(R.string.show_more) }
+            )
+        }
+    }
+}
+
+
+@SuppressLint("StateFlowValueCalledInComposition", "CoroutineCreationDuringComposition")
+@Composable
+fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
+
+
+    val coroutineScope = rememberCoroutineScope()
+
+
+
+    coroutineScope.launch {
+        coroutineScope {
+            launch { partViewModel.getPartsOfType(PartType.Wheels)}
         }
     }
 
 
+
+    val parts by partViewModel.typeParts.collectAsState(initial = emptyList())
+
+    var part: CarPart
+
+    part = if(parts.isNotEmpty()){
+        parts[0]
+    }
+    else{
+        CarPart("", 0, 0, "", PartType.Wheels)
+    }
+
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(part) }
+
+    val creating = true
+
+    Column (
+        modifier = Modifier
+            .fillMaxSize()
+    ){
+
+        partSection(partsList = parts, selectedOption = selectedOption, onOptionSelected = onOptionSelected)
+    }
 }
+
+
 
 @Composable
 private fun PartInfo(
@@ -775,7 +742,7 @@ fun CarCard(car: Car){
 fun Router(navController: NavHostController, auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
     NavHost(navController = navController, startDestination = "MainScreenRoute") {
         composable("MainScreenRoute") { Page1(auth, navController, carViewModel, partViewModel, userViewModel) }
-        composable("AboutScreenRoute") { CreatePage(auth, navController, carViewModel, partViewModel, userViewModel) }
+        composable("AboutScreenRoute") { Page2(auth, navController, carViewModel, partViewModel, userViewModel) }
         composable("UserProfileRoute") {
             val user = auth.currentUser?.email?.let { User(it) }
             LaunchedEffect(Unit){

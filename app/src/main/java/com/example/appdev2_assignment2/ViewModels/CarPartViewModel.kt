@@ -2,6 +2,7 @@ package com.example.appdev2_assignment2.ViewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.appdev2_assignment2.CRUD.CarPartRepository
 import com.example.appdev2_assignment2.CRUD.CarPartRepositoryFirestore
 import com.example.appdev2_assignment2.CarPart
 import com.example.appdev2_assignment2.PartType
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class CarPartViewModel(private val carPartRepository: CarPartRepositoryFirestore): ViewModel() {
+class CarPartViewModel(private val carPartRepository: CarPartRepository): ViewModel() {
 
     private val _typeParts = MutableStateFlow(listOf<CarPart>())
     val typeParts: StateFlow<List<CarPart>> = _typeParts.asStateFlow()
