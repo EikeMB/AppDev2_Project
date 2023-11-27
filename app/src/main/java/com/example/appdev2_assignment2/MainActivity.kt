@@ -35,6 +35,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -651,13 +653,11 @@ private fun PartInfo(
         color = MaterialTheme.colorScheme.secondary,
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(24.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.padding(12.dp),
+            //verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier
-                .weight(1f)
-                .padding(bottom = extraPadding)
+            Row(modifier = Modifier.padding(12.dp).fillMaxWidth()
             ){
                 RadioButton(
                     selected = (part == selectedOption),
@@ -666,12 +666,18 @@ private fun PartInfo(
                 )
                 Text(text = part.name)
             }
-
-            ElevatedButton(
-                onClick = { expanded.value = !expanded.value }
-            ) {
-                Text(if (expanded.value) "Show less" else "Show more")
-            }
+            if (expanded.value) {  Text( text = part.name ) }
+        }
+        IconButton(
+            onClick = { expanded.value = !expanded.value }
+        ) {
+            Icon(
+                imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                contentDescription = if (expanded.value) {
+                    stringResource(R.string.show_less)
+                }
+                else { stringResource(R.string.show_more) }
+            )
         }
     }
 }
