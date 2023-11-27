@@ -22,7 +22,7 @@ class CarPartViewModel(private val carPartRepository: CarPartRepositoryFirestore
     private val _activePart = MutableStateFlow(CarPart("", 0, 0, "", PartType.Body))
     val activePart: StateFlow<CarPart> = _activePart.asStateFlow()
 
-    suspend fun getCarsOfType(type: PartType){
+    suspend fun getPartsOfType(type: PartType){
         viewModelScope.launch {
             carPartRepository.getPartsOfType(type).collect() {typeParts ->
                 _typeParts.value = typeParts

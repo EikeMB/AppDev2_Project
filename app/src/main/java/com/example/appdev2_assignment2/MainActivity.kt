@@ -589,8 +589,12 @@ fun CreatePage(auth: FirebaseAuth, navController: NavController, carViewModel: C
             )
         )
         val creating = true
-        val indexOfWheelPart = partsList.indexOfFirst { it.type == "wheel" }
-        val (selectedOption, onOptionSelected) = remember { mutableStateOf(partsList[indexOfWheelPart] ) }
+        LaunchedEffect(Unit){
+            partViewModel.getPartsOfType(PartType.Wheels)
+        }
+
+        var parts = partViewModel.typeParts.collectAsState(initial = emptyList())
+        val (selectedOption, onOptionSelected) = remember { mutableStateOf(parts.value[0] ) }
 
         //PARTS
         Column(
@@ -598,10 +602,9 @@ fun CreatePage(auth: FirebaseAuth, navController: NavController, carViewModel: C
                 .fillMaxSize()
                 .weight(1f)
         ) {
-            partsList.filter { it.type == "wheel" }.forEach { part ->
-                PartInfo(part = part,
-                    selectedOption = selectedOption,
-                    onOptionSelected = onOptionSelected)
+
+            for(part in parts.value){
+                PartInfo(part = part, selectedOption = selectedOption, onOptionSelected = onOptionSelected)
             }
 
         }
@@ -642,9 +645,9 @@ fun CreatePage(auth: FirebaseAuth, navController: NavController, carViewModel: C
 
 @Composable
 private fun PartInfo(
-    part: CarPartsa,
-    selectedOption: CarPartsa,
-    onOptionSelected: (CarPartsa) -> Unit
+    part: CarPart,
+    selectedOption: CarPart,
+    onOptionSelected: (CarPart) -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
     val extraPadding = if (expanded.value) 48.dp else 0.dp
@@ -657,7 +660,9 @@ private fun PartInfo(
             modifier = Modifier.padding(12.dp),
             //verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(modifier = Modifier.padding(12.dp).fillMaxWidth()
+            Row(modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth()
             ){
                 RadioButton(
                     selected = (part == selectedOption),
