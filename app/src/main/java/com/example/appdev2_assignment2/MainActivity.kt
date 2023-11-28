@@ -605,7 +605,35 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     ){
 
         partSection(partsList = parts, selectedOption = selectedOption, onOptionSelected = onOptionSelected)
+
+        IconButton(
+            onClick = {
+                navController.popBackStack()
+            },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+        }
+
+        //Later change the if statement to if we modify or create
+        IconButton(
+            onClick = {
+                if (creating) {
+                    navController.navigate("MainScreenRoute")
+                } else {
+                    navController.navigate("UserProfileRoute")
+                }
+
+                //Later change it to summary page of the car
+                //navController.navigate("UserProfileRoute")
+            },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            val icon = if (creating) Icons.Filled.ArrowForward else Icons.Filled.Person
+            Icon(icon, contentDescription = "Next")
+        }
     }
+
 }
 
 
