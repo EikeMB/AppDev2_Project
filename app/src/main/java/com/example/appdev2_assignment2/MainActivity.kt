@@ -548,7 +548,9 @@ private fun partSection(partsList: List<CarPart>, partChosenName: String, partCh
                 )
         ) {
             Column(
-                modifier = Modifier.weight(1f).padding(12.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(12.dp),
                 //verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
@@ -617,22 +619,22 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     val indexOfAccessoriesPart = partList.indexOfFirst { it.type == PartType.Accessories }
 
     wheel = if(partList.isNotEmpty()){ partList[indexOfWheelPart] }
-    else{ CarPart("", 0, 0, "", PartType.Wheels) }
+    else{ CarPart("", 0, -1, "", PartType.Wheels) }
 
     body = if(partList.isNotEmpty()){ partList[indexOfBodyPart] }
-    else{ CarPart("", 0, 0, "", PartType.Body) }
+    else{ CarPart("", 0, -1, "", PartType.Body) }
 
     aerodynamic = if(partList.isNotEmpty()){ partList[indexOfAerodynamicPart] }
-    else{ CarPart("", 0, 0, "", PartType.Aerodynamics) }
+    else{ CarPart("", 0, -1, "", PartType.Aerodynamics) }
 
     engine = if(partList.isNotEmpty()){ partList[indexOfEnginePart] }
-    else{ CarPart("", 0, 0, "", PartType.Engine) }
+    else{ CarPart("", 0, -1, "", PartType.Engine) }
 
     interior = if(partList.isNotEmpty()){ partList[indexOfInteriorPart] }
-    else{ CarPart("", 0, 0, "", PartType.Interior) }
+    else{ CarPart("", 0, -1, "", PartType.Interior) }
 
     accessories = if(partList.isNotEmpty()){ partList[indexOfAccessoriesPart] }
-    else{ CarPart("", 0, 0, "", PartType.Accessories) }
+    else{ CarPart("", 0, -1, "", PartType.Accessories) }
 
     val (wheelSelectedOption, wheelOnOptionSelected) = remember { mutableStateOf(wheel) }
     val (bodySelectedOption, bodyOnOptionSelected) = remember { mutableStateOf(body) }
@@ -653,36 +655,40 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
         //partSection(partsList = wheelsList, selectedOption = wheelSelectedOption, onOptionSelected = wheelOnOptionSelected)
         partSection(partsList = partList,partChosenName = "Wheels", partChosen = PartType.Wheels, selectedOption = wheelSelectedOption, onOptionSelected = wheelOnOptionSelected)
         partSection(partsList = partList,partChosenName = "Body", partChosen = PartType.Body, selectedOption = bodySelectedOption, onOptionSelected = bodyOnOptionSelected)
-        partSection(partsList = partList,partChosenName = "Aerodynamic", partChosen = PartType.Aerodynamics, selectedOption = accessoriesSelectedOption, onOptionSelected = accessoriesOnOptionSelected)
+        partSection(partsList = partList,partChosenName = "Aerodynamic", partChosen = PartType.Aerodynamics, selectedOption = aerodynamicSelectedOption, onOptionSelected = aerodynamicOnOptionSelected)
         partSection(partsList = partList,partChosenName = "Engine", partChosen = PartType.Engine, selectedOption = engineSelectedOption, onOptionSelected = engineOnOptionSelected)
         partSection(partsList = partList,partChosenName = "Interior", partChosen = PartType.Interior, selectedOption = interiorSelectedOption, onOptionSelected = interiorOnOptionSelected)
         partSection(partsList = partList,partChosenName = "Accessories", partChosen = PartType.Accessories, selectedOption = accessoriesSelectedOption, onOptionSelected = accessoriesOnOptionSelected)
 
-        IconButton(
-            onClick = {
-                navController.popBackStack()
-            },
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-        }
+        Row ( modifier = Modifier.weight(1f).padding(12.dp).fillMaxWidth()){
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+            }
 
-        //Later change the if statement to if we modify or create
-        IconButton(
-            onClick = {
-                if (creating) {
-                    navController.navigate("MainScreenRoute")
-                } else {
-                    navController.navigate("UserProfileRoute")
-                }
+            Spacer(modifier = Modifier.weight(1f))
 
-                //Later change it to summary page of the car
-                //navController.navigate("UserProfileRoute")
-            },
-            modifier = Modifier.padding(16.dp)
-        ) {
-            val icon = if (creating) Icons.Filled.ArrowForward else Icons.Filled.Person
-            Icon(icon, contentDescription = "Next")
+            //Later change the if statement to if we modify or create
+            IconButton(
+                onClick = {
+                    if (creating) {
+                        navController.navigate("MainScreenRoute")
+                    } else {
+                        navController.navigate("UserProfileRoute")
+                    }
+
+                    //Later change it to summary page of the car
+                    //navController.navigate("UserProfileRoute")
+                },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                val icon = if (creating) Icons.Filled.ArrowForward else Icons.Filled.Person
+                Icon(icon, contentDescription = "Next")
+            }
         }
     }
 
@@ -718,7 +724,10 @@ private fun PartInfo(
                 )
                 Text(text = part.name)
             }
-            if (expanded.value) {  Text( text = part.name ) }
+            if (expanded.value) {
+                Text( text = part.description )
+                //Text( text = part.price )----------Add price
+            }
         }
         IconButton(
             onClick = { expanded.value = !expanded.value }
