@@ -235,6 +235,7 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth, carViewModel: C
     )
 }
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
@@ -245,6 +246,8 @@ fun LoginScreen(
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    var error = remember { mutableStateOf<String?>(null) }
 
 
     Column(
@@ -286,12 +289,16 @@ fun LoginScreen(
                 .padding(8.dp)
         )
 
+        error.value?.let { error ->
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
+        }
+
         //LOGIN BUTTON
         Button(
             modifier = Modifier.padding(vertical = 10.dp),
             onClick = {
-
-                signIn(auth, username, password, navController)
+                error.value = null
+                signIn(auth, username, password, navController, userViewModel, error)
 
             },
         ) {
@@ -308,6 +315,7 @@ fun LoginScreen(
 }
 
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
@@ -317,6 +325,9 @@ fun SignUpScreen(
     userViewModel: UserViewModel
 ) {
     var username by remember { mutableStateOf("") }
+    var email by remember {
+        mutableStateOf("")
+    }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("18") }
@@ -326,6 +337,7 @@ fun SignUpScreen(
     var passwordError by remember { mutableStateOf<String?>(null) }
     var confirmPasswordError by remember { mutableStateOf<String?>(null) }
     var ageError by remember { mutableStateOf<String?>(null) }
+    val error = remember {mutableStateOf<String?>(null)}
 
 
     Column(
@@ -336,12 +348,24 @@ fun SignUpScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+
         // TITLE
         Text(
             text = "App Title", // Your title text
             modifier = Modifier.padding(bottom = 20.dp)
         )
 
+        TextField(
+            value = email,
+            onValueChange = {newText ->
+                email = newText
+            },
+            label = { Text(text = "Enter your email")},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            isError = usernameError != null,
+        )
         // USERNAME INPUT
         TextField(
             value = username,
@@ -357,6 +381,9 @@ fun SignUpScreen(
         usernameError?.let { error ->
             Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
         }
+
+
+
 
         //PASSWORD INPUT
         TextField(
@@ -407,13 +434,23 @@ fun SignUpScreen(
         ageError?.let { error ->
             Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
         }
+        
+        error.value?.let { error ->
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
+        }
 
         //REGISTER BUTTON
         Button(
             modifier = Modifier.padding(vertical = 10.dp),
             onClick = {
-                if (validateInputSignUp(username, password, confirmPassword, age)) {
-                    navController.navigate("LoginScreenRoute")
+                usernameError = null
+                passwordError = null
+                confirmPasswordError = null
+                ageError = null
+                error.value = null
+                if (validateInputSignUp(email, username, password, confirmPassword, age)) {
+                    var user = AppUser(username, username, age.toInt(), 0)
+                    signUp(auth, user, password, navController, userViewModel, error)
                 } else {
                     usernameError = if (username.isEmpty()) "Username required" else null
                     passwordError = if (password.isEmpty()) "Password  required" else null
@@ -421,8 +458,6 @@ fun SignUpScreen(
                     ageError = if (age.isEmpty() || age.toIntOrNull() == null) "Invalid age" else null
                 }
 
-                signUp(auth, username, password, navController)
-                userViewModel.addUser(AppUser(username, username, age.toInt(), 0))
             },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
         ) {
@@ -440,17 +475,19 @@ fun SignUpScreen(
 }
 
 fun validateInputSignUp(
+    email: String,
     username: String,
     password: String,
     confirmPassword: String,
     age: String
 ): Boolean {
+    val isEmailValid = email.isNotEmpty()
     val isUsernameValid = username.isNotEmpty()
     val isPasswordValid = password.isNotEmpty()
     val doesPasswordsMatch = password == confirmPassword
     val isAgeValid = age.toIntOrNull() != null
 
-    return isUsernameValid && isPasswordValid && doesPasswordsMatch && isAgeValid
+    return isEmailValid && isUsernameValid && isPasswordValid && doesPasswordsMatch && isAgeValid
 }
 
 @Composable
