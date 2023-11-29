@@ -84,6 +84,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -529,39 +530,58 @@ fun Page1(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
 }
 
 @Composable
-private fun partSection(partsList: List<CarPart>, selectedOption: CarPart, onOptionSelected: (CarPart) -> Unit){
+private fun partSection(partsList: List<CarPart>, partChosenName: String, partChosen: PartType, selectedOption: CarPart, onOptionSelected: (CarPart) -> Unit){
     val expanded = remember { mutableStateOf(false) }
 
     Surface(
         color = MaterialTheme.colorScheme.primary,
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            //verticalAlignment = Alignment.CenterVertically
+        Row(
+            modifier = Modifier
+                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
         ) {
-            Row(modifier = Modifier
-                .padding(12.dp)
-                .fillMaxWidth()
-            ){
-                Text(text = "Wheels")
-            }
-            if (expanded.value) {
-                for(part in partsList){
-                    PartInfo(part = part, selectedOption = selectedOption, onOptionSelected = onOptionSelected)
+            Column(
+                modifier = Modifier.weight(1f).padding(12.dp),
+                //verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(text = partChosenName)
+                }
+                if (expanded.value) {
+
+                    partsList.filter { it.type == partChosen }.forEach { part ->
+                        PartInfo(
+                            part = part,
+                            selectedOption = selectedOption,
+                            onOptionSelected = onOptionSelected
+                        )
+                    }
+
                 }
             }
-        }
-        IconButton(
-            onClick = { expanded.value = !expanded.value }
-        ) {
-            Icon(
-                imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                contentDescription = if (expanded.value) {
-                    stringResource(R.string.show_less)
-                }
-                else { stringResource(R.string.show_more) }
-            )
+            IconButton(
+                onClick = { expanded.value = !expanded.value },
+            ) {
+                Icon(
+                    imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                    contentDescription = if (expanded.value) {
+                        stringResource(R.string.show_less)
+                    } else {
+                        stringResource(R.string.show_more)
+                    }
+                )
+            }
         }
     }
 }
@@ -571,40 +591,51 @@ private fun partSection(partsList: List<CarPart>, selectedOption: CarPart, onOpt
 @Composable
 fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
 
-
     val coroutineScope = rememberCoroutineScope()
-
-
 
     coroutineScope.launch {
         coroutineScope {
-            launch { partViewModel.getPartsOfType(PartType.Wheels)}
+            launch { partViewModel.getAllParts()}
         }
     }
 
+    val partList by partViewModel.allParts.collectAsState(initial = emptyList())
 
+    var wheel: CarPart
+    var body: CarPart
 
-    val parts by partViewModel.typeParts.collectAsState(initial = emptyList())
+    val indexOfWheelPart = partList.indexOfFirst { it.type == PartType.Wheels }
 
-    var part: CarPart
-
-    part = if(parts.isNotEmpty()){
-        parts[0]
+    wheel = if(partList.isNotEmpty()){
+        partList[indexOfWheelPart]
     }
     else{
         CarPart("", 0, 0, "", PartType.Wheels)
     }
 
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(part) }
+    val indexOfBodyPart = partList.indexOfFirst { it.type == PartType.Body }
+
+    body = if(partList.isNotEmpty()){
+        partList[indexOfBodyPart]
+    }
+    else{
+        CarPart("", 0, 0, "", PartType.Body)
+    }
+
+    val (wheelSelectedOption, wheelOnOptionSelected) = remember { mutableStateOf(wheel) }
+    val (bodySelectedOption, bodyOnOptionSelected) = remember { mutableStateOf(body) }
 
     val creating = true
 
     Column (
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ){
 
-        partSection(partsList = parts, selectedOption = selectedOption, onOptionSelected = onOptionSelected)
+        //partSection(partsList = wheelsList, selectedOption = wheelSelectedOption, onOptionSelected = wheelOnOptionSelected)
+        partSection(partsList = partList,partChosenName = "Wheels", partChosen = PartType.Wheels, selectedOption = bodySelectedOption, onOptionSelected = bodyOnOptionSelected)
+        partSection(partsList = partList,partChosenName = "Body", partChosen = PartType.Body, selectedOption = bodySelectedOption, onOptionSelected = bodyOnOptionSelected)
 
         IconButton(
             onClick = {
