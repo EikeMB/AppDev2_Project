@@ -603,27 +603,44 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
 
     var wheel: CarPart
     var body: CarPart
+    var aerodynamic: CarPart
+    var engine: CarPart
+    var interior: CarPart
+    var accessories: CarPart
+
 
     val indexOfWheelPart = partList.indexOfFirst { it.type == PartType.Wheels }
-
-    wheel = if(partList.isNotEmpty()){
-        partList[indexOfWheelPart]
-    }
-    else{
-        CarPart("", 0, 0, "", PartType.Wheels)
-    }
-
     val indexOfBodyPart = partList.indexOfFirst { it.type == PartType.Body }
+    val indexOfAerodynamicPart = partList.indexOfFirst { it.type == PartType.Aerodynamics }
+    val indexOfEnginePart = partList.indexOfFirst { it.type == PartType.Engine }
+    val indexOfInteriorPart = partList.indexOfFirst { it.type == PartType.Interior }
+    val indexOfAccessoriesPart = partList.indexOfFirst { it.type == PartType.Accessories }
 
-    body = if(partList.isNotEmpty()){
-        partList[indexOfBodyPart]
-    }
-    else{
-        CarPart("", 0, 0, "", PartType.Body)
-    }
+    wheel = if(partList.isNotEmpty()){ partList[indexOfWheelPart] }
+    else{ CarPart("", 0, 0, "", PartType.Wheels) }
+
+    body = if(partList.isNotEmpty()){ partList[indexOfBodyPart] }
+    else{ CarPart("", 0, 0, "", PartType.Body) }
+
+    aerodynamic = if(partList.isNotEmpty()){ partList[indexOfAerodynamicPart] }
+    else{ CarPart("", 0, 0, "", PartType.Aerodynamics) }
+
+    engine = if(partList.isNotEmpty()){ partList[indexOfEnginePart] }
+    else{ CarPart("", 0, 0, "", PartType.Engine) }
+
+    interior = if(partList.isNotEmpty()){ partList[indexOfInteriorPart] }
+    else{ CarPart("", 0, 0, "", PartType.Interior) }
+
+    accessories = if(partList.isNotEmpty()){ partList[indexOfAccessoriesPart] }
+    else{ CarPart("", 0, 0, "", PartType.Accessories) }
 
     val (wheelSelectedOption, wheelOnOptionSelected) = remember { mutableStateOf(wheel) }
     val (bodySelectedOption, bodyOnOptionSelected) = remember { mutableStateOf(body) }
+    val (aerodynamicSelectedOption, aerodynamicOnOptionSelected) = remember { mutableStateOf(aerodynamic) }
+    val (engineSelectedOption, engineOnOptionSelected) = remember { mutableStateOf(engine) }
+    val (interiorSelectedOption, interiorOnOptionSelected) = remember { mutableStateOf(interior) }
+    val (accessoriesSelectedOption, accessoriesOnOptionSelected) = remember { mutableStateOf(accessories) }
+
 
     val creating = true
 
@@ -634,8 +651,12 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     ){
 
         //partSection(partsList = wheelsList, selectedOption = wheelSelectedOption, onOptionSelected = wheelOnOptionSelected)
-        partSection(partsList = partList,partChosenName = "Wheels", partChosen = PartType.Wheels, selectedOption = bodySelectedOption, onOptionSelected = bodyOnOptionSelected)
+        partSection(partsList = partList,partChosenName = "Wheels", partChosen = PartType.Wheels, selectedOption = wheelSelectedOption, onOptionSelected = wheelOnOptionSelected)
         partSection(partsList = partList,partChosenName = "Body", partChosen = PartType.Body, selectedOption = bodySelectedOption, onOptionSelected = bodyOnOptionSelected)
+        partSection(partsList = partList,partChosenName = "Aerodynamic", partChosen = PartType.Aerodynamics, selectedOption = accessoriesSelectedOption, onOptionSelected = accessoriesOnOptionSelected)
+        partSection(partsList = partList,partChosenName = "Engine", partChosen = PartType.Engine, selectedOption = engineSelectedOption, onOptionSelected = engineOnOptionSelected)
+        partSection(partsList = partList,partChosenName = "Interior", partChosen = PartType.Interior, selectedOption = interiorSelectedOption, onOptionSelected = interiorOnOptionSelected)
+        partSection(partsList = partList,partChosenName = "Accessories", partChosen = PartType.Accessories, selectedOption = accessoriesSelectedOption, onOptionSelected = accessoriesOnOptionSelected)
 
         IconButton(
             onClick = {
