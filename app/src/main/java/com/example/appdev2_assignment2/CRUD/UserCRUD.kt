@@ -12,7 +12,7 @@ class UserRepositoryFirestore(var db: FirebaseFirestore):UserRepository {
     val dbUsers = db.collection("users")
 
     override suspend fun addUser(user: AppUser) {
-        dbUsers.document(user.name).set(user)
+        dbUsers.document(user.email).set(user)
             .addOnSuccessListener {
                 println("User saved")
             }

@@ -248,6 +248,10 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
 
     var error = remember { mutableStateOf<String?>(null) }
+    var usernameError by remember { mutableStateOf<String?>(null)}
+    var passwordError by remember {
+        mutableStateOf<String?>(null)
+    }
 
 
     Column(
@@ -276,6 +280,10 @@ fun LoginScreen(
                 .padding(8.dp)
         )
 
+        usernameError?.let { error ->
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
+        }
+
         //PASSWORD INPUT
         TextField(
             value = password,
@@ -288,6 +296,9 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .padding(8.dp)
         )
+        passwordError?.let { error ->
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
+        }
 
         error.value?.let { error ->
             Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
@@ -298,7 +309,16 @@ fun LoginScreen(
             modifier = Modifier.padding(vertical = 10.dp),
             onClick = {
                 error.value = null
-                signIn(auth, username, password, navController, userViewModel, error)
+                usernameError = null
+                passwordError = null
+                if(username.isNotEmpty() && password.isNotEmpty()){
+                    signIn(auth, username, password, navController, userViewModel, error)
+                }
+                else{
+                    usernameError = if (username.isEmpty()) "Username required" else null
+                    passwordError = if (password.isEmpty()) "Password  required" else null
+                }
+
 
             },
         ) {
@@ -334,6 +354,9 @@ fun SignUpScreen(
 
     // ERROR INPUT FIELD
     var usernameError by remember { mutableStateOf<String?>(null) }
+    var emailError by remember {
+        mutableStateOf<String?>(null)
+    }
     var passwordError by remember { mutableStateOf<String?>(null) }
     var confirmPasswordError by remember { mutableStateOf<String?>(null) }
     var ageError by remember { mutableStateOf<String?>(null) }
@@ -364,8 +387,12 @@ fun SignUpScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            isError = usernameError != null,
+            isError = emailError != null,
         )
+        emailError?.let { error ->
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
+        }
+        
         // USERNAME INPUT
         TextField(
             value = username,
@@ -443,15 +470,17 @@ fun SignUpScreen(
         Button(
             modifier = Modifier.padding(vertical = 10.dp),
             onClick = {
+                emailError = null
                 usernameError = null
                 passwordError = null
                 confirmPasswordError = null
                 ageError = null
                 error.value = null
                 if (validateInputSignUp(email, username, password, confirmPassword, age)) {
-                    var user = AppUser(username, username, age.toInt(), 0)
+                    var user = AppUser(email, username, age.toInt(), 0)
                     signUp(auth, user, password, navController, userViewModel, error)
                 } else {
+                    emailError = if (email.isEmpty()) "Email required" else null
                     usernameError = if (username.isEmpty()) "Username required" else null
                     passwordError = if (password.isEmpty()) "Password  required" else null
                     confirmPasswordError = if (password != confirmPassword) "Confirm Password does not match Password" else null
@@ -646,7 +675,7 @@ fun Router(navController: NavHostController, auth: FirebaseAuth, carViewModel: C
 
             if (appUser != null) {
                 UserProfilePage(
-                    user = appUser,
+                    userViewModel = userViewModel,
                     onProfilePictureChange = { /* implement the logic */ },
                     onNameChange = { /* implement the logic */ },
                     onAgeChange = { /* implement the logic */ },

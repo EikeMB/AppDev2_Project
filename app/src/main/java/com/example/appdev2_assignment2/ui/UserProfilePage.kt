@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,11 +33,12 @@ import androidx.compose.ui.unit.dp
 import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.User
+import com.example.appdev2_assignment2.ViewModels.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserProfilePage(
-    user: AppUser,
+    userViewModel: UserViewModel,
     onProfilePictureChange: () -> Unit,
     onNameChange: () -> Unit,
     onAgeChange: () -> Unit,
@@ -45,6 +47,7 @@ fun UserProfilePage(
 )  {
 
     var isChangingName by remember { mutableStateOf(false) }
+    val user by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0, 0))
     var newName by remember {
         mutableStateOf(user.name)
     }
@@ -130,23 +133,6 @@ fun UserProfilePage(
             Text("Change Age")
         }
 
-        // User's Password (masked with *)
-//        Text("Password: ${"*".repeat(user.password.length)}")
-//
-//        // Change Password Button
-//        Button(
-//            onClick = { onPasswordChange() },
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            Text("Change Password")
-//        }
 
-        // Apply Changes Button
-       /* Button(
-            onClick = { onApplyChanges() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Apply Changes")
-        }*/
     }
 }
