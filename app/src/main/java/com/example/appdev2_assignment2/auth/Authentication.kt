@@ -1,5 +1,6 @@
 package com.example.appdev2_assignment2.auth
 
+import android.util.Log
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavController
@@ -48,7 +49,11 @@ fun signUp(auth: FirebaseAuth, user: AppUser, password: String, navController: N
 }
 
 fun signOut(auth: FirebaseAuth, navController: NavController){
-    auth.signOut()
+    try {
+        auth.signOut()
 
-    navController.navigate("SignInScreenRoute")
+        navController.navigate("LoginScreenRoute")
+    }catch(e: Exception){
+        println(e.message)
+    }
 }
