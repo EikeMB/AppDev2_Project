@@ -111,8 +111,9 @@ fun UserProfilePage(
         Button(
             onClick = {
                 if (isChangingName) {
-                    // If the user is changing the name, update the newName and reset the text box
-                    newName = newNameText
+                    var newUser = user
+                    newUser.name = newNameText
+                    userViewModel.addUser(newUser)
                     newNameText = ""
                 }
                 // Toggle the state of isChangingName
