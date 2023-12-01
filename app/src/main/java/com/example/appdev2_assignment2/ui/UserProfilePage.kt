@@ -73,7 +73,7 @@ fun UserProfilePage(
     ) {
         // Profile Picture
         Image(
-            painter = painterResource(id = R.drawable.profil_picture), // Replace with your actual resource ID
+            painter = painterResource(id = R.drawable.profilepic1), // Replace with your actual resource ID
             contentDescription = "Profile Picture",
             modifier = Modifier
                 .size(100.dp)

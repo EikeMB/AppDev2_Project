@@ -23,16 +23,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.R
+import com.example.appdev2_assignment2.ViewModels.UserViewModel
 
 @Composable
-fun TopBar() {
+fun TopBar(userViewModel: UserViewModel) {
+    val user by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0, 0))
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,9 +46,10 @@ fun TopBar() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Title",
+            text = "Car Builder",
             modifier = Modifier.weight(3f),
-            fontSize = 24.sp
+            fontSize = 24.sp,
+            color = MaterialTheme.colorScheme.onPrimary
         )
         Image(
             painter = painterResource(id = R.drawable.profileicon),
@@ -53,12 +60,14 @@ fun TopBar() {
         )
         Column {
             Text(
-                text = "Name",
-                fontSize = 16.sp
+                text = user.name,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onPrimary
             )
             Text(
-                text = "Age",
-                fontSize = 14.sp
+                text = user.age.toString(),
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onPrimary
             )
         }
     }
@@ -69,13 +78,13 @@ Composable made up of the full page
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommonScaffold(navController: NavHostController, content: @Composable (PaddingValues) -> Unit) {
+fun CommonScaffold(navController: NavHostController,  userViewModel: UserViewModel, content: @Composable (PaddingValues) -> Unit) {
 
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { TopBar() },
+                title = { TopBar(userViewModel) },
                 colors = TopAppBarDefaults.smallTopAppBarColors(MaterialTheme.colorScheme.primary),
 
                 )

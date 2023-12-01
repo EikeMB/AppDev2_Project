@@ -1,29 +1,43 @@
 package com.example.appdev2_assignment2.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.appdev2_assignment2.AppUser
+import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.example.appdev2_assignment2.auth.signUp
 import com.google.firebase.auth.FirebaseAuth
@@ -44,6 +58,9 @@ fun SignUpScreen(
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("18") }
+    var picture by remember {
+        mutableIntStateOf(R.drawable.profilepic1)
+    }
 
     // ERROR INPUT FIELD
     var usernameError by remember { mutableStateOf<String?>(null) }
@@ -159,6 +176,34 @@ fun SignUpScreen(
             Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
         }
 
+        val profilePics: List<Int> = listOf(
+            R.drawable.profilepic1,
+            R.drawable.profilepic2,
+            R.drawable.profilepic3,
+            R.drawable.profilepic4
+        )
+
+        LazyRow{
+            items(profilePics){item ->
+                Surface (
+                    modifier = Modifier
+                        .size(90.dp)
+                        .clip(CircleShape)
+                        .clickable { picture = item }
+                        .background(MaterialTheme.colorScheme.background),
+                ){
+                    Image(
+                        painter = painterResource(id = item),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.background)
+                    )
+                }
+            }
+        }
+
         //REGISTER BUTTON
         Button(
             modifier = Modifier.padding(vertical = 10.dp),
@@ -170,7 +215,7 @@ fun SignUpScreen(
                 ageError = null
                 error.value = null
                 if (validateInputSignUp(email, username, password, confirmPassword, age)) {
-                    var user = AppUser(email, username, age.toInt(), 0)
+                    var user = AppUser(email, username, age.toInt(), picture)
                     signUp(auth, user, password, navController, userViewModel, error)
                 } else {
                     emailError = if (email.isEmpty()) "Email required" else null

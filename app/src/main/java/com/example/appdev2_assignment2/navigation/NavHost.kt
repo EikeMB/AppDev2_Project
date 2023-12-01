@@ -32,12 +32,12 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
             SignUpScreen(navController, auth = auth, userViewModel = userViewModel)
         }
         composable("MainScreenRoute") {
-            CommonScaffold(navController = navController) {
+            CommonScaffold(navController = navController, userViewModel = userViewModel) {
             HomePage(auth, navController, carViewModel, partViewModel, userViewModel)
             }
         }
         composable("AboutScreenRoute") {
-            CommonScaffold(navController = navController) {
+            CommonScaffold(navController = navController, userViewModel = userViewModel) {
                 About(auth, navController)
             }
         }
@@ -50,7 +50,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
             val appUser by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0,0))
 
             if (appUser != null) {
-                CommonScaffold(navController = navController) {
+                CommonScaffold(navController = navController, userViewModel = userViewModel) {
                     UserProfilePage(
                         userViewModel = userViewModel,
                         onProfilePictureChange = { /* implement the logic */ },
