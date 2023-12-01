@@ -168,8 +168,28 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     val creating = true
     var carName by remember { mutableStateOf("") }
 
-    if(defaultCar != null){
+    if(defaultCar.value != null){
         carName =  defaultCar.value!!.name
+        for(part in defaultCar.value!!.parts){
+            if(part.type == PartType.Accessories){
+                accessoriesOnOptionSelected(part)
+            }
+            else if(part.type == PartType.Aerodynamics){
+                aerodynamicOnOptionSelected(part)
+            }
+            else if(part.type == PartType.Body){
+                bodyOnOptionSelected(part)
+            }
+            else if(part.type == PartType.Engine){
+                engineOnOptionSelected(part)
+            }
+            else if(part.type == PartType.Interior){
+                interiorOnOptionSelected(part)
+            }
+            else if(part.type == PartType.Wheels){
+                wheelOnOptionSelected(part)
+            }
+        }
     }
     Column (
         modifier = Modifier
@@ -255,6 +275,9 @@ private fun PartInfo(
                 .padding(12.dp)
                 .fillMaxWidth()
             ){
+                if(selectedOption.modelNum == -1){
+                    onOptionSelected(part)
+                }
                 RadioButton(
                     selected = (part == selectedOption),
                     onClick = { onOptionSelected(part) },
