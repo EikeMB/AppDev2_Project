@@ -1,20 +1,13 @@
 package com.example.appdev2_assignment2.ViewModels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.CRUD.CarRepository
 import com.example.appdev2_assignment2.Car
-import com.example.appdev2_assignment2.User
-import com.example.appdev2_assignment2.cars
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class CarViewModel(private val carRepository: CarRepository) : ViewModel(){
@@ -42,7 +35,7 @@ class CarViewModel(private val carRepository: CarRepository) : ViewModel(){
         }
     }
     // Function to add a car
-    fun addCar(car: Car) {
+    fun addCar(car: com.example.appdev2_assignment2.ui.Car) {
         viewModelScope.launch {
             carRepository.addCar(car)
         }

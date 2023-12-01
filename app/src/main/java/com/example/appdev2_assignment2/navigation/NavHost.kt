@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.appdev2_assignment2.AppUser
-import com.example.appdev2_assignment2.StartupPage
+import com.example.appdev2_assignment2.ui.CreateCarPage
 import com.example.appdev2_assignment2.User
 import com.example.appdev2_assignment2.ViewModels.CarPartViewModel
 import com.example.appdev2_assignment2.ViewModels.CarViewModel
@@ -34,6 +34,13 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
         composable("MainScreenRoute") {
             CommonScaffold(navController = navController, userViewModel = userViewModel) {
             HomePage(auth, navController, carViewModel, partViewModel, userViewModel)
+            }
+        }
+        composable("CreateCarRoute") {
+            CommonScaffold(navController = navController, userViewModel = userViewModel) {
+                CreateCarPage { newCar ->
+                    carViewModel.addCar(newCar)
+                }
             }
         }
         composable("AboutScreenRoute") {

@@ -54,7 +54,7 @@ fun LoginScreen(
 
         // TITLE
         Text(
-            text = "App Title", // Your title text
+            text = "Car Builder App", // Your title text
             modifier = Modifier.padding(top = 50.dp, bottom = 125.dp)
         )
 

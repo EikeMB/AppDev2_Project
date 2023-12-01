@@ -4,12 +4,14 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id("kotlin-kapt")
 
 }
 
 android {
     namespace = "com.example.appdev2_assignment2"
     compileSdk = 34
+
 
     defaultConfig {
         applicationId = "com.example.appdev2_assignment2"
@@ -40,6 +42,18 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class){
+        kotlinOptions{
+            jvmTarget = "1.8"
+        }
+    }
+    /*afterEvaluate {
+        tasks.matching {
+            it.name.startsWith("compile") && it.name.endsWith("JavaWithJavac")
+        }.configureEach {
+            options.compilerArgs.addAll(arrayOf("--release", "8"))
+        }
+    }*/
     buildFeatures {
         compose = true
     }
@@ -76,9 +90,12 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
     implementation("androidx.navigation:navigation-compose:2.7.5")
 
     implementation("com.google.dagger:hilt-android:2.38.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")

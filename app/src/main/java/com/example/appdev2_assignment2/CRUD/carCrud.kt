@@ -4,22 +4,18 @@ import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.CarPart
 import com.example.appdev2_assignment2.PartType
-import com.example.appdev2_assignment2.User
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
 
     val dbCars: CollectionReference = db.collection("cars")
 
-    override suspend fun addCar(car: Car) {
+    override suspend fun addCar(car: com.example.appdev2_assignment2.ui.Car) {
         dbCars.document(car.name).set(car)
             .addOnSuccessListener {
                 println("Car saved")
@@ -146,7 +142,7 @@ fun convertSnapshotToCar(document: DocumentSnapshot): Car{
 }
 
 interface CarRepository{
-    suspend fun addCar(car: Car)
+    suspend fun addCar(car: com.example.appdev2_assignment2.ui.Car)
     suspend fun getCars(user: AppUser): Flow<List<Car>>
     suspend fun getCars(): Flow<List<Car>>
     suspend fun getCar(name: String): Flow<Car>
