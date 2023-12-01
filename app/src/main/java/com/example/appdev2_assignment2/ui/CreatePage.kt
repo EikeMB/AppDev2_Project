@@ -214,7 +214,8 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
                 onClick = {
                     nameError = null
                     if(carName.isNotEmpty()){
-                        carViewModel.addCar(Car(user.email, carName, listOf<CarPart>(body, wheel , aerodynamic, accessories, interior, engine), 0))
+                        carViewModel.addCar(Car(user.email, carName, listOf<CarPart>(bodySelectedOption, wheelSelectedOption , aerodynamicSelectedOption,
+                            accessoriesSelectedOption, interiorSelectedOption, engineSelectedOption), 0))
                         navController.navigate("MainScreenRoute")
                     }
                     else{
@@ -286,7 +287,9 @@ private fun PartInfo(
             }
         }
         IconButton(
-            onClick = { expanded.value = !expanded.value }
+            onClick = {
+                expanded.value = !expanded.value
+            }
         ) {
             Icon(
                 imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
