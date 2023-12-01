@@ -43,17 +43,7 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun HomePage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel, defaultCar: MutableState<Car?>) {
 
-    val user by userViewModel.activeUser.collectAsState(initial = AppUser("","",0,""))
 
-
-
-    LaunchedEffect(Unit){
-        carViewModel.getCarsForUser(user)
-
-    }
-    LaunchedEffect(Unit){
-        carViewModel.getAllCars()
-    }
 
 
 
@@ -82,7 +72,7 @@ fun UserCarsListVertical(cars: List<Car>, navController: NavController, defaultC
         modifier = Modifier
             .fillMaxSize()
             .padding(vertical = 16.dp)
-            .background(Color.Blue)
+            .background(Color(0xFFADD8E6))
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

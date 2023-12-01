@@ -1,6 +1,8 @@
 package com.example.appdev2_assignment2.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -29,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,7 +44,7 @@ import com.example.appdev2_assignment2.ViewModels.UserViewModel
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun TopBar(userViewModel: UserViewModel) {
+fun TopBar(userViewModel: UserViewModel, navController: NavHostController) {
 
     val user by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0, ""))
 
@@ -49,21 +52,22 @@ fun TopBar(userViewModel: UserViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp),
-        verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "Car Builder",
             modifier = Modifier.weight(3f),
             fontSize = 24.sp,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = Color(0xFFFFFFFF)
         )
         GlideImage(
             model = user.picture,
-            contentDescription = "",
+            contentDescription = "Profile picture",
             modifier = Modifier
                 .size(48.dp)
                 .weight(1f)
-                .clip(CircleShape),
+                .clip(CircleShape)
+                .clickable { navController.navigate("UserProfileRoute") },
         )
         Column {
             Text(
@@ -91,7 +95,7 @@ fun CommonScaffold(navController: NavHostController,  userViewModel: UserViewMod
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { TopBar(userViewModel) },
+                title = { TopBar(userViewModel, navController) },
                 colors = TopAppBarDefaults.smallTopAppBarColors(MaterialTheme.colorScheme.primary),
 
                 )
