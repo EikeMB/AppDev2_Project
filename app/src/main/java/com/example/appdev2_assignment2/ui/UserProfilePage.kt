@@ -53,11 +53,9 @@ fun UserProfilePage(
     auth: FirebaseAuth
 )  {
 
-    var isChangingName by remember { mutableStateOf(false) }
+
     val user by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0, 0))
-    var newName by remember {
-        mutableStateOf(user.name)
-    }
+
     var newNameText by remember{
         mutableStateOf("")
     }
@@ -110,18 +108,14 @@ fun UserProfilePage(
 // Change Name Button
         Button(
             onClick = {
-                if (isChangingName) {
-                    var newUser = user
-                    newUser.name = newNameText
-                    userViewModel.addUser(newUser)
-                    newNameText = ""
-                }
-                // Toggle the state of isChangingName
-                isChangingName = !isChangingName
+                var newUser = user
+                newUser.name = newNameText
+                userViewModel.addUser(newUser)
+                newNameText = ""
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(if (isChangingName) "Save Name" else "Change Name")
+            Text("Change Name")
         }
 
         // User's Age
@@ -136,7 +130,11 @@ fun UserProfilePage(
         )
         // Change Age Button
         Button(
-            onClick = { onAgeChange() },
+            onClick = {
+                var newUser = user
+                newUser.age = newAgeText.toInt()
+                userViewModel.addUser(newUser)
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Change Age")
