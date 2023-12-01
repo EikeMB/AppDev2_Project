@@ -107,11 +107,11 @@ class CarPartRepositoryFirestore(val db: FirebaseFirestore): CarPartRepository{
                         trySend(parts)
                     }else{
                         println("Parts has become null")
-                        trySend(listOf<CarPart>())
+                        trySend(listOf())
                     }
                 }else{
                     println("Parts collection does not exist")
-                    trySend(listOf<CarPart>())
+                    trySend(listOf())
                 }
             }
         awaitClose { subscription.remove() }

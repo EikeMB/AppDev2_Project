@@ -63,7 +63,7 @@ fun TopBar(userViewModel: UserViewModel) {
             modifier = Modifier
                 .size(48.dp)
                 .weight(1f)
-                .clip(CircleShape)
+                .clip(CircleShape),
         )
         Column {
             Text(
@@ -103,7 +103,7 @@ fun CommonScaffold(navController: NavHostController,  userViewModel: UserViewMod
                     Icon(Icons.Filled.Home, contentDescription = "Home")
                 }
                 IconButton(
-                    onClick = { navController.navigate("AboutScreenRoute") },
+                    onClick = { navController.navigate("CreateScreenRoute") },
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(Icons.Filled.Build, contentDescription = "Create")

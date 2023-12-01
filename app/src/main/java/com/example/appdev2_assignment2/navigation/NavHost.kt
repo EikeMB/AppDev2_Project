@@ -17,6 +17,7 @@ import com.example.appdev2_assignment2.ui.About
 import com.example.appdev2_assignment2.ui.CommonScaffold
 import com.example.appdev2_assignment2.ui.HomePage
 import com.example.appdev2_assignment2.ui.LoginScreen
+import com.example.appdev2_assignment2.ui.Page2
 import com.example.appdev2_assignment2.ui.SignUpScreen
 import com.example.appdev2_assignment2.ui.UserProfilePage
 import com.google.firebase.auth.FirebaseAuth
@@ -34,6 +35,11 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
         composable("MainScreenRoute") {
             CommonScaffold(navController = navController, userViewModel = userViewModel) {
             HomePage(auth, navController, carViewModel, partViewModel, userViewModel)
+            }
+        }
+        composable("CreateScreenRoute") {
+            CommonScaffold(navController = navController, userViewModel = userViewModel) {
+                Page2(auth, navController, carViewModel, partViewModel, userViewModel)
             }
         }
         composable("AboutScreenRoute") {
