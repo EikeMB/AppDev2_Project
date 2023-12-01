@@ -55,7 +55,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-private fun partSection(partsList: List<CarPart>, partChosenName: String, partChosen: PartType, selectedOption: CarPart, onOptionSelected: (CarPart) -> Unit){
+private fun partSection(partsList: List<CarPart>, partChosenName: String, partChosen: PartType, selectedOption: CarPart, onOptionSelected: (CarPart) -> Unit, defaultCar: MutableState<Car?>){
     val expanded = remember { mutableStateOf(false) }
 
     Surface(
@@ -93,7 +93,9 @@ private fun partSection(partsList: List<CarPart>, partChosenName: String, partCh
                         PartInfo(
                             part = part,
                             selectedOption = selectedOption,
-                            onOptionSelected = onOptionSelected
+                            onOptionSelected = onOptionSelected,
+                            defaultCar =  defaultCar
+
                         )
                     }
 
@@ -261,12 +263,12 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
         }
 
         //partSection(partsList = wheelsList, selectedOption = wheelSelectedOption, onOptionSelected = wheelOnOptionSelected)
-        partSection(partsList = partList,partChosenName = "Wheels", partChosen = PartType.Wheels, selectedOption = wheelSelectedOption, onOptionSelected = wheelOnOptionSelected)
-        partSection(partsList = partList,partChosenName = "Body", partChosen = PartType.Body, selectedOption = bodySelectedOption, onOptionSelected = bodyOnOptionSelected)
-        partSection(partsList = partList,partChosenName = "Aerodynamic", partChosen = PartType.Aerodynamics, selectedOption = aerodynamicSelectedOption, onOptionSelected = aerodynamicOnOptionSelected)
-        partSection(partsList = partList,partChosenName = "Engine", partChosen = PartType.Engine, selectedOption = engineSelectedOption, onOptionSelected = engineOnOptionSelected)
-        partSection(partsList = partList,partChosenName = "Interior", partChosen = PartType.Interior, selectedOption = interiorSelectedOption, onOptionSelected = interiorOnOptionSelected)
-        partSection(partsList = partList,partChosenName = "Accessories", partChosen = PartType.Accessories, selectedOption = accessoriesSelectedOption, onOptionSelected = accessoriesOnOptionSelected)
+        partSection(partsList = partList,partChosenName = "Wheels", partChosen = PartType.Wheels, selectedOption = wheelSelectedOption, onOptionSelected = wheelOnOptionSelected, defaultCar = defaultCar)
+        partSection(partsList = partList,partChosenName = "Body", partChosen = PartType.Body, selectedOption = bodySelectedOption, onOptionSelected = bodyOnOptionSelected,defaultCar = defaultCar)
+        partSection(partsList = partList,partChosenName = "Aerodynamic", partChosen = PartType.Aerodynamics, selectedOption = aerodynamicSelectedOption, onOptionSelected = aerodynamicOnOptionSelected,defaultCar = defaultCar)
+        partSection(partsList = partList,partChosenName = "Engine", partChosen = PartType.Engine, selectedOption = engineSelectedOption, onOptionSelected = engineOnOptionSelected,defaultCar = defaultCar)
+        partSection(partsList = partList,partChosenName = "Interior", partChosen = PartType.Interior, selectedOption = interiorSelectedOption, onOptionSelected = interiorOnOptionSelected,defaultCar = defaultCar)
+        partSection(partsList = partList,partChosenName = "Accessories", partChosen = PartType.Accessories, selectedOption = accessoriesSelectedOption, onOptionSelected = accessoriesOnOptionSelected,defaultCar = defaultCar)
 
     }
 
@@ -278,7 +280,8 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
 private fun PartInfo(
     part: CarPart,
     selectedOption: CarPart,
-    onOptionSelected: (CarPart) -> Unit
+    onOptionSelected: (CarPart) -> Unit,
+    defaultCar: MutableState<Car?>
 ) {
     val expanded = remember { mutableStateOf(false) }
     val extraPadding = if (expanded.value) 48.dp else 0.dp
@@ -302,7 +305,8 @@ private fun PartInfo(
                 }
                 RadioButton(
                     selected = (part == selectedOption),
-                    onClick = { onOptionSelected(part) },
+                    onClick = { onOptionSelected(part)
+                              defaultCar.value = null},
                     modifier = Modifier.padding(end = 16.dp),
                     colors = RadioButtonDefaults.colors(
                         selectedColor = Color.White,
