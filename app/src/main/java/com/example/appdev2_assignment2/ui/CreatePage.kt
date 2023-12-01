@@ -47,6 +47,7 @@ import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
+
 @Composable
 private fun partSection(partsList: List<CarPart>, partChosenName: String, partChosen: PartType, selectedOption: CarPart, onOptionSelected: (CarPart) -> Unit){
     val expanded = remember { mutableStateOf(false) }
@@ -163,8 +164,13 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     val (accessoriesSelectedOption, accessoriesOnOptionSelected) = remember { mutableStateOf(accessories) }
 
 
+
     val creating = true
     var carName by remember { mutableStateOf("") }
+
+    if(defaultCar != null){
+        carName =  defaultCar.value!!.name
+    }
     Column (
         modifier = Modifier
             .fillMaxSize()
