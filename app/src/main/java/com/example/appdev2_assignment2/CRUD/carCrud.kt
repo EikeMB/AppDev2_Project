@@ -137,7 +137,8 @@ fun convertSnapshotToCar(document: DocumentSnapshot): Car{
             image = (partMap["image"] as? Long)?.toInt() ?: 0,
             modelNum = (partMap["modelNum"] as? Long)?.toInt() ?: 0,
             description = partMap["description"] as? String ?: "",
-            type = PartType.valueOf(partMap["type"] as? String ?: "Body")
+            type = PartType.valueOf(partMap["type"] as? String ?: "Body"),
+            price = (partMap["price"] as? Long) ?: 0
         )
         partsList.add(part)
     }

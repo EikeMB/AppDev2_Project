@@ -9,7 +9,6 @@ import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.CRUD.CarRepository
 import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.User
-import com.example.appdev2_assignment2.cars
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

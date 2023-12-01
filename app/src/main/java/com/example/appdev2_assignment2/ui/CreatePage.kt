@@ -23,6 +23,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonColors
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -32,11 +34,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.appdev2_assignment2.AppUser
+import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.CarPart
 import com.example.appdev2_assignment2.PartType
 import com.example.appdev2_assignment2.R
@@ -52,7 +58,8 @@ private fun partSection(partsList: List<CarPart>, partChosenName: String, partCh
 
     Surface(
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+        modifier = Modifier
+            .padding(vertical = 4.dp, horizontal = 8.dp)
             .clickable { expanded.value = !expanded.value }
     ) {
         Row(
@@ -112,6 +119,7 @@ private fun partSection(partsList: List<CarPart>, partChosenName: String, partCh
 @Composable
 fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
 
+    val user by userViewModel.activeUser.collectAsState(initial = AppUser("","",0,""))
     val coroutineScope = rememberCoroutineScope()
 
     coroutineScope.launch {
@@ -121,6 +129,7 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     }
 
     val partList by partViewModel.allParts.collectAsState(initial = emptyList())
+    var nameError by rememberSaveable{ mutableStateOf<String?>(null)}
 
     var wheel: CarPart
     var body: CarPart
@@ -138,22 +147,22 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     val indexOfAccessoriesPart = partList.indexOfFirst { it.type == PartType.Accessories }
 
     wheel = if(partList.isNotEmpty()){ partList[indexOfWheelPart] }
-    else{ CarPart("", 0, -1, "", PartType.Wheels) }
+    else{ CarPart("", 0, -1, "", PartType.Wheels, 1) }
 
     body = if(partList.isNotEmpty()){ partList[indexOfBodyPart] }
-    else{ CarPart("", 0, -1, "", PartType.Body) }
+    else{ CarPart("", 0, -1, "", PartType.Body, 1) }
 
     aerodynamic = if(partList.isNotEmpty()){ partList[indexOfAerodynamicPart] }
-    else{ CarPart("", 0, -1, "", PartType.Aerodynamics) }
+    else{ CarPart("", 0, -1, "", PartType.Aerodynamics, 1) }
 
     engine = if(partList.isNotEmpty()){ partList[indexOfEnginePart] }
-    else{ CarPart("", 0, -1, "", PartType.Engine) }
+    else{ CarPart("", 0, -1, "", PartType.Engine, 1) }
 
     interior = if(partList.isNotEmpty()){ partList[indexOfInteriorPart] }
-    else{ CarPart("", 0, -1, "", PartType.Interior) }
+    else{ CarPart("", 0, -1, "", PartType.Interior, 1) }
 
     accessories = if(partList.isNotEmpty()){ partList[indexOfAccessoriesPart] }
-    else{ CarPart("", 0, -1, "", PartType.Accessories) }
+    else{ CarPart("", 0, -1, "", PartType.Accessories, 1) }
 
     val (wheelSelectedOption, wheelOnOptionSelected) = remember { mutableStateOf(wheel) }
     val (bodySelectedOption, bodyOnOptionSelected) = remember { mutableStateOf(body) }
@@ -198,13 +207,18 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
                     .height(50.dp)
                     .width(150.dp)
             )
+            
+
 
             Button(
                 onClick = {
-                    if (creating) {
+                    nameError = null
+                    if(carName.isNotEmpty()){
+                        carViewModel.addCar(Car(user.email, carName, listOf<CarPart>(body, wheel , aerodynamic, accessories, interior, engine), 0))
                         navController.navigate("MainScreenRoute")
-                    } else {
-                        navController.navigate("UserProfileRoute")
+                    }
+                    else{
+                        nameError = "Car name is required"
                     }
                 },
                 modifier = Modifier
@@ -212,6 +226,10 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
             ) {
                 Text("Finish")
             }
+
+        }
+        nameError?.let { error ->
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(4.dp))
         }
 
         //partSection(partsList = wheelsList, selectedOption = wheelSelectedOption, onOptionSelected = wheelOnOptionSelected)
@@ -239,7 +257,9 @@ private fun PartInfo(
 
     Surface(
         color = MaterialTheme.colorScheme.secondary,
-        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+        modifier = Modifier
+            .padding(vertical = 4.dp, horizontal = 8.dp)
+            .clickable { expanded.value = !expanded.value }
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
@@ -252,13 +272,17 @@ private fun PartInfo(
                 RadioButton(
                     selected = (part == selectedOption),
                     onClick = { onOptionSelected(part) },
-                    modifier = Modifier.padding(end = 16.dp)
+                    modifier = Modifier.padding(end = 16.dp),
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = Color.White,
+                        unselectedColor = MaterialTheme.colorScheme.onSecondary
+                    )
                 )
                 Text(text = part.name)
             }
             if (expanded.value) {
                 Text( text = part.description )
-                //Text( text = part.price )----------Add price
+                Text( text = part.price.toString() )
             }
         }
         IconButton(
