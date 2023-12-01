@@ -1,5 +1,6 @@
 package com.example.appdev2_assignment2.CRUD
 
+import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.CarPart
 import com.example.appdev2_assignment2.PartType
@@ -28,7 +29,7 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
             }
     }
 
-    override suspend fun getCars(user: User): Flow<List<Car>> = callbackFlow{
+    override suspend fun getCars(user: AppUser): Flow<List<Car>> = callbackFlow{
         val subscription = dbCars
             .whereEqualTo("userEmail", user.email)
             .addSnapshotListener{ snapshot, error ->
@@ -146,7 +147,7 @@ fun convertSnapshotToCar(document: DocumentSnapshot): Car{
 
 interface CarRepository{
     suspend fun addCar(car: Car)
-    suspend fun getCars(user: User): Flow<List<Car>>
+    suspend fun getCars(user: AppUser): Flow<List<Car>>
     suspend fun getCars(): Flow<List<Car>>
     suspend fun getCar(name: String): Flow<Car>
 

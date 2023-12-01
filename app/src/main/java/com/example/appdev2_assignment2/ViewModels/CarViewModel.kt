@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.CRUD.CarRepository
 import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.User
@@ -24,7 +25,7 @@ class CarViewModel(private val carRepository: CarRepository) : ViewModel(){
 
     private val _allCars = MutableStateFlow(listOf<Car>())
     val allCars: StateFlow<List<Car>> = _allCars.asStateFlow()
-    suspend fun getCarsForUser(user: User){
+    suspend fun getCarsForUser(user: AppUser){
         viewModelScope.launch {
             carRepository.getCars(user).collect() { userCars ->
                 _userCars.value = userCars
