@@ -38,7 +38,9 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.User
+import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
+import com.example.appdev2_assignment2.auth.delete
 import com.example.appdev2_assignment2.auth.signOut
 import com.google.firebase.auth.FirebaseAuth
 
@@ -52,7 +54,8 @@ fun UserProfilePage(
     onPasswordChange: () -> Unit,
     onApplyChanges: () -> Unit,
     navController: NavController,
-    auth: FirebaseAuth
+    auth: FirebaseAuth,
+    carViewModel: CarViewModel
 )  {
 
 
@@ -167,6 +170,17 @@ fun UserProfilePage(
                 .padding(8.dp)
         ){
             Text(text = "Sign Out")
+        }
+        val cars by carViewModel.userCars.collectAsState(initial = emptyList())
+        Button(
+            onClick = {
+                delete(auth, navController, userViewModel, user, carViewModel, cars)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ){
+            Text(text = "Delete account")
         }
 
 

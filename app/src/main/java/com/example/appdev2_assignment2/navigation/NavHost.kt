@@ -59,7 +59,8 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
                         onPasswordChange = { /* implement the logic */ },
                         onApplyChanges = { /* implement the logic */ },
                         navController = navController,
-                        auth = auth
+                        auth = auth,
+                        carViewModel = carViewModel
                     )
                 }
             }

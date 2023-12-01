@@ -78,7 +78,7 @@ class UserRepositoryFirestore(var db: FirebaseFirestore):UserRepository {
     }
 
     override suspend fun delete(user: AppUser) {
-        dbUsers.document(user.name)
+        dbUsers.document(user.email)
             .delete()
             .addOnSuccessListener { println("User ${user.name} has been deleted") }
             .addOnFailureListener { error -> println("Error deleting user ${user.name}: $error") }

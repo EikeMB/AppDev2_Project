@@ -3,13 +3,16 @@ package com.example.appdev2_assignment2.auth
 import android.util.Log
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import com.example.appdev2_assignment2.AppUser
+import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.User
+import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.runBlocking
-import java.lang.Exception
 
 
 fun signIn(auth: FirebaseAuth, userName: String, password: String, navController: NavController, userViewModel: UserViewModel, error: MutableState<String?>){
@@ -54,6 +57,24 @@ fun signOut(auth: FirebaseAuth, navController: NavController){
 
         navController.navigate("LoginScreenRoute")
     }catch(e: Exception){
+        println(e.message)
+    }
+}
+
+fun delete(auth: FirebaseAuth, navController: NavController, userViewModel: UserViewModel, currentUser: AppUser, carViewModel: CarViewModel, cars: List<Car>){
+    try {
+
+        var user = auth.currentUser!!.delete()
+            .addOnCompleteListener {
+                if(it.isSuccessful){
+                    userViewModel.deleteUser(currentUser)
+                    for(car in cars){
+                        carViewModel.deleteCar(car)
+                    }
+                    navController.navigate("LoginScreenRoute")
+                }
+            }
+    }catch (e: Exception){
         println(e.message)
     }
 }
