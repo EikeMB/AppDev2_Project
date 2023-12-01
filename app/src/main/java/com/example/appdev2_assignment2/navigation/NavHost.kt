@@ -39,7 +39,6 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
             LaunchedEffect(Unit){
                 launch { carViewModel.getCarsForUser(user) }
                 launch { carViewModel.getAllCars() }
-                delay(1000)
             }
             CommonScaffold(navController = navController, userViewModel = userViewModel) {
             HomePage(auth, navController, carViewModel, partViewModel, userViewModel)
