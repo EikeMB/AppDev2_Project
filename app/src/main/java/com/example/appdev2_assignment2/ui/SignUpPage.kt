@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,8 +37,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.R
@@ -91,8 +95,13 @@ fun SignUpScreen(
 
         // TITLE
         Text(
-            text = "App Title", // Your title text
-            modifier = Modifier.padding(bottom = 20.dp)
+            text = "Car Builder App",
+            modifier = Modifier.padding(top = 50.dp, bottom = 50.dp),
+            style = LocalTextStyle.current.copy(
+                fontSize = 24.sp, // Set the desired font size
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Serif, // Set a custom font family
+            )
         )
 
         TextField(
