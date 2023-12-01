@@ -21,6 +21,8 @@ import com.example.appdev2_assignment2.ui.Page2
 import com.example.appdev2_assignment2.ui.SignUpScreen
 import com.example.appdev2_assignment2.ui.UserProfilePage
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -33,6 +35,11 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
             SignUpScreen(navController, auth = auth, userViewModel = userViewModel)
         }
         composable("MainScreenRoute") {
+            val user by userViewModel.activeUser.collectAsState(initial = AppUser("","",0,""))
+            LaunchedEffect(Unit){
+                launch { carViewModel.getCarsForUser(user) }
+                launch { carViewModel.getAllCars() }
+            }
             CommonScaffold(navController = navController, userViewModel = userViewModel) {
             HomePage(auth, navController, carViewModel, partViewModel, userViewModel)
             }

@@ -41,17 +41,7 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun HomePage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
 
-    val user by userViewModel.activeUser.collectAsState(initial = AppUser("","",0,""))
 
-
-
-    LaunchedEffect(Unit){
-        carViewModel.getCarsForUser(user)
-
-    }
-    LaunchedEffect(Unit){
-        carViewModel.getAllCars()
-    }
 
 
 

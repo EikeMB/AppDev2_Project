@@ -89,7 +89,6 @@ fun UserProfilePage(
                 .clip(CircleShape)
                 .background(color = MaterialTheme.colorScheme.primary)
                 .border(2.dp, color = MaterialTheme.colorScheme.onBackground, shape = CircleShape)
-                .clickable { onProfilePictureChange() }
                 .padding(16.dp)
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)

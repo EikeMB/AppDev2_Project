@@ -20,7 +20,7 @@ class CarPartViewModel(private val carPartRepository: CarPartRepository): ViewMo
     private val _allParts = MutableStateFlow(listOf<CarPart>())
     val allParts: StateFlow<List<CarPart>> = _allParts.asStateFlow()
 
-    private val _activePart = MutableStateFlow(CarPart("", 0, 0, "", PartType.Body))
+    private val _activePart = MutableStateFlow(CarPart("", 0, 0, "", PartType.Body, 0))
     val activePart: StateFlow<CarPart> = _activePart.asStateFlow()
 
     suspend fun getPartsOfType(type: PartType){
