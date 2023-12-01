@@ -58,6 +58,10 @@ fun UserProfilePage(
 
     val user by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0, ""))
 
+    var newImageLink by remember {
+        mutableStateOf("")
+    }
+
     var newNameText by remember{
         mutableStateOf("")
     }
@@ -87,10 +91,22 @@ fun UserProfilePage(
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
         )
-
+        TextField(
+            value = newImageLink,
+            onValueChange = { newImageLink = it },
+            label = { Text(text = "New Image Link") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
         // Change Profile Picture Button
         Button(
-            onClick = { onProfilePictureChange() },
+            onClick = {
+                var newUser = user
+                newUser.picture = newImageLink
+                userViewModel.addUser(newUser)
+                newImageLink = ""
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Change Profile Picture")
