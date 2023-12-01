@@ -58,8 +58,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -133,15 +137,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun StartupPage(auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
 
-
     val navController = rememberNavController()
+    var defaultCar = remember { mutableStateOf <Car?>(null) }
 
     MainNavHost(
         navController = navController,
         auth = auth,
         userViewModel = userViewModel,
         carViewModel = carViewModel,
-        partViewModel = partViewModel
+        partViewModel = partViewModel,
+        defaultCar = defaultCar
+
     )
 }
 

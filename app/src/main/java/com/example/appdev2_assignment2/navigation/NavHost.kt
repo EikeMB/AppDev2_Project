@@ -2,12 +2,14 @@ package com.example.appdev2_assignment2.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.appdev2_assignment2.AppUser
+import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.StartupPage
 import com.example.appdev2_assignment2.User
 import com.example.appdev2_assignment2.ViewModels.CarPartViewModel
@@ -26,7 +28,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewModel: UserViewModel, carViewModel: CarViewModel, partViewModel: CarPartViewModel){
+fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewModel: UserViewModel, carViewModel: CarViewModel, partViewModel: CarPartViewModel, defaultCar: MutableState<Car?>){
     NavHost(navController = navController, startDestination = "LoginScreenRoute") {
         composable("LoginScreenRoute") {
             LoginScreen(navController, auth = auth, userViewModel = userViewModel)
@@ -41,12 +43,12 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
                 launch { carViewModel.getAllCars() }
             }
             CommonScaffold(navController = navController, userViewModel = userViewModel) {
-            HomePage(auth, navController, carViewModel, partViewModel, userViewModel)
+            HomePage(auth, navController, carViewModel, partViewModel, userViewModel, defaultCar)
             }
         }
         composable("CreateScreenRoute") {
             CommonScaffold(navController = navController, userViewModel = userViewModel) {
-                Page2(auth, navController, carViewModel, partViewModel, userViewModel)
+                Page2(auth, navController, carViewModel, partViewModel, userViewModel, defaultCar)
             }
         }
         composable("AboutScreenRoute") {

@@ -3,6 +3,7 @@ package com.example.appdev2_assignment2.ui
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -39,7 +41,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun HomePage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
+fun HomePage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel, defaultCar: MutableState<Car?>) {
 
 
 
@@ -57,15 +59,15 @@ fun HomePage(auth: FirebaseAuth, navController: NavController, carViewModel: Car
 
         Text(text = "Your customized cars: ", Modifier.padding(10.dp))
         Box{
-            UserCarsList(cars = cars)
+            UserCarsList(cars = cars, navController = navController, defaultCar = defaultCar)
         }
         Text(text = "See other customized car: ", Modifier.padding(10.dp))
-        UserCarsListVertical(cars = allCars)
+        UserCarsListVertical(cars = allCars, navController = navController, defaultCar = defaultCar)
     }
 }
 
 @Composable
-fun UserCarsListVertical(cars: List<Car>) {
+fun UserCarsListVertical(cars: List<Car>, navController: NavController, defaultCar: MutableState<Car?>) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -82,14 +84,14 @@ fun UserCarsListVertical(cars: List<Car>) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
-                        CarCard(car = car)
-                        CarCard(car = cars[index - 1])
+                        CarCard(car = car, navController = navController, defaultCar = defaultCar)
+                        CarCard(car = cars[index - 1], navController = navController, defaultCar = defaultCar)
                     }
                 }
                 else{
                     val isLastItem = index == cars.lastIndex
                     if (isLastItem) {
-                        CarCard(car = car)
+                        CarCard(car = car, navController = navController, defaultCar = defaultCar)
                     }
                 }
             }
@@ -98,20 +100,20 @@ fun UserCarsListVertical(cars: List<Car>) {
 }
 
 @Composable
-fun UserCarsList(cars: List<Car>){
+fun UserCarsList(cars: List<Car>, navController: NavController, defaultCar: MutableState<Car?>){
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Blue))
     {
         items(cars) { car ->
-            CarCard(car = car)
+            CarCard(car = car, navController = navController, defaultCar = defaultCar)
         }
     }
 }
 
 @Composable
-fun CarCard(car: Car){
+fun CarCard(car: Car, navController: NavController, defaultCar: MutableState<Car?>){
     var image: Int = 0
 
     for(part in car.parts){
@@ -120,14 +122,14 @@ fun CarCard(car: Car){
         }
     }
 
-
-
-
     Card(
         modifier = Modifier
             .padding(15.dp)
             .height(230.dp)
             .width(170.dp)
+            .clickable {
+                defaultCar.value = car
+                navController.navigate("CreateScreenRoute")  }
     ) {
         Column(
             modifier = Modifier

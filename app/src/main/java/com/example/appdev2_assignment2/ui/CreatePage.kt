@@ -29,6 +29,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +52,7 @@ import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+
 
 @Composable
 private fun partSection(partsList: List<CarPart>, partChosenName: String, partChosen: PartType, selectedOption: CarPart, onOptionSelected: (CarPart) -> Unit){
@@ -117,7 +119,7 @@ private fun partSection(partsList: List<CarPart>, partChosenName: String, partCh
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("StateFlowValueCalledInComposition", "CoroutineCreationDuringComposition")
 @Composable
-fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
+fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel, defaultCar: MutableState<Car?>) {
 
     val user by userViewModel.activeUser.collectAsState(initial = AppUser("","",0,""))
     val coroutineScope = rememberCoroutineScope()
@@ -172,8 +174,33 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     val (accessoriesSelectedOption, accessoriesOnOptionSelected) = remember { mutableStateOf(accessories) }
 
 
+
     val creating = true
     var carName by remember { mutableStateOf("") }
+
+    if(defaultCar.value != null){
+        carName =  defaultCar.value!!.name
+        for(part in defaultCar.value!!.parts){
+            if(part.type == PartType.Accessories){
+                accessoriesOnOptionSelected(part)
+            }
+            else if(part.type == PartType.Aerodynamics){
+                aerodynamicOnOptionSelected(part)
+            }
+            else if(part.type == PartType.Body){
+                bodyOnOptionSelected(part)
+            }
+            else if(part.type == PartType.Engine){
+                engineOnOptionSelected(part)
+            }
+            else if(part.type == PartType.Interior){
+                interiorOnOptionSelected(part)
+            }
+            else if(part.type == PartType.Wheels){
+                wheelOnOptionSelected(part)
+            }
+        }
+    }
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -270,6 +297,9 @@ private fun PartInfo(
                 .padding(12.dp)
                 .fillMaxWidth()
             ){
+                if(selectedOption.modelNum == -1){
+                    onOptionSelected(part)
+                }
                 RadioButton(
                     selected = (part == selectedOption),
                     onClick = { onOptionSelected(part) },
