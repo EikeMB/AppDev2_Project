@@ -33,6 +33,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.User
@@ -40,7 +42,7 @@ import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.example.appdev2_assignment2.auth.signOut
 import com.google.firebase.auth.FirebaseAuth
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun UserProfilePage(
     userViewModel: UserViewModel,
@@ -54,7 +56,7 @@ fun UserProfilePage(
 )  {
 
 
-    val user by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0, 0))
+    val user by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0, ""))
 
     var newNameText by remember{
         mutableStateOf("")
@@ -72,9 +74,9 @@ fun UserProfilePage(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Profile Picture
-        Image(
-            painter = painterResource(id = R.drawable.profilepic1), // Replace with your actual resource ID
-            contentDescription = "Profile Picture",
+        GlideImage(
+            model = user.picture,
+            contentDescription = "profile picture",
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape)

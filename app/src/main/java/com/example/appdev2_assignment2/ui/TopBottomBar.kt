@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Face
@@ -27,17 +28,22 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun TopBar(userViewModel: UserViewModel) {
-    val user by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0, 0))
+
+    val user by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0, ""))
 
     Row(
         modifier = Modifier
@@ -51,12 +57,13 @@ fun TopBar(userViewModel: UserViewModel) {
             fontSize = 24.sp,
             color = MaterialTheme.colorScheme.onPrimary
         )
-        Image(
-            painter = painterResource(id = R.drawable.profileicon),
-            contentDescription = null,
+        GlideImage(
+            model = user.picture,
+            contentDescription = "",
             modifier = Modifier
                 .size(48.dp)
                 .weight(1f)
+                .clip(CircleShape)
         )
         Column {
             Text(

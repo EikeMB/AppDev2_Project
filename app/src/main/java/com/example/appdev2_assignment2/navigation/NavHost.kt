@@ -47,7 +47,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
                 userViewModel.getUser(user!!.email)
             }
 
-            val appUser by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0,0))
+            val appUser by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0,""))
 
             if (appUser != null) {
                 CommonScaffold(navController = navController, userViewModel = userViewModel) {

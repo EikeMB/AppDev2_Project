@@ -2,6 +2,7 @@ package com.example.appdev2_assignment2.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,7 +62,7 @@ fun SignUpScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("18") }
     var picture by remember {
-        mutableIntStateOf(R.drawable.profilepic1)
+        mutableStateOf("")
     }
 
     // ERROR INPUT FIELD
@@ -70,13 +73,17 @@ fun SignUpScreen(
     var passwordError by remember { mutableStateOf<String?>(null) }
     var confirmPasswordError by remember { mutableStateOf<String?>(null) }
     var ageError by remember { mutableStateOf<String?>(null) }
+    var pictureError by remember {
+        mutableStateOf<String?>(null)
+    }
     val error = remember { mutableStateOf<String?>(null) }
 
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(50.dp),
+            .padding(50.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -172,37 +179,29 @@ fun SignUpScreen(
             Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
         }
 
+        TextField(
+            value = picture,
+            onValueChange = { newText ->
+                picture = newText
+            },
+            label = { Text("Enter the link to your profile picture online.") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            isError = pictureError != null,
+        )
+        pictureError?.let { error ->
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
+        }
+
         error.value?.let { error ->
             Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
         }
 
-        val profilePics: List<Int> = listOf(
-            R.drawable.profilepic1,
-            R.drawable.profilepic2,
-            R.drawable.profilepic3,
-            R.drawable.profilepic4
-        )
 
-        LazyRow{
-            items(profilePics){item ->
-                Surface (
-                    modifier = Modifier
-                        .size(90.dp)
-                        .clip(CircleShape)
-                        .clickable { picture = item }
-                        .background(MaterialTheme.colorScheme.background),
-                ){
-                    Image(
-                        painter = painterResource(id = item),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.background)
-                    )
-                }
-            }
-        }
+
+
+
 
         //REGISTER BUTTON
         Button(
@@ -223,6 +222,7 @@ fun SignUpScreen(
                     passwordError = if (password.isEmpty()) "Password  required" else null
                     confirmPasswordError = if (password != confirmPassword) "Confirm Password does not match Password" else null
                     ageError = if (age.isEmpty() || age.toIntOrNull() == null) "Invalid age" else null
+                    pictureError = if (picture.isEmpty()) "Image required" else null
                 }
 
             },

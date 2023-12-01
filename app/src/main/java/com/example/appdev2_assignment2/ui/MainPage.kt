@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.PartType
 import com.example.appdev2_assignment2.User
@@ -40,12 +41,12 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun HomePage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
 
-    val user = auth.currentUser?.email?.let { User(it) }
+    val user by userViewModel.activeUser.collectAsState(initial = AppUser("","",0,""))
 
 
 
     LaunchedEffect(Unit){
-        carViewModel.getCarsForUser(user!!)
+        carViewModel.getCarsForUser(user)
 
     }
     LaunchedEffect(Unit){
