@@ -138,7 +138,7 @@ fun LoginScreen(
             ),
 
         ) {
-            Text("Login", color = MaterialTheme.colorScheme.onBackground)
+            Text("Login", color = Color.Black)
         }
 
         //SIGN UP BUTTON
@@ -149,7 +149,7 @@ fun LoginScreen(
                 rememberUpdatedState(Color(0xFFADD8E6)).value,
             ),
         ) {
-            Text("Sign up", color = MaterialTheme.colorScheme.onBackground)
+            Text("Sign up", color = Color.Black)
         }
     }
 }
