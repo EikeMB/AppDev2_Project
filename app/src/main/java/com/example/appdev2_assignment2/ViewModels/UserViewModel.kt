@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class UserViewModel(private val userRepository: UserRepositoryFirestore): ViewModel() {
-    private val _activeUser = MutableStateFlow(AppUser("", "", 0,0))
+    private val _activeUser = MutableStateFlow(AppUser("", "", 0,""))
     val activeUser: StateFlow<AppUser> = _activeUser.asStateFlow()
 
     private val _allUsers = MutableStateFlow(listOf<AppUser>())

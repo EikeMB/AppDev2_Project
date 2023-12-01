@@ -84,4 +84,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation ("androidx.compose.material:material-icons-extended:compose_version")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 }

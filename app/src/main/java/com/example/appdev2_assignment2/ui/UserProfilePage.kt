@@ -13,13 +13,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,25 +32,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.User
+import com.example.appdev2_assignment2.ViewModels.UserViewModel
+import com.example.appdev2_assignment2.auth.signOut
+import com.google.firebase.auth.FirebaseAuth
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun UserProfilePage(
-    user: AppUser,
+    userViewModel: UserViewModel,
     onProfilePictureChange: () -> Unit,
     onNameChange: () -> Unit,
     onAgeChange: () -> Unit,
     onPasswordChange: () -> Unit,
-    onApplyChanges: () -> Unit
+    onApplyChanges: () -> Unit,
+    navController: NavController,
+    auth: FirebaseAuth
 )  {
 
-    var isChangingName by remember { mutableStateOf(false) }
-    var newName by remember {
-        mutableStateOf(user.name)
+
+    val user by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0, ""))
+
+    var newImageLink by remember {
+        mutableStateOf("")
     }
+
     var newNameText by remember{
         mutableStateOf("")
     }
@@ -59,13 +73,14 @@ fun UserProfilePage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Profile Picture
-        Image(
-            painter = painterResource(id = R.drawable.profil_picture), // Replace with your actual resource ID
-            contentDescription = "Profile Picture",
+        GlideImage(
+            model = user.picture,
+            contentDescription = "profile picture",
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape)
@@ -76,10 +91,22 @@ fun UserProfilePage(
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
         )
-
+        TextField(
+            value = newImageLink,
+            onValueChange = { newImageLink = it },
+            label = { Text(text = "New Image Link") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
         // Change Profile Picture Button
         Button(
-            onClick = { onProfilePictureChange() },
+            onClick = {
+                var newUser = user
+                newUser.picture = newImageLink
+                userViewModel.addUser(newUser)
+                newImageLink = ""
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Change Profile Picture")
@@ -99,17 +126,14 @@ fun UserProfilePage(
 // Change Name Button
         Button(
             onClick = {
-                if (isChangingName) {
-                    // If the user is changing the name, update the newName and reset the text box
-                    newName = newNameText
-                    newNameText = ""
-                }
-                // Toggle the state of isChangingName
-                isChangingName = !isChangingName
+                var newUser = user
+                newUser.name = newNameText
+                userViewModel.addUser(newUser)
+                newNameText = ""
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(if (isChangingName) "Save Name" else "Change Name")
+            Text("Change Name")
         }
 
         // User's Age
@@ -124,29 +148,27 @@ fun UserProfilePage(
         )
         // Change Age Button
         Button(
-            onClick = { onAgeChange() },
+            onClick = {
+                var newUser = user
+                newUser.age = newAgeText.toInt()
+                userViewModel.addUser(newUser)
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Change Age")
         }
 
-        // User's Password (masked with *)
-//        Text("Password: ${"*".repeat(user.password.length)}")
-//
-//        // Change Password Button
-//        Button(
-//            onClick = { onPasswordChange() },
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            Text("Change Password")
-//        }
+        Button(
+            onClick = {
+                signOut(auth, navController)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ){
+            Text(text = "Sign Out")
+        }
 
-        // Apply Changes Button
-       /* Button(
-            onClick = { onApplyChanges() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Apply Changes")
-        }*/
+
     }
 }

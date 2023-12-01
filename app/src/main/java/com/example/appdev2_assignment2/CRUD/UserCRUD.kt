@@ -12,7 +12,7 @@ class UserRepositoryFirestore(var db: FirebaseFirestore):UserRepository {
     val dbUsers = db.collection("users")
 
     override suspend fun addUser(user: AppUser) {
-        dbUsers.document(user.name).set(user)
+        dbUsers.document(user.email).set(user)
             .addOnSuccessListener {
                 println("User saved")
             }
@@ -67,11 +67,11 @@ class UserRepositoryFirestore(var db: FirebaseFirestore):UserRepository {
                     trySend(user)
                 }else{
                     println("User has become null")
-                    trySend(AppUser("", "", 0, 0))
+                    trySend(AppUser("", "", 0, ""))
                 }
             }else{
                 println("User does not exist")
-                trySend(AppUser("", "", 0, 0))
+                trySend(AppUser("", "", 0, ""))
             }
         }
         awaitClose { subscription.remove()}
@@ -90,7 +90,7 @@ fun convertDocumentToUser(document: DocumentSnapshot): AppUser{
     var email = document.getString("email") ?: ""
     var age = document.getLong("age")?.toInt() ?: 0
 
-    var picture = document.getLong("picture")?.toInt() ?: 0
+    var picture = document.getString("picture") ?: ""
 
     return AppUser(email, name, age, picture)
 }
