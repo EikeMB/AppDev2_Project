@@ -80,7 +80,7 @@ fun UserCarsListVertical(cars: List<Car>) {
         modifier = Modifier
             .fillMaxSize()
             .padding(vertical = 16.dp)
-            .background(Color.Blue)
+            .background(Color(0xFFADD8E6))
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
