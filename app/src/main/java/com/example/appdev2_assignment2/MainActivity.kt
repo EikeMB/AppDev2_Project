@@ -589,6 +589,7 @@ private fun partSection(partsList: List<CarPart>, partChosenName: String, partCh
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("StateFlowValueCalledInComposition", "CoroutineCreationDuringComposition")
 @Composable
 fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
@@ -645,12 +646,55 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
 
 
     val creating = true
-
+    var carName by remember { mutableStateOf("") }
     Column (
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ){
+
+
+        Row(
+            modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth()
+        ) {
+            Button(
+                onClick = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier
+                    .padding(8.dp)
+            ) {
+                Text("Back")
+            }
+
+            TextField(
+                value = carName,
+                onValueChange = { newText ->
+                    carName = newText
+                },
+                placeholder = { Text("Car Name") }, // Add the placeholder
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(50.dp)
+                    .width(150.dp)
+            )
+
+            Button(
+                onClick = {
+                    if (creating) {
+                        navController.navigate("MainScreenRoute")
+                    } else {
+                        navController.navigate("UserProfileRoute")
+                    }
+                },
+                modifier = Modifier
+                    .padding(8.dp)
+            ) {
+                Text("Finish")
+            }
+        }
 
         //partSection(partsList = wheelsList, selectedOption = wheelSelectedOption, onOptionSelected = wheelOnOptionSelected)
         partSection(partsList = partList,partChosenName = "Wheels", partChosen = PartType.Wheels, selectedOption = wheelSelectedOption, onOptionSelected = wheelOnOptionSelected)
@@ -660,36 +704,6 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
         partSection(partsList = partList,partChosenName = "Interior", partChosen = PartType.Interior, selectedOption = interiorSelectedOption, onOptionSelected = interiorOnOptionSelected)
         partSection(partsList = partList,partChosenName = "Accessories", partChosen = PartType.Accessories, selectedOption = accessoriesSelectedOption, onOptionSelected = accessoriesOnOptionSelected)
 
-        Row ( modifier = Modifier.weight(1f).padding(12.dp).fillMaxWidth()){
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            //Later change the if statement to if we modify or create
-            IconButton(
-                onClick = {
-                    if (creating) {
-                        navController.navigate("MainScreenRoute")
-                    } else {
-                        navController.navigate("UserProfileRoute")
-                    }
-
-                    //Later change it to summary page of the car
-                    //navController.navigate("UserProfileRoute")
-                },
-                modifier = Modifier.padding(16.dp)
-            ) {
-                val icon = if (creating) Icons.Filled.ArrowForward else Icons.Filled.Person
-                Icon(icon, contentDescription = "Next")
-            }
-        }
     }
 
 }
@@ -830,8 +844,8 @@ fun CarCard(car: Car){
 @Composable
 fun Router(navController: NavHostController, auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
     NavHost(navController = navController, startDestination = "MainScreenRoute") {
-        composable("MainScreenRoute") { Page1(auth, navController, carViewModel, partViewModel, userViewModel) }
-        composable("AboutScreenRoute") { Page2(auth, navController, carViewModel, partViewModel, userViewModel) }
+        composable("MainScreenRoute") { Page2(auth, navController, carViewModel, partViewModel, userViewModel) }
+        composable("AboutScreenRoute") { Page1(auth, navController, carViewModel, partViewModel, userViewModel) }
         composable("UserProfileRoute") {
             val user = auth.currentUser?.email?.let { User(it) }
             LaunchedEffect(Unit){
