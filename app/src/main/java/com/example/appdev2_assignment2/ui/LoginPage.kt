@@ -92,9 +92,6 @@ fun LoginScreen(
             )
         }
 
-        usernameError?.let { error ->
-            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
-        }
 
         //PASSWORD INPUT
         TextField(
@@ -141,7 +138,7 @@ fun LoginScreen(
             ),
 
         ) {
-            Text("Login")
+            Text("Login", color = MaterialTheme.colorScheme.onBackground)
         }
 
         //SIGN UP BUTTON
@@ -152,7 +149,7 @@ fun LoginScreen(
                 rememberUpdatedState(Color(0xFFADD8E6)).value,
             ),
         ) {
-            Text("Sign up")
+            Text("Sign up", color = MaterialTheme.colorScheme.onBackground)
         }
     }
 }
