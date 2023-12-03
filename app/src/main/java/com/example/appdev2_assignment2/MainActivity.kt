@@ -1,9 +1,14 @@
 package com.example.appdev2_assignment2
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Application
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -80,6 +85,7 @@ import com.example.appdev2_assignment2.CRUD.UserRepositoryFirestore
 import com.example.appdev2_assignment2.ViewModels.CarPartViewModel
 import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
+import com.example.appdev2_assignment2.auth.signOut
 import com.example.appdev2_assignment2.navigation.MainNavHost
 import com.example.appdev2_assignment2.ui.TopBar
 import com.google.firebase.Firebase
@@ -98,11 +104,11 @@ import kotlinx.coroutines.withContext
 
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lateinit var auth: FirebaseAuth
 
-        auth = Firebase.auth
+        val auth = FirebaseAuth.getInstance()
 
         val db = FirebaseFirestore.getInstance()
 
@@ -117,7 +123,6 @@ class MainActivity : ComponentActivity() {
         var userViewModel = UserViewModel(userRepository)
 
 
-
         setContent {
             AppDev2_Assignment2Theme {
                 // A surface container using the 'background' color from the theme
@@ -125,14 +130,19 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+
                     StartupPage(auth, carViewModel, carPartViewModel, userViewModel)
 
                 }
             }
         }
+
+
     }
 
 }
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartupPage(auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
