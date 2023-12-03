@@ -243,8 +243,10 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
                 onClick = {
                     nameError = null
                     if(carName.isNotEmpty()){
-                        carViewModel.addCar(Car(user.email, carName, listOf<CarPart>(bodySelectedOption, wheelSelectedOption , aerodynamicSelectedOption,
-                            accessoriesSelectedOption, interiorSelectedOption, engineSelectedOption), 0))
+                        val tempCar = Car(user.email, carName, listOf<CarPart>(bodySelectedOption, wheelSelectedOption , aerodynamicSelectedOption,
+                            accessoriesSelectedOption, interiorSelectedOption, engineSelectedOption), 0)
+                        carViewModel.addCar(tempCar)
+                        defaultCar.value = tempCar
                         navController.navigate("SummaryScreenRoute")
                     }
                     else{

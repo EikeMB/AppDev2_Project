@@ -130,7 +130,7 @@ fun PartSummary(
         // Middle: Description
         Column(
             modifier = Modifier
-                .weight(2f) // Adjust weight to occupy more space
+                .weight(2.5f) // Adjust weight to occupy more space
                 .padding(horizontal = 8.dp),
             verticalArrangement = Arrangement.Center
         ) {
@@ -144,7 +144,7 @@ fun PartSummary(
 
         // Right: Price
         Text(
-            text = partChosen!!.price.toString(),
+            text = "${partChosen!!.price}$",
             modifier = Modifier
                 .weight(0.5f)
         )
