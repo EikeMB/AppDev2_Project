@@ -29,9 +29,9 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
             }
     }
 
-    override suspend fun getCars(user: AppUser): Flow<List<Car>> = callbackFlow{
+    override suspend fun getCars(user: String): Flow<List<Car>> = callbackFlow{
         val subscription = dbCars
-            .whereEqualTo("userEmail", user.email)
+            .whereEqualTo("userEmail", user)
             .addSnapshotListener{ snapshot, error ->
             if(error != null){
                 println("Listen failed: $error")
@@ -148,7 +148,7 @@ fun convertSnapshotToCar(document: DocumentSnapshot): Car{
 
 interface CarRepository{
     suspend fun addCar(car: Car)
-    suspend fun getCars(user: AppUser): Flow<List<Car>>
+    suspend fun getCars(user: String): Flow<List<Car>>
     suspend fun getCars(): Flow<List<Car>>
     suspend fun getCar(name: String): Flow<Car>
 

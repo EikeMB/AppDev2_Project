@@ -22,11 +22,12 @@ fun signIn(auth: FirebaseAuth, userName: String, password: String, navController
 
                     runBlocking {
                         userViewModel.getUser(userName)
+                        navController.navigate("MainScreenRoute")
                     }
 
-                    navController.navigate("MainScreenRoute")
+
                 } else {
-                    var errorString = task.exception.toString()
+                    val errorString = task.exception.toString()
 
                     error.value = errorString.substringAfterLast(":")
                 }
@@ -40,11 +41,14 @@ fun signUp(auth: FirebaseAuth, user: AppUser, password: String, navController: N
 
                 userViewModel.addUser(user)
 
-                runBlocking { userViewModel.getUser(user.email) }
+                runBlocking {
+                    userViewModel.getUser(user.email)
+                    navController.navigate("MainScreenRoute")
+                }
 
-                navController.navigate("MainScreenRoute")
+
             } else {
-                var errorString = task.exception.toString()
+                val errorString = task.exception.toString()
 
                 error.value = errorString.substringAfterLast(":")
             }

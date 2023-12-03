@@ -24,7 +24,7 @@ class CarViewModel(private val carRepository: CarRepository) : ViewModel(){
 
     private val _allCars = MutableStateFlow(listOf<Car>())
     val allCars: StateFlow<List<Car>> = _allCars.asStateFlow()
-    suspend fun getCarsForUser(user: AppUser){
+    suspend fun getCarsForUser(user: String){
         viewModelScope.launch {
             carRepository.getCars(user).collect() { userCars ->
                 _userCars.value = userCars
