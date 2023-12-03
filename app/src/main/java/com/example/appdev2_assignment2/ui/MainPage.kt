@@ -43,11 +43,6 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun HomePage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel, defaultCar: MutableState<Car?>) {
 
-
-
-
-
-
     val cars by carViewModel.userCars.collectAsState(initial = emptyList())
     val allCars by carViewModel.allCars.collectAsState(initial = emptyList())
 
@@ -129,7 +124,7 @@ fun CarCard(car: Car, navController: NavController, defaultCar: MutableState<Car
             .width(170.dp)
             .clickable {
                 defaultCar.value = car
-                navController.navigate("CreateScreenRoute")  }
+                navController.navigate("SummaryScreenRoute")  }
     ) {
         Column(
             modifier = Modifier

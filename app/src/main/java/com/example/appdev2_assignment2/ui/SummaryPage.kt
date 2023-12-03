@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -42,7 +43,8 @@ import com.google.firebase.auth.FirebaseAuth
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SummaryPage() {
-    Column {
+    LazyColumn  {
+        item {
 
         PartSummary(part = "Body", description = "This is nice", price = "10.99")
         PartSummary(part = "Engine", description = "This is nice", price = "10.99")
@@ -50,7 +52,8 @@ fun SummaryPage() {
         PartSummary(part = "Aerodynamics", description = "This is nice", price = "10.99")
         PartSummary(part = "Interior", description = "This is nice", price = "10.99")
         PartSummary(part = "Accessories", description = "This is nice", price = "10.99")
-
+        }
+        item {
         Row(
             modifier = Modifier
                 .padding(12.dp)
@@ -74,6 +77,7 @@ fun SummaryPage() {
                 modifier = Modifier.padding(20.dp)
             )
 
+            }
         }
     }
 

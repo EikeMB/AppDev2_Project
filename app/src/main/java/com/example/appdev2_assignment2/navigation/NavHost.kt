@@ -22,6 +22,7 @@ import com.example.appdev2_assignment2.ui.HomePage
 import com.example.appdev2_assignment2.ui.LoginScreen
 import com.example.appdev2_assignment2.ui.Page2
 import com.example.appdev2_assignment2.ui.SignUpScreen
+import com.example.appdev2_assignment2.ui.SummaryPage
 import com.example.appdev2_assignment2.ui.UserProfilePage
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
@@ -74,6 +75,16 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
             if(auth.currentUser != null){
                 CommonScaffold(navController = navController, userViewModel = userViewModel) {
                     Page2(auth, navController, carViewModel, partViewModel, userViewModel, defaultCar)
+                }
+            }
+            else{
+                navController.navigate("LoginScreenRoute")
+            }
+        }
+        composable("SummaryScreenRoute") {
+            if(auth.currentUser != null){
+                CommonScaffold(navController = navController, userViewModel = userViewModel) {
+                    SummaryPage()
                 }
             }
             else{
