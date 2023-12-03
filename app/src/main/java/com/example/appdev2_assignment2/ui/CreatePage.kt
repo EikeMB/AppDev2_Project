@@ -245,7 +245,7 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
                     if(carName.isNotEmpty()){
                         carViewModel.addCar(Car(user.email, carName, listOf<CarPart>(bodySelectedOption, wheelSelectedOption , aerodynamicSelectedOption,
                             accessoriesSelectedOption, interiorSelectedOption, engineSelectedOption), 0))
-                        navController.navigate("MainScreenRoute")
+                        navController.navigate("SummaryScreenRoute")
                     }
                     else{
                         nameError = "Car name is required"

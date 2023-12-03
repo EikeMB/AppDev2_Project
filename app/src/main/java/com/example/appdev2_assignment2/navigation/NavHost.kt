@@ -84,7 +84,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
         composable("SummaryScreenRoute") {
             if(auth.currentUser != null){
                 CommonScaffold(navController = navController, userViewModel = userViewModel) {
-                    SummaryPage()
+                    SummaryPage(auth, navController, carViewModel, partViewModel, userViewModel, defaultCar)
                 }
             }
             else{

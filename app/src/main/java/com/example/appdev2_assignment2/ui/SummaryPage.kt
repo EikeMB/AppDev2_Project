@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.CarPart
+import com.example.appdev2_assignment2.PartType
 import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.ViewModels.CarPartViewModel
 import com.example.appdev2_assignment2.ViewModels.CarViewModel
@@ -42,16 +43,16 @@ import com.google.firebase.auth.FirebaseAuth
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun SummaryPage() {
+fun SummaryPage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel, defaultCar: MutableState<Car?>) {
     LazyColumn  {
         item {
 
-        PartSummary(part = "Body", description = "This is nice", price = "10.99")
-        PartSummary(part = "Engine", description = "This is nice", price = "10.99")
-        PartSummary(part = "Wheel", description = "This is nice", price = "10.99")
-        PartSummary(part = "Aerodynamics", description = "This is nice", price = "10.99")
-        PartSummary(part = "Interior", description = "This is nice", price = "10.99")
-        PartSummary(part = "Accessories", description = "This is nice", price = "10.99")
+        PartSummary(part = PartType.Body, defaultCar = defaultCar.value!!)
+        PartSummary(part = PartType.Engine, defaultCar = defaultCar.value!!)
+        PartSummary(part = PartType.Wheels, defaultCar = defaultCar.value!!)
+        PartSummary(part = PartType.Aerodynamics, defaultCar = defaultCar.value!!)
+        PartSummary(part = PartType.Interior, defaultCar = defaultCar.value!!)
+        PartSummary(part = PartType.Accessories, defaultCar = defaultCar.value!!)
         }
         item {
         Row(
@@ -61,7 +62,7 @@ fun SummaryPage() {
         ) {
             Button(
                 onClick = {
-                    //navController.popBackStack()
+                    navController.navigate("CreateScreenRoute")
                 },
                 modifier = Modifier
                     .padding(8.dp)
@@ -71,9 +72,10 @@ fun SummaryPage() {
 
             Spacer(modifier = Modifier.weight(1f))
 
-
+            val carParts = defaultCar.value?.parts ?: emptyList()
+            val totalPrice = carParts.sumOf { it.price }
             Text(
-                text = "Total Price",
+                text = "Total Price: $totalPrice$",
                 modifier = Modifier.padding(20.dp)
             )
 
@@ -83,12 +85,13 @@ fun SummaryPage() {
 
 }
 
+
 @Composable
 fun PartSummary(
-    part: String,
-    description: String,
-    price: String,
+    part: PartType,
+    defaultCar: Car,
 ) {
+    var partChosen = defaultCar.parts.find {  it.type == part }
     Row(
         modifier = Modifier
             .padding(15.dp)
@@ -98,7 +101,7 @@ fun PartSummary(
         // Left: Image and Text
         Column(
             modifier = Modifier
-                .weight(1.5f)
+                .weight(1.6f)
                 .padding(horizontal = 5.dp),
 
         ) {
@@ -117,7 +120,7 @@ fun PartSummary(
             // Text
             Text(
                 modifier = Modifier.padding(horizontal = 5.dp),
-                text = part,
+                text = part.toString(),
                 fontWeight = FontWeight.Bold
             )
         }
@@ -132,7 +135,7 @@ fun PartSummary(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = description,
+                text = partChosen!!.name,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
         }
@@ -141,7 +144,9 @@ fun PartSummary(
 
         // Right: Price
         Text(
-            text = price,
+            text = partChosen!!.price.toString(),
+            modifier = Modifier
+                .weight(0.5f)
         )
     }
 
@@ -151,9 +156,9 @@ fun PartSummary(
     )
 }
 
-@Preview
-@Composable
-fun SummaryPagePreview() {
-    // This is where you'll call your SummaryPage Composable
-    SummaryPage()
-}
+//@Preview
+//@Composable
+//fun SummaryPagePreview() {
+//    // This is where you'll call your SummaryPage Composable
+//    SummaryPage()
+//}
