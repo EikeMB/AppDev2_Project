@@ -44,15 +44,16 @@ import com.google.firebase.auth.FirebaseAuth
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SummaryPage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel, defaultCar: MutableState<Car?>) {
+    val user by userViewModel.activeUser.collectAsState()
     LazyColumn  {
         item {
 
-        PartSummary(part = PartType.Body, defaultCar = defaultCar.value!!)
-        PartSummary(part = PartType.Engine, defaultCar = defaultCar.value!!)
-        PartSummary(part = PartType.Wheels, defaultCar = defaultCar.value!!)
-        PartSummary(part = PartType.Aerodynamics, defaultCar = defaultCar.value!!)
-        PartSummary(part = PartType.Interior, defaultCar = defaultCar.value!!)
-        PartSummary(part = PartType.Accessories, defaultCar = defaultCar.value!!)
+        PartSummary(part = PartType.Body, defaultCar = defaultCar.value)
+        PartSummary(part = PartType.Engine, defaultCar = defaultCar.value)
+        PartSummary(part = PartType.Wheels, defaultCar = defaultCar.value)
+        PartSummary(part = PartType.Aerodynamics, defaultCar = defaultCar.value)
+        PartSummary(part = PartType.Interior, defaultCar = defaultCar.value)
+        PartSummary(part = PartType.Accessories, defaultCar = defaultCar.value)
         }
         item {
         Row(
@@ -60,14 +61,16 @@ fun SummaryPage(auth: FirebaseAuth, navController: NavController, carViewModel: 
                 .padding(12.dp)
                 .fillMaxWidth()
         ) {
-            Button(
-                onClick = {
-                    navController.navigate("CreateScreenRoute")
-                },
-                modifier = Modifier
-                    .padding(8.dp)
-            ) {
-                Text("Modify")
+            if(defaultCar.value!!.userEmail == user.email){
+                Button(
+                    onClick = {
+                        navController.navigate("CreateScreenRoute")
+                    },
+                    modifier = Modifier
+                        .padding(8.dp)
+                ) {
+                    Text("Modify")
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -89,9 +92,9 @@ fun SummaryPage(auth: FirebaseAuth, navController: NavController, carViewModel: 
 @Composable
 fun PartSummary(
     part: PartType,
-    defaultCar: Car,
+    defaultCar: Car?,
 ) {
-    var partChosen = defaultCar.parts.find {  it.type == part }
+    var partChosen = defaultCar?.parts?.find {  it.type == part }
     Row(
         modifier = Modifier
             .padding(15.dp)
@@ -127,31 +130,35 @@ fun PartSummary(
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        // Middle: Description
-        Column(
-            modifier = Modifier
-                .weight(2.5f) // Adjust weight to occupy more space
-                .padding(horizontal = 8.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
+        if(partChosen != null){
+            // Middle: Description
+            Column(
+                modifier = Modifier
+                    .weight(2.5f) // Adjust weight to occupy more space
+                    .padding(horizontal = 8.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = partChosen!!.name,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Right: Price
             Text(
-                text = partChosen!!.name,
-                modifier = Modifier.padding(bottom = 4.dp)
+                text = "${partChosen!!.price}$",
+                modifier = Modifier
+                    .weight(0.5f)
             )
         }
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        // Right: Price
-        Text(
-            text = "${partChosen!!.price}$",
-            modifier = Modifier
-                .weight(0.5f)
-        )
     }
 
     Divider(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
         color = Color.Black // Adjust the color as needed
     )
 }
