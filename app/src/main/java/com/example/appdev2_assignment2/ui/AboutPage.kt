@@ -70,11 +70,11 @@ fun About(auth: FirebaseAuth, navController: NavController){
         val uriHandler = LocalUriHandler.current
 
         Text(
-            text = "Email: eikemorgado@gmail.com",
+            text = "Email: yensannguyen@gmail.com",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .padding(bottom = 8.dp)
-                .clickable { uriHandler.openUri("mailto:eikemorgado@gmail.com") }
+                .clickable { uriHandler.openUri("mailto:yensanngyuen@gmail.com") }
         )
 
         Text(

@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,6 +40,7 @@ import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.appdev2_assignment2.AppUser
+import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 
@@ -89,7 +91,9 @@ Composable made up of the full page
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommonScaffold(navController: NavHostController,  userViewModel: UserViewModel, content: @Composable (PaddingValues) -> Unit) {
+fun CommonScaffold(navController: NavHostController, userViewModel: UserViewModel, defaultCar:
+MutableState<Car?>,  content: @Composable (PaddingValues) -> Unit
+) {
 
 
     Scaffold(
@@ -107,7 +111,10 @@ fun CommonScaffold(navController: NavHostController,  userViewModel: UserViewMod
                     Icon(Icons.Filled.Home, contentDescription = "Home")
                 }
                 IconButton(
-                    onClick = { navController.navigate("CreateScreenRoute") },
+                    onClick = {
+                                defaultCar.value = null
+                                navController.navigate("CreateScreenRoute")
+                              },
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(Icons.Filled.Build, contentDescription = "Create")

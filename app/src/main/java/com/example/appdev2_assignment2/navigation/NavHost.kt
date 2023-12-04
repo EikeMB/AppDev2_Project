@@ -63,7 +63,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
                     launch { carViewModel.getCarsForUser(userEmail!!) }
                     launch { carViewModel.getAllCars() }
                 }
-                CommonScaffold(navController = navController, userViewModel = userViewModel) {
+                CommonScaffold(navController = navController, userViewModel = userViewModel, defaultCar) {
                     HomePage(auth, navController, carViewModel, partViewModel, userViewModel, defaultCar)
                 }
             }
@@ -73,7 +73,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
         }
         composable("CreateScreenRoute") {
             if(auth.currentUser != null){
-                CommonScaffold(navController = navController, userViewModel = userViewModel) {
+                CommonScaffold(navController = navController, userViewModel = userViewModel, defaultCar) {
                     Page2(auth, navController, carViewModel, partViewModel, userViewModel, defaultCar)
                 }
             }
@@ -83,7 +83,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
         }
         composable("SummaryScreenRoute") {
             if(auth.currentUser != null){
-                CommonScaffold(navController = navController, userViewModel = userViewModel) {
+                CommonScaffold(navController = navController, userViewModel = userViewModel, defaultCar) {
                     SummaryPage(auth, navController, carViewModel, partViewModel, userViewModel, defaultCar)
                 }
             }
@@ -93,7 +93,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
         }
         composable("AboutScreenRoute") {
             if(auth.currentUser != null){
-                CommonScaffold(navController = navController, userViewModel = userViewModel) {
+                CommonScaffold(navController = navController, userViewModel = userViewModel, defaultCar) {
                     About(auth, navController)
                 }
             }
@@ -111,7 +111,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
                 val appUser by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0,""))
 
                 if (appUser != null) {
-                    CommonScaffold(navController = navController, userViewModel = userViewModel) {
+                    CommonScaffold(navController = navController, userViewModel = userViewModel, defaultCar) {
                         UserProfilePage(
                             userViewModel = userViewModel,
                             onProfilePictureChange = { /* implement the logic */ },
