@@ -71,6 +71,16 @@ fun SummaryPage(auth: FirebaseAuth, navController: NavController, carViewModel: 
                 ) {
                     Text("Modify")
                 }
+                Button(
+                    onClick = {
+                        carViewModel.deleteCar(defaultCar.value!!)
+                        navController.navigate("MainScreenRoute")
+                    },
+                    modifier = Modifier
+                        .padding(8.dp)
+                ) {
+                    Text("Delete")
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
