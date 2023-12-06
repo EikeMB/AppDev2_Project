@@ -52,9 +52,11 @@ fun HomePage(auth: FirebaseAuth, navController: NavController, carViewModel: Car
     ){
 
 
-        Text(text = "Your customized cars: ", Modifier.padding(10.dp))
-        Box{
-            UserCarsList(cars = cars, navController = navController, defaultCar = defaultCar)
+        if(cars.isNotEmpty()){
+            Text(text = "Your customized cars: ", Modifier.padding(10.dp))
+            Box{
+                UserCarsList(cars = cars, navController = navController, defaultCar = defaultCar)
+            }
         }
         Text(text = "See other customized car: ", Modifier.padding(10.dp))
         UserCarsListVertical(cars = allCars, navController = navController, defaultCar = defaultCar)
