@@ -123,6 +123,10 @@ class MainActivity : ComponentActivity() {
         var userViewModel = UserViewModel(userRepository)
 
 
+        for(part in carPartsList){
+            carPartViewModel.addPart(part)
+        }
+
         setContent {
             AppDev2_Assignment2Theme {
                 // A surface container using the 'background' color from the theme
