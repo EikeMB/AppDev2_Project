@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -220,7 +221,7 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
                     navController.popBackStack()
                 },
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(8.dp).weight(1f)
             ) {
                 Text("Back")
             }
@@ -235,6 +236,7 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
                     .padding(8.dp)
                     .height(50.dp)
                     .width(150.dp)
+                    .weight(1f)
             )
             
 
@@ -254,7 +256,8 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
                     }
                 },
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(vertical = 8.dp)
+                    .weight(1f)
             ) {
                 Text("Finish")
             }
@@ -318,8 +321,11 @@ private fun PartInfo(
                 Text(text = part.name)
             }
             if (expanded.value) {
-                Text( text = part.description )
-                Text( text = part.price.toString() )
+                Text( text = part.description,
+                    modifier = Modifier.padding(8.dp))
+                Text( text = "Cost: ${part.price}$",
+                    modifier = Modifier.align(Alignment.End)
+                )
             }
         }
         IconButton(

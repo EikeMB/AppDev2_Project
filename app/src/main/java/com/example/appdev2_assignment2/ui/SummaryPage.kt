@@ -61,35 +61,37 @@ fun SummaryPage(auth: FirebaseAuth, navController: NavController, carViewModel: 
                 .padding(12.dp)
                 .fillMaxWidth()
         ) {
-            if(defaultCar.value!!.userEmail == user.email){
-                Button(
-                    onClick = {
-                        navController.navigate("CreateScreenRoute")
-                    },
-                    modifier = Modifier
-                        .padding(8.dp)
-                ) {
-                    Text("Modify")
-                }
-                Button(
-                    onClick = {
-                        carViewModel.deleteCar(defaultCar.value!!)
-                        navController.navigate("MainScreenRoute")
-                    },
-                    modifier = Modifier
-                        .padding(8.dp)
-                ) {
-                    Text("Delete")
+            if(defaultCar.value != null){
+                if(defaultCar.value!!.userEmail == user.email){
+                    Button(
+                        onClick = {
+                            navController.navigate("CreateScreenRoute")
+                        },
+                        modifier = Modifier
+                            .padding(8.dp).weight(1f)
+                    ) {
+                        Text("Modify")
+                    }
+                    Button(
+                        onClick = {
+                            carViewModel.deleteCar(defaultCar.value!!)
+                            navController.navigate("MainScreenRoute")
+                        },
+                        modifier = Modifier
+                            .padding(8.dp).weight(1f)
+                    ) {
+                        Text("Delete")
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            //Spacer(modifier = Modifier.weight(1f))
 
             val carParts = defaultCar.value?.parts ?: emptyList()
             val totalPrice = carParts.sumOf { it.price }
             Text(
                 text = "Total Price: $totalPrice$",
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier.padding(20.dp).weight(1f)
             )
 
             }
@@ -167,7 +169,7 @@ fun PartSummary(
             Text(
                 text = "${partChosen!!.price}$",
                 modifier = Modifier
-                    .weight(0.5f)
+                    .weight(0.7f)
             )
         }
     }
