@@ -105,6 +105,13 @@ fun PartSummary(
     defaultCar: Car?,
 ) {
     var partChosen = defaultCar?.parts?.find {  it.type == part }
+    var image: Int
+    if(partChosen != null){
+        image = partChosen.image
+    }
+    else{
+        image = R.drawable.artura
+    }
     Row(
         modifier = Modifier
             .padding(15.dp)
@@ -120,7 +127,7 @@ fun PartSummary(
         ) {
             // Image
             Image(
-                painter = painterResource(id = R.drawable.artura), // Replace with your image resource
+                painter = painterResource(id = image), // Replace with your image resource
                 contentDescription = "Image",
                 modifier = Modifier
                     .size(50.dp)

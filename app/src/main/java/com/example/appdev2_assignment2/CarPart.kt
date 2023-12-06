@@ -20,7 +20,6 @@ val carPartsList = listOf(
     CarPart("Electric Motor Kit", R.drawable.ev, 13580, "Conversion kit for electric propulsion, eco-friendly option.", PartType.Engine, 6000),
     CarPart("Rotary wankel engine", R.drawable.rotary, 24681, "100-700 horsepower rotary engine.", PartType.Engine, 5500),
 
-    CarPart("Alloy Wheels Set", R.drawable.alloywheels, 67890, "Stylish alloy wheels for improved aesthetics.", PartType.Wheels, 800),
     CarPart("Forged Racing Wheels", R.drawable.forgedracingwheels, 67891, "Lightweight and strong racing wheels for enhanced performance.", PartType.Wheels, 1200),
     CarPart("Off-Road Tires and Wheels Kit", R.drawable.offroadwheels, 67892, "Durable off-road tires and wheels for adventurous driving.", PartType.Wheels, 1500),
     CarPart("Chrome Spoke Wheels", R.drawable.chromewheel, 67893, "Classic chrome spoke wheels for a retro look.", PartType.Wheels, 1000),
