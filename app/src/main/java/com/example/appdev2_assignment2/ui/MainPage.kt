@@ -35,6 +35,8 @@ import com.example.appdev2_assignment2.User
 import com.example.appdev2_assignment2.ViewModels.CarPartViewModel
 import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
+import com.example.compose.darkBluePrimary
+import com.example.compose.lightBluePrimary
 import com.google.firebase.auth.FirebaseAuth
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -65,11 +67,11 @@ fun HomePage(auth: FirebaseAuth, navController: NavController, carViewModel: Car
     ){
 
 
-        Text(text = "Your customized cars: ", Modifier.padding(10.dp))
+        Text(text = "Your customized cars: ", Modifier.padding(10.dp), color = darkBluePrimary)
         Box{
             UserCarsList(cars = cars)
         }
-        Text(text = "See other customized car: ", Modifier.padding(10.dp))
+        Text(text = "See other customized car: ", Modifier.padding(10.dp), color = darkBluePrimary)
         UserCarsListVertical(cars = allCars)
     }
 }
@@ -80,7 +82,7 @@ fun UserCarsListVertical(cars: List<Car>) {
         modifier = Modifier
             .fillMaxSize()
             .padding(vertical = 16.dp)
-            .background(Color.Blue)
+            .background(lightBluePrimary)
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -112,7 +114,7 @@ fun UserCarsList(cars: List<Car>){
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Blue))
+            .background(lightBluePrimary))
     {
         items(cars) { car ->
             CarCard(car = car)
@@ -129,10 +131,6 @@ fun CarCard(car: Car){
             image = part.image
         }
     }
-
-
-
-
     Card(
         modifier = Modifier
             .padding(15.dp)
@@ -152,7 +150,7 @@ fun CarCard(car: Car){
                     .height(150.dp) // Adjust the height as per your preference
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = car.name)
+            Text(text = car.name,  color = darkBluePrimary)
             // Text(text = "VIN: ${car.vin}", style = MaterialTheme.typography.bodyMedium)
         }
     }

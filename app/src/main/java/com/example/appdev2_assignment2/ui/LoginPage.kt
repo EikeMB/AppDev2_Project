@@ -1,12 +1,14 @@
 package com.example.appdev2_assignment2.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -18,12 +20,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.fontResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.example.appdev2_assignment2.auth.signIn
+import com.example.compose.darkBluePrimary
+import com.example.compose.greySurface
+import com.example.compose.lightBlueOnPrimary
+import com.example.compose.lightBluePrimary
+import com.example.compose.lightBluePrimaryContainer
 import com.google.firebase.auth.FirebaseAuth
+
+
 
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,6 +64,7 @@ fun LoginScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(50.dp),
+/*        .background(greySurface),*/
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -55,6 +72,9 @@ fun LoginScreen(
         // TITLE
         Text(
             text = "Car Builder App", // Your title text
+            color = darkBluePrimary,
+            fontSize = 36.sp,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 50.dp, bottom = 125.dp)
         )
 
@@ -64,7 +84,7 @@ fun LoginScreen(
             onValueChange = { newText ->
                 username = newText
             },
-            placeholder = { Text("Enter your Username") }, // Add the placeholder
+            placeholder = { Text("Enter your Username", color = lightBlueOnPrimary) }, // Add the placeholder
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -81,7 +101,7 @@ fun LoginScreen(
                 password = newText
             },
             visualTransformation = PasswordVisualTransformation(),
-            placeholder = { Text("Enter your Password") }, // Add the placeholder
+            placeholder = { Text("Enter your Password", color = lightBlueOnPrimary) }, // Add the placeholder
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -111,15 +131,23 @@ fun LoginScreen(
 
 
             },
+            colors = ButtonDefaults.buttonColors(
+                lightBluePrimary, // Use lightBluePrimary as the background color
+                contentColor = lightBlueOnPrimary // Use lightBlueOnPrimary as the content color
+            )
         ) {
-            Text("Login")
+            Text("Login", fontWeight = FontWeight.Bold)
         }
 
         //SIGN UP BUTTON
         Button(
             onClick = { navController.navigate("SignUpScreenRoute") },
+            colors = ButtonDefaults.buttonColors(
+                lightBluePrimary, // Use lightBluePrimary as the background color
+                contentColor = lightBlueOnPrimary // Use lightBlueOnPrimary as the content color
+            )
         ) {
-            Text("Sign up")
+            Text("Sign up", fontWeight = FontWeight.Bold)
         }
     }
 }

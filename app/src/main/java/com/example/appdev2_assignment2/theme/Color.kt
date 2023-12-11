@@ -63,5 +63,23 @@ val md_theme_dark_surfaceTint = Color(0xFFCFBCFF)
 val md_theme_dark_outlineVariant = Color(0xFF49454E)
 val md_theme_dark_scrim = Color(0xFF000000)
 
+// Light Blue Colors
+val lightBluePrimary = Color(0xFFADD8E6)
+val lightBlueOnPrimary = Color(0xFF00008B)
+val lightBluePrimaryContainer = Color(0xFFE9DDFF)
+val lightBlueOnPrimaryContainer = Color(0xFF22005D)
+
+// Dark Blue Colors
+val darkBluePrimary = Color(0xFF00008B)
+val darkBlueOnPrimary = Color(0xFFFFFFFF)
+val darkBluePrimaryContainer = Color(0xFF4F378A)
+val darkBlueOnPrimaryContainer = Color(0xFFE9DDFF)
+
+// Grey Colors
+val greySurface = Color(0xFF49454E)
+val greyOnSurface = Color(0xFFCAC4CF)
+val greySurfaceVariant = Color(0xFFE7E0EB)
+val greyOnSurfaceVariant = Color(0xFF49454E)
+val greyOutline = Color(0xFF948F99)
 
 val seed = Color(0xFF6750A4)

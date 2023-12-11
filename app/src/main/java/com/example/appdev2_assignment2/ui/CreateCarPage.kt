@@ -1,5 +1,6 @@
 package com.example.appdev2_assignment2.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.appdev2_assignment2.R
+import com.example.compose.darkBluePrimary
+import com.example.compose.lightBlueOnPrimary
+import com.example.compose.lightBluePrimaryContainer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +50,7 @@ fun CreateCarPage(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
+            .background(lightBluePrimaryContainer)
     ) {
         CarAttributeSelection(
             title = "Choose Engine",
@@ -83,8 +88,9 @@ fun CreateCarPage(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
+                .background(darkBluePrimary)
         ) {
-            Text("Create Car")
+            Text("Create Car", color = lightBlueOnPrimary)
         }
     }
 }
@@ -104,6 +110,7 @@ fun <T : CarAttribute> CarAttributeSelection(
         Text(
             text = title,
             fontSize = 18.sp,
+            color = darkBluePrimary,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
@@ -147,6 +154,7 @@ fun <T : CarAttribute> CarAttributeItem(
             Text(
                 text = attribute.name,
                 fontSize = 16.sp,
+                color = darkBluePrimary,
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 8.dp)
@@ -155,6 +163,7 @@ fun <T : CarAttribute> CarAttributeItem(
             Text(
                 text = attribute.details,
                 fontSize = 14.sp,
+                color = darkBluePrimary,
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 8.dp)
