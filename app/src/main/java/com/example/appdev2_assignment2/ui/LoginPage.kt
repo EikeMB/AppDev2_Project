@@ -31,6 +31,17 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.background
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.fontResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.unit.sp
+import com.example.appdev2_assignment2.R
+import com.example.compose.darkBluePrimary
+import com.example.compose.greySurface
+import com.example.compose.lightBlueOnPrimary
+import com.example.compose.lightBluePrimary
+import com.example.compose.lightBluePrimaryContainer
 
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,11 +73,11 @@ fun LoginScreen(
         // TITLE
         Text(
             text = "Car Builder App",
+            color = darkBluePrimary,
             modifier = Modifier.padding(top = 50.dp, bottom = 125.dp),
             style = LocalTextStyle.current.copy(
-                fontSize = 24.sp, // Set the desired font size
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Serif, // Set a custom font family
+                fontSize = 36.sp, // Set the desired font size
+                fontWeight = FontWeight.Bold
             )
         )
 
@@ -77,7 +88,7 @@ fun LoginScreen(
                 username = newText
             },
             placeholder = {
-                Text("Enter your Username...", color = Color.Gray.copy(alpha = 0.6f)) // Adjust the alpha value
+                Text("Enter your Username...", color = lightBlueOnPrimary) // Adjust the alpha value
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -101,7 +112,7 @@ fun LoginScreen(
             },
             visualTransformation = PasswordVisualTransformation(),
             placeholder = {
-                Text("Enter your Password...", color = Color.Gray.copy(alpha = 0.6f)) // Adjust the alpha value
+                Text("Enter your Password...", color = lightBlueOnPrimary) // Adjust the alpha value
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -138,7 +149,7 @@ fun LoginScreen(
             ),
 
         ) {
-            Text("Login", color = Color.Black)
+            Text("Login", color = darkBluePrimary, fontWeight = FontWeight.Bold)
         }
 
         //SIGN UP BUTTON
@@ -149,7 +160,7 @@ fun LoginScreen(
                 rememberUpdatedState(Color(0xFFADD8E6)).value,
             ),
         ) {
-            Text("Sign up", color = Color.Black)
+            Text("Sign up", color = darkBluePrimary, fontWeight = FontWeight.Bold)
         }
     }
 }

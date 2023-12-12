@@ -45,6 +45,8 @@ import com.example.appdev2_assignment2.ViewModels.CarPartViewModel
 import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.example.compose.darkBluePrimary
+import com.example.compose.lightBluePrimary
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -60,12 +62,12 @@ fun HomePage(auth: FirebaseAuth, navController: NavController, carViewModel: Car
 
 
         if(cars.isNotEmpty()){
-            Text(text = "Your customized cars: ", Modifier.padding(10.dp))
+            Text(text = "Your customized cars: ", Modifier.padding(10.dp), color = darkBluePrimary)
             Box{
                 UserCarsList(cars = cars, navController = navController, defaultCar = defaultCar)
             }
         }
-        Text(text = "See other customized car: ", Modifier.padding(10.dp))
+        Text(text = "See other customized car: ", Modifier.padding(10.dp), color = darkBluePrimary)
         UserCarsListVertical(cars = allCars, navController = navController, defaultCar = defaultCar)
     }
 }
@@ -76,7 +78,7 @@ fun UserCarsListVertical(cars: List<Car>, navController: NavController, defaultC
         modifier = Modifier
             .fillMaxSize()
             .padding(vertical = 16.dp)
-            .background(Color(0xFFADD8E6))
+            .background(lightBluePrimary)
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -108,8 +110,8 @@ fun UserCarsList(cars: List<Car>, navController: NavController, defaultCar: Muta
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Blue))
-    {
+            .background(lightBluePrimary)
+    ){
         items(cars) { car ->
             CarCard(car = car, navController = navController, defaultCar = defaultCar)
         }
@@ -149,7 +151,7 @@ fun CarCard(car: Car, navController: NavController, defaultCar: MutableState<Car
                     .height(150.dp) // Adjust the height as per your preference
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = car.name)
+            Text(text = car.name, color = darkBluePrimary)
             // Text(text = "VIN: ${car.vin}", style = MaterialTheme.typography.bodyMedium)
         }
     }

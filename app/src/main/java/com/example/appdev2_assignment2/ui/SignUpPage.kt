@@ -47,6 +47,9 @@ import com.example.appdev2_assignment2.AppUser
 import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.example.appdev2_assignment2.auth.signUp
+import com.example.compose.darkBluePrimary
+import com.example.compose.lightBlueOnPrimary
+import com.example.compose.lightBluePrimary
 import com.google.firebase.auth.FirebaseAuth
 
 @SuppressLint("UnrememberedMutableState")
@@ -95,21 +98,20 @@ fun SignUpScreen(
 
         // TITLE
         Text(
-            text = "Car Builder App",
-            modifier = Modifier.padding(top = 50.dp, bottom = 50.dp),
-            style = LocalTextStyle.current.copy(
-                fontSize = 24.sp, // Set the desired font size
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Serif, // Set a custom font family
-            )
+            text = "Sign Up", // Your title text
+            color = darkBluePrimary,
+            fontSize = 36.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 50.dp, bottom = 125.dp)
         )
+
 
         TextField(
             value = email,
             onValueChange = {newText ->
                 email = newText
             },
-            label = { Text(text = "Enter your email") },
+            label = { Text(text = "Enter your email", color = lightBlueOnPrimary) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -125,7 +127,7 @@ fun SignUpScreen(
             onValueChange = { newText ->
                 username = newText
             },
-            label = { Text("Enter your Username") }, // Add the placeholder
+            label = { Text("Enter your Username", color = lightBlueOnPrimary) }, // Add the placeholder
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -145,7 +147,7 @@ fun SignUpScreen(
                 password = newText
             },
             visualTransformation = PasswordVisualTransformation(),
-            label = { Text("Enter your Password") }, // Add the placeholder
+            label = { Text("Enter your Password", color = lightBlueOnPrimary) }, // Add the placeholder
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -162,7 +164,7 @@ fun SignUpScreen(
                 confirmPassword = newText
             },
             visualTransformation = PasswordVisualTransformation(),
-            label  = { Text("Enter your Confirm Password") },
+            label  = { Text("Enter your Confirm Password", color = lightBlueOnPrimary) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -178,7 +180,7 @@ fun SignUpScreen(
             onValueChange = { newText ->
                 age = newText
             },
-            label = { Text("Enter your Age") },
+            label = { Text("Enter your Age", color = lightBlueOnPrimary) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -193,7 +195,7 @@ fun SignUpScreen(
             onValueChange = { newText ->
                 picture = newText
             },
-            label = { Text("Enter the link to your profile picture online.") },
+            label = { Text("Enter the link to your profile picture online.", color = lightBlueOnPrimary) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -235,7 +237,10 @@ fun SignUpScreen(
                 }
 
             },
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
+            colors = ButtonDefaults.buttonColors(
+                lightBluePrimary, // Use lightBluePrimary as the background color
+                contentColor = lightBlueOnPrimary // Use lightBlueOnPrimary as the content color
+            )
         ) {
             Text("Register")
         }
@@ -243,7 +248,10 @@ fun SignUpScreen(
         //LOGIN BUTTON
         Button(
             onClick = {navController.navigate("LoginScreenRoute")},
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary)
+            colors = ButtonDefaults.buttonColors(
+                lightBluePrimary, // Use lightBluePrimary as the background color
+                contentColor = lightBlueOnPrimary // Use lightBlueOnPrimary as the content color
+            )
         ) {
             Text("Login")
         }

@@ -5,71 +5,72 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 
 private val LightColors = lightColorScheme(
-    primary = md_theme_light_primary,
-    onPrimary = md_theme_light_onPrimary,
-    primaryContainer = md_theme_light_primaryContainer,
-    onPrimaryContainer = md_theme_light_onPrimaryContainer,
-    secondary = md_theme_light_secondary,
-    onSecondary = md_theme_light_onSecondary,
-    secondaryContainer = md_theme_light_secondaryContainer,
-    onSecondaryContainer = md_theme_light_onSecondaryContainer,
-    tertiary = md_theme_light_tertiary,
-    onTertiary = md_theme_light_onTertiary,
-    tertiaryContainer = md_theme_light_tertiaryContainer,
-    onTertiaryContainer = md_theme_light_onTertiaryContainer,
-    error = md_theme_light_error,
-    errorContainer = md_theme_light_errorContainer,
-    onError = md_theme_light_onError,
-    onErrorContainer = md_theme_light_onErrorContainer,
-    background = md_theme_light_background,
-    onBackground = md_theme_light_onBackground,
-    surface = md_theme_light_surface,
-    onSurface = md_theme_light_onSurface,
-    surfaceVariant = md_theme_light_surfaceVariant,
-    onSurfaceVariant = md_theme_light_onSurfaceVariant,
-    outline = md_theme_light_outline,
-    inverseOnSurface = md_theme_light_inverseOnSurface,
-    inverseSurface = md_theme_light_inverseSurface,
-    inversePrimary = md_theme_light_inversePrimary,
-    surfaceTint = md_theme_light_surfaceTint,
-    outlineVariant = md_theme_light_outlineVariant,
-    scrim = md_theme_light_scrim,
+    primary = lightBluePrimary,
+    onPrimary = lightBlueOnPrimary,
+    primaryContainer = lightBluePrimaryContainer,
+    onPrimaryContainer = lightBlueOnPrimaryContainer,
+    secondary = greySurface,
+    onSecondary = greyOnSurface,
+    secondaryContainer = greySurfaceVariant,
+    onSecondaryContainer = greyOnSurfaceVariant,
+    tertiary = lightBlueOnPrimary, // Using the onPrimary color for tertiary
+    onTertiary = lightBluePrimary, // Using the primary color for onTertiary
+    tertiaryContainer = lightBlueOnPrimaryContainer, // Using the onPrimaryContainer color for tertiaryContainer
+    onTertiaryContainer = lightBluePrimaryContainer, // Using the primaryContainer color for onTertiaryContainer
+    error = Color.Red, // Replace with your error color
+    errorContainer = greyOnSurfaceVariant, // Using greyOnSurfaceVariant as a placeholder
+    onError = Color.White, // Replace with your onError color
+    onErrorContainer = greyOutline, // Using greyOutline as a placeholder
+    background = lightBluePrimaryContainer, // Using the primaryContainer color for background
+    onBackground = lightBlueOnPrimaryContainer, // Using the onPrimaryContainer color for onBackground
+    surface = lightBluePrimaryContainer, // Using the primaryContainer color for surface
+    onSurface = lightBlueOnPrimaryContainer, // Using the onPrimaryContainer color for onSurface
+    surfaceVariant = greySurfaceVariant,
+    onSurfaceVariant = greyOnSurfaceVariant,
+    outline = greyOutline,
+    inverseOnSurface = greySurface, // Using greySurface as a placeholder
+    inverseSurface = greyOnSurface, // Using greyOnSurface as a placeholder
+    inversePrimary = lightBluePrimary, // Using the primary color for inversePrimary
+    surfaceTint = lightBluePrimary, // Using the primary color for surfaceTint
+    outlineVariant = greyOutline,
+    scrim = greySurface, // Using greySurface as a placeholder
 )
 
 
 private val DarkColors = darkColorScheme(
-    primary = md_theme_dark_primary,
-    onPrimary = md_theme_dark_onPrimary,
-    primaryContainer = md_theme_dark_primaryContainer,
-    onPrimaryContainer = md_theme_dark_onPrimaryContainer,
-    secondary = md_theme_dark_secondary,
-    onSecondary = md_theme_dark_onSecondary,
-    secondaryContainer = md_theme_dark_secondaryContainer,
-    onSecondaryContainer = md_theme_dark_onSecondaryContainer,
-    tertiary = md_theme_dark_tertiary,
-    onTertiary = md_theme_dark_onTertiary,
-    tertiaryContainer = md_theme_dark_tertiaryContainer,
-    onTertiaryContainer = md_theme_dark_onTertiaryContainer,
-    error = md_theme_dark_error,
-    errorContainer = md_theme_dark_errorContainer,
-    onError = md_theme_dark_onError,
-    onErrorContainer = md_theme_dark_onErrorContainer,
-    background = md_theme_dark_background,
-    onBackground = md_theme_dark_onBackground,
-    surface = md_theme_dark_surface,
-    onSurface = md_theme_dark_onSurface,
-    surfaceVariant = md_theme_dark_surfaceVariant,
-    onSurfaceVariant = md_theme_dark_onSurfaceVariant,
-    outline = md_theme_dark_outline,
-    inverseOnSurface = md_theme_dark_inverseOnSurface,
-    inverseSurface = md_theme_dark_inverseSurface,
-    inversePrimary = md_theme_dark_inversePrimary,
-    surfaceTint = md_theme_dark_surfaceTint,
-    outlineVariant = md_theme_dark_outlineVariant,
-    scrim = md_theme_dark_scrim,
+    primary = darkBluePrimary,
+    onPrimary = darkBlueOnPrimary,
+    primaryContainer = darkBluePrimaryContainer,
+    onPrimaryContainer = darkBlueOnPrimaryContainer,
+    secondary = greySurface,
+    onSecondary = greyOnSurface,
+    secondaryContainer = greySurfaceVariant,
+    onSecondaryContainer = greyOnSurfaceVariant,
+    tertiary = darkBlueOnPrimary, // Using the onPrimary color for tertiary
+    onTertiary = darkBluePrimary, // Using the primary color for onTertiary
+    tertiaryContainer = darkBlueOnPrimaryContainer, // Using the onPrimaryContainer color for tertiaryContainer
+    onTertiaryContainer = darkBluePrimaryContainer, // Using the primaryContainer color for onTertiaryContainer
+    error = Color.Red, // Replace with your error color
+    errorContainer = greyOnSurfaceVariant, // Using greyOnSurfaceVariant as a placeholder
+    onError = Color.White, // Replace with your onError color
+    onErrorContainer = greyOutline, // Using greyOutline as a placeholder
+    background = darkBluePrimaryContainer, // Using the primaryContainer color for background
+    onBackground = darkBlueOnPrimaryContainer, // Using the onPrimaryContainer color for onBackground
+    surface = darkBluePrimaryContainer, // Using the primaryContainer color for surface
+    onSurface = darkBlueOnPrimaryContainer, // Using the onPrimaryContainer color for onSurface
+    surfaceVariant = greySurfaceVariant,
+    onSurfaceVariant = greyOnSurfaceVariant,
+    outline = greyOutline,
+    inverseOnSurface = greySurface, // Using greySurface as a placeholder
+    inverseSurface = greyOnSurface, // Using greyOnSurface as a placeholder
+    inversePrimary = darkBluePrimary, // Using the primary color for inversePrimary
+    surfaceTint = darkBluePrimary, // Using the primary color for surfaceTint
+    outlineVariant = greyOutline,
+    scrim = greySurface, // Using greySurface as a placeholder
 )
 
 @Composable
