@@ -43,6 +43,9 @@ import com.example.compose.lightBlueOnPrimary
 import com.example.compose.lightBluePrimary
 import com.example.compose.lightBluePrimaryContainer
 
+/**
+ * Allows users to input their username and password to login in.
+ */
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,14 +72,13 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         // TITLE
         Text(
             text = "Car Builder App",
             color = darkBluePrimary,
             modifier = Modifier.padding(top = 50.dp, bottom = 125.dp),
             style = LocalTextStyle.current.copy(
-                fontSize = 36.sp, // Set the desired font size
+                fontSize = 36.sp,
                 fontWeight = FontWeight.Bold
             )
         )
@@ -84,12 +86,8 @@ fun LoginScreen(
         //USERNAME INPUT
         TextField(
             value = username,
-            onValueChange = { newText ->
-                username = newText
-            },
-            placeholder = {
-                Text("Enter your Username...", color = lightBlueOnPrimary) // Adjust the alpha value
-            },
+            onValueChange = { newText -> username = newText },
+            placeholder = { Text("Enter your Username...", color = lightBlueOnPrimary) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -98,7 +96,7 @@ fun LoginScreen(
         usernameError?.let { error ->
             Text(
                 text = error,
-                color = Color.Red.copy(alpha = 0.6f), // Adjust the alpha value for the error text
+                color = Color.Red.copy(alpha = 0.6f),
                 modifier = Modifier.padding(vertical = 5.dp)
             )
         }
@@ -107,24 +105,17 @@ fun LoginScreen(
         //PASSWORD INPUT
         TextField(
             value = password,
-            onValueChange = { newText ->
-                password = newText
-            },
+            onValueChange = { newText -> password = newText },
             visualTransformation = PasswordVisualTransformation(),
-            placeholder = {
-                Text("Enter your Password...", color = lightBlueOnPrimary) // Adjust the alpha value
-            },
+            placeholder = { Text("Enter your Password...", color = lightBlueOnPrimary) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         )
         passwordError?.let { error ->
-            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
-        }
+            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp)) }
 
-        error.value?.let { error ->
-            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
-        }
+        error.value?.let { error -> Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp)) }
 
         //LOGIN BUTTON
         Button(
@@ -133,6 +124,7 @@ fun LoginScreen(
                 error.value = null
                 usernameError = null
                 passwordError = null
+
                 if(username.isNotEmpty() && password.isNotEmpty()){
                     signIn(auth, username, password, navController, userViewModel, error)
                 }
@@ -140,27 +132,18 @@ fun LoginScreen(
                     usernameError = if (username.isEmpty()) "Username required" else null
                     passwordError = if (password.isEmpty()) "Password  required" else null
                 }
-
-
             },
             shape = MaterialTheme.shapes.medium,
             colors = ButtonDefaults.buttonColors(
                 rememberUpdatedState(Color(0xFFADD8E6)).value,
             ),
-
-        ) {
-            Text("Login", color = darkBluePrimary, fontWeight = FontWeight.Bold)
-        }
+        ) { Text("Login", color = darkBluePrimary, fontWeight = FontWeight.Bold) }
 
         //SIGN UP BUTTON
         Button(
             onClick = { navController.navigate("SignUpScreenRoute") },
             shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-                rememberUpdatedState(Color(0xFFADD8E6)).value,
-            ),
-        ) {
-            Text("Sign up", color = darkBluePrimary, fontWeight = FontWeight.Bold)
-        }
+            colors = ButtonDefaults.buttonColors(rememberUpdatedState(Color(0xFFADD8E6)).value),
+        ) { Text("Sign up", color = darkBluePrimary, fontWeight = FontWeight.Bold) }
     }
 }

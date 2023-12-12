@@ -44,6 +44,9 @@ import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.R
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 
+/**
+ * Composable for top app bar displaying the title and user name and age.
+ */
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun TopBar(userViewModel: UserViewModel, navController: NavHostController) {
@@ -67,18 +70,19 @@ fun TopBar(userViewModel: UserViewModel, navController: NavHostController) {
             contentDescription = "Profile picture",
             modifier = Modifier
                 .size(48.dp)
-                .weight(1f)
+                .weight(2f)
                 .clip(CircleShape)
                 .clickable { navController.navigate("UserProfileRoute") },
         )
         Column {
             Text(
-                text = user.name,
+                text = "Name: ${user.name}",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onPrimary
+
             )
             Text(
-                text = user.age.toString(),
+                text = "Age: ${user.age}",
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onPrimary
             )

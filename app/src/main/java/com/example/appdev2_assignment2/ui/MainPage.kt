@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,30 +49,34 @@ import com.google.firebase.auth.FirebaseAuth
 import com.example.compose.darkBluePrimary
 import com.example.compose.lightBluePrimary
 
+/**
+ * Composable of home page for displaying user cars.
+ */
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun HomePage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel, defaultCar: MutableState<Car?>) {
+fun HomePage( navController: NavController, carViewModel: CarViewModel, defaultCar: MutableState<Car?>) {
 
+    // Retrieve user's customized cars and all available cars
     val cars by carViewModel.userCars.collectAsState(initial = emptyList())
     val allCars by carViewModel.allCars.collectAsState(initial = emptyList())
 
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-    ){
+    Column (modifier = Modifier.fillMaxSize()){
 
-
+        // Display all user's customized cars
         if(cars.isNotEmpty()){
             Text(text = "Your customized cars: ", Modifier.padding(10.dp), color = darkBluePrimary)
-            Box{
-                UserCarsList(cars = cars, navController = navController, defaultCar = defaultCar)
-            }
+            Box{ UserCarsList(cars = cars, navController = navController, defaultCar = defaultCar) }
         }
+        // Display other customized cars including users
         Text(text = "See other customized car: ", Modifier.padding(10.dp), color = darkBluePrimary)
         UserCarsListVertical(cars = allCars, navController = navController, defaultCar = defaultCar)
     }
 }
 
+
+/**
+ * Compose to display list of all the cars in a vertical arrangement.
+ */
 @Composable
 fun UserCarsListVertical(cars: List<Car>, navController: NavController, defaultCar: MutableState<Car?>) {
     Box(
@@ -85,6 +90,7 @@ fun UserCarsListVertical(cars: List<Car>, navController: NavController, defaultC
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(cars) { index, car ->
+                // Display cars in pairs
                 if (index % 2 != 0) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -95,38 +101,35 @@ fun UserCarsListVertical(cars: List<Car>, navController: NavController, defaultC
                     }
                 }
                 else{
+                    // Display the last car if it's a single item
                     val isLastItem = index == cars.lastIndex
-                    if (isLastItem) {
-                        CarCard(car = car, navController = navController, defaultCar = defaultCar)
-                    }
+                    if (isLastItem) { CarCard(car = car, navController = navController, defaultCar = defaultCar) }
                 }
             }
         }
     }
 }
 
+
+/**
+ * Composable function  for displaying a row of the user's cars.
+ */
 @Composable
 fun UserCarsList(cars: List<Car>, navController: NavController, defaultCar: MutableState<Car?>){
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .background(lightBluePrimary)
-    ){
-        items(cars) { car ->
-            CarCard(car = car, navController = navController, defaultCar = defaultCar)
-        }
-    }
+    ){ items(cars) { car -> CarCard(car = car, navController = navController, defaultCar = defaultCar) } }
 }
 
+/**
+ * Composable function to display card representing a car.
+ */
 @Composable
 fun CarCard(car: Car, navController: NavController, defaultCar: MutableState<Car?>){
-    var image: String = ""
-
-    for(part in car.parts){
-        if(part.type == PartType.Body){
-            image = part.image
-        }
-    }
+    var image =  ""
+    for(part in car.parts){ if(part.type == PartType.Body){ image = part.image } }
 
     Card(
         modifier = Modifier
@@ -147,12 +150,12 @@ fun CarCard(car: Car, navController: NavController, defaultCar: MutableState<Car
                 model = image,
                 contentDescription = "car picture",
                 modifier = Modifier
-                    .fillMaxWidth() // Image occupies full width available
-                    .height(150.dp) // Adjust the height as per your preference
+                    .fillMaxWidth()
+                    .height(150.dp)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = car.name, color = darkBluePrimary)
-            // Text(text = "VIN: ${car.vin}", style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.height(5.dp))
+            Text(text = "Name: ${car.name}", color = darkBluePrimary)
+            Text(text = "made by: ${car.userEmail}", style = MaterialTheme.typography.bodyMedium)
         }
     }
 }

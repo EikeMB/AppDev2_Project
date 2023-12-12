@@ -108,49 +108,35 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Initialize Firebase components
         val auth = FirebaseAuth.getInstance()
-
         val db = FirebaseFirestore.getInstance()
 
-
+        // Initialize repositories and view models
         var carRepository = CarRepositoryFirestore(db)
         var carViewModel = CarViewModel(carRepository)
-
         var carPartRepository = CarPartRepositoryFirestore(db)
         var carPartViewModel = CarPartViewModel(carPartRepository)
-
         var userRepository = UserRepositoryFirestore(db)
         var userViewModel = UserViewModel(userRepository)
 
 
-//        for(part in carPartsList){
-//            carPartViewModel.addPart(part)
-//        }
-
         setContent {
             AppDev2_Assignment2Theme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
                     StartupPage(auth, carViewModel, carPartViewModel, userViewModel)
-
                 }
             }
         }
-
-
     }
-
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartupPage(auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel) {
-
+    // Create a navigation controller for the app
     val navController = rememberNavController()
     var defaultCar = remember { mutableStateOf <Car?>(null) }
 
@@ -161,7 +147,6 @@ fun StartupPage(auth: FirebaseAuth, carViewModel: CarViewModel, partViewModel: C
         carViewModel = carViewModel,
         partViewModel = partViewModel,
         defaultCar = defaultCar
-
     )
 }
 

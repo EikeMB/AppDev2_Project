@@ -11,16 +11,14 @@ class UserRepositoryFirestore(var db: FirebaseFirestore):UserRepository {
 
     val dbUsers = db.collection("users")
 
+    // Add a user to Firestore
     override suspend fun addUser(user: AppUser) {
         dbUsers.document(user.email).set(user)
-            .addOnSuccessListener {
-                println("User saved")
-            }
-            .addOnFailureListener { error ->
-                println("Error saving user: $error")
-            }
+        .addOnSuccessListener { println("User saved") }
+        .addOnFailureListener { error -> println("Error saving user: $error") }
     }
 
+    // Get all users as from Firestore
     override suspend fun getUsers(): Flow<List<AppUser>>  = callbackFlow{
         val subscription = dbUsers
             .addSnapshotListener { snapshot, error ->
@@ -52,6 +50,7 @@ class UserRepositoryFirestore(var db: FirebaseFirestore):UserRepository {
         awaitClose { subscription.remove()}
     }
 
+    // Get a specific user from Firestore
     override suspend fun getUser(user: String): Flow<AppUser>  = callbackFlow{
         val docRef = dbUsers.document(user)
         val subscription = docRef.addSnapshotListener { snapshot, error ->
@@ -77,6 +76,7 @@ class UserRepositoryFirestore(var db: FirebaseFirestore):UserRepository {
         awaitClose { subscription.remove()}
     }
 
+    // Delete a user from Firestore
     override suspend fun delete(user: AppUser) {
         dbUsers.document(user.email)
             .delete()
@@ -85,6 +85,7 @@ class UserRepositoryFirestore(var db: FirebaseFirestore):UserRepository {
     }
 }
 
+// Convert Firestore DocumentSnapshot to AppUser object
 fun convertDocumentToUser(document: DocumentSnapshot): AppUser{
     var name = document.getString("name") ?: ""
     var email = document.getString("email") ?: ""
@@ -94,6 +95,8 @@ fun convertDocumentToUser(document: DocumentSnapshot): AppUser{
 
     return AppUser(email, name, age, picture)
 }
+
+// Defining UserRepository methods
 interface UserRepository{
     suspend fun addUser(user: AppUser)
     suspend fun getUsers(): Flow<List<AppUser>>
