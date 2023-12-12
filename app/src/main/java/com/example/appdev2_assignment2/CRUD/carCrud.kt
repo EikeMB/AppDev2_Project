@@ -134,7 +134,7 @@ fun convertSnapshotToCar(document: DocumentSnapshot): Car{
     for (partMap in partsArray) {
         val part = CarPart(
             name = partMap["name"] as? String ?: "",
-            image = (partMap["image"] as? Long)?.toInt() ?: 0,
+            image = (partMap["image"] as? String)?: "",
             modelNum = (partMap["modelNum"] as? Long)?.toInt() ?: 0,
             description = partMap["description"] as? String ?: "",
             type = PartType.valueOf(partMap["type"] as? String ?: "Body"),
