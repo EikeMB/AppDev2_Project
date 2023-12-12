@@ -152,22 +152,22 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     val indexOfAccessoriesPart = partList.indexOfFirst { it.type == PartType.Accessories }
 
     wheel = if(partList.isNotEmpty()){ partList[indexOfWheelPart] }
-    else{ CarPart("", 0, -1, "", PartType.Wheels, 1) }
+    else{ CarPart("", "", -1, "", PartType.Wheels, 1) }
 
     body = if(partList.isNotEmpty()){ partList[indexOfBodyPart] }
-    else{ CarPart("", 0, -1, "", PartType.Body, 1) }
+    else{ CarPart("", "", -1, "", PartType.Body, 1) }
 
     aerodynamic = if(partList.isNotEmpty()){ partList[indexOfAerodynamicPart] }
-    else{ CarPart("", 0, -1, "", PartType.Aerodynamics, 1) }
+    else{ CarPart("", "", -1, "", PartType.Aerodynamics, 1) }
 
     engine = if(partList.isNotEmpty()){ partList[indexOfEnginePart] }
-    else{ CarPart("", 0, -1, "", PartType.Engine, 1) }
+    else{ CarPart("", "", -1, "", PartType.Engine, 1) }
 
     interior = if(partList.isNotEmpty()){ partList[indexOfInteriorPart] }
-    else{ CarPart("", 0, -1, "", PartType.Interior, 1) }
+    else{ CarPart("", "", -1, "", PartType.Interior, 1) }
 
     accessories = if(partList.isNotEmpty()){ partList[indexOfAccessoriesPart] }
-    else{ CarPart("", 0, -1, "", PartType.Accessories, 1) }
+    else{ CarPart("", "", -1, "", PartType.Accessories, 1) }
 
     val (wheelSelectedOption, wheelOnOptionSelected) = remember { mutableStateOf(wheel) }
     val (bodySelectedOption, bodyOnOptionSelected) = remember { mutableStateOf(body) }

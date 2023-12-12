@@ -76,11 +76,11 @@ class CarPartRepositoryFirestore(val db: FirebaseFirestore): CarPartRepository{
                     trySend(part)
                 }else{
                     println("Part has becom null")
-                    trySend(CarPart("", 0, 0, "", PartType.Body, 0))
+                    trySend(CarPart("", "", 0, "", PartType.Body, 0))
                 }
             }else{
                 println("Part does not exist")
-                trySend(CarPart("", 0, 0, "", PartType.Body, 0))
+                trySend(CarPart("", "", 0, "", PartType.Body, 0))
             }
         }
         awaitClose { subscription.remove() }
@@ -130,7 +130,7 @@ class CarPartRepositoryFirestore(val db: FirebaseFirestore): CarPartRepository{
 
 fun convertSnapshotToCarPart(document: DocumentSnapshot): CarPart{
     val name = document.getString("name") ?: ""
-    val image = document.getLong("image")?.toInt() ?: 0
+    val image = document.getString("image")?: ""
     val modelNum = document.getLong("modelNum")?.toInt() ?: 0
     val description = document.getString("description") ?: ""
     val type = PartType.valueOf(document.getString("type") ?: "Body")

@@ -1,7 +1,11 @@
+@file:OptIn(ExperimentalGlideComposeApi::class)
+
 package com.example.appdev2_assignment2.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -32,6 +37,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.appdev2_assignment2.Car
 import com.example.appdev2_assignment2.CarPart
 import com.example.appdev2_assignment2.PartType
@@ -101,18 +108,19 @@ fun SummaryPage(auth: FirebaseAuth, navController: NavController, carViewModel: 
 }
 
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun PartSummary(
     part: PartType,
     defaultCar: Car?,
 ) {
     var partChosen = defaultCar?.parts?.find {  it.type == part }
-    var image: Int
+    var image: String
     if(partChosen != null){
         image = partChosen.image
     }
     else{
-        image = R.drawable.artura
+        image = ""
     }
     Row(
         modifier = Modifier
@@ -128,13 +136,13 @@ fun PartSummary(
 
         ) {
             // Image
-            Image(
-                painter = painterResource(id = image), // Replace with your image resource
-                contentDescription = "Image",
+
+            GlideImage(
+                model = image,
+                contentDescription = "part picture",
                 modifier = Modifier
                     .size(50.dp)
                     .clip(shape = CircleShape)
-
             )
 
             Spacer(modifier = Modifier.height(4.dp))
