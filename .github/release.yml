@@ -1,0 +1,21 @@
+changelog:
+  exclude:
+    labels:
+      - help wanted 
+      - wontfix
+      - question
+      - good first issue
+      - duplicate
+      - invalid
+    authors:
+      - Eike/Yensan/Jiahao
+  categories:
+    - title: Breaking Changes 🛠
+      labels:
+        - enhancement
+        - Back end
+        - Front end
+    - title: Small notes 🎉
+      labels:
+        - bug
+        - documentation
