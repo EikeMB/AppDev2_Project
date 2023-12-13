@@ -15,6 +15,7 @@ changelog:
         - enhancement
         - Back end
         - Front end
+        - functionality
     - title: Small notes 🎉
       labels:
         - bug
