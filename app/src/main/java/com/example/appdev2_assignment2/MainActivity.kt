@@ -52,7 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.compose.AppDev2_Assignment2Theme
+import com.example.appdev2_assignment2.AppDev2_Assignment2Theme
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton

@@ -46,8 +46,6 @@ import com.example.appdev2_assignment2.ViewModels.CarPartViewModel
 import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.example.compose.darkBluePrimary
-import com.example.compose.lightBluePrimary
 
 /**
  * Composable of home page for displaying user cars.
@@ -64,11 +62,11 @@ fun HomePage( navController: NavController, carViewModel: CarViewModel, defaultC
 
         // Display all user's customized cars
         if(cars.isNotEmpty()){
-            Text(text = "Your customized cars: ", Modifier.padding(10.dp), color = darkBluePrimary)
+            Text(text = "Your customized cars: ", Modifier.padding(10.dp), color = MaterialTheme.colorScheme.primary)
             Box{ UserCarsList(cars = cars, navController = navController, defaultCar = defaultCar) }
         }
         // Display other customized cars including users
-        Text(text = "See other customized car: ", Modifier.padding(10.dp), color = darkBluePrimary)
+        Text(text = "See other customized car: ", Modifier.padding(10.dp), color = MaterialTheme.colorScheme.primary)
         UserCarsListVertical(cars = allCars, navController = navController, defaultCar = defaultCar)
     }
 }
@@ -83,7 +81,7 @@ fun UserCarsListVertical(cars: List<Car>, navController: NavController, defaultC
         modifier = Modifier
             .fillMaxSize()
             .padding(vertical = 16.dp)
-            .background(lightBluePrimary)
+            .background(MaterialTheme.colorScheme.primary)
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -119,13 +117,14 @@ fun UserCarsList(cars: List<Car>, navController: NavController, defaultCar: Muta
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .background(lightBluePrimary)
+            .background(MaterialTheme.colorScheme.primary)
     ){ items(cars) { car -> CarCard(car = car, navController = navController, defaultCar = defaultCar) } }
 }
 
 /**
  * Composable function to display card representing a car.
  */
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CarCard(car: Car, navController: NavController, defaultCar: MutableState<Car?>){
     var image =  ""
@@ -154,7 +153,7 @@ fun CarCard(car: Car, navController: NavController, defaultCar: MutableState<Car
                     .height(150.dp)
             )
             Spacer(modifier = Modifier.height(5.dp))
-            Text(text = "Name: ${car.name}", color = darkBluePrimary)
+            Text(text = "Name: ${car.name}", color = MaterialTheme.colorScheme.primary)
             Text(text = "made by: ${car.userEmail}", style = MaterialTheme.typography.bodyMedium)
         }
     }
