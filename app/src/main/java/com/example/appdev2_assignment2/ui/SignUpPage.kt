@@ -99,7 +99,7 @@ fun SignUpScreen(
         TextField(
             value = email,
             onValueChange = {newText -> email = newText },
-            label = { Text(text = "Enter your email", color = MaterialTheme.colorScheme.onPrimary) },
+            label = { Text(text = "Enter your email", color = MaterialTheme.colorScheme.onPrimaryContainer) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -111,7 +111,7 @@ fun SignUpScreen(
         TextField(
             value = username,
             onValueChange = { newText -> username = newText },
-            label = { Text("Enter your Username", color = MaterialTheme.colorScheme.onPrimary) }, // Add the placeholder
+            label = { Text("Enter your Username", color = MaterialTheme.colorScheme.onPrimaryContainer) }, // Add the placeholder
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -124,7 +124,7 @@ fun SignUpScreen(
             value = password,
             onValueChange = { newText -> password = newText },
             visualTransformation = PasswordVisualTransformation(),
-            label = { Text("Enter your Password", color = MaterialTheme.colorScheme.onPrimary) }, // Add the placeholder
+            label = { Text("Enter your Password", color = MaterialTheme.colorScheme.onPrimaryContainer) }, // Add the placeholder
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -137,7 +137,7 @@ fun SignUpScreen(
             value = confirmPassword,
             onValueChange = { newText -> confirmPassword = newText },
             visualTransformation = PasswordVisualTransformation(),
-            label  = { Text("Enter your Confirm Password", color = MaterialTheme.colorScheme.onPrimary) },
+            label  = { Text("Enter your Confirm Password", color = MaterialTheme.colorScheme.onPrimaryContainer) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -149,7 +149,7 @@ fun SignUpScreen(
         TextField(
             value = age,
             onValueChange = { newText -> age = newText },
-            label = { Text("Enter your Age", color = MaterialTheme.colorScheme.onPrimary) },
+            label = { Text("Enter your Age", color = MaterialTheme.colorScheme.onPrimaryContainer) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -160,7 +160,7 @@ fun SignUpScreen(
         TextField(
             value = picture,
             onValueChange = { newText -> picture = newText },
-            label = { Text("Enter the link to your profile picture online.", color = MaterialTheme.colorScheme.onPrimary) },
+            label = { Text("Enter the link to your profile picture online.", color = MaterialTheme.colorScheme.onPrimaryContainer) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
