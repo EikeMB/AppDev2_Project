@@ -15,20 +15,19 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
+// Repository for Car data handling in Firestore
 class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
 
     val dbCars: CollectionReference = db.collection("cars")
 
+    // Add car to Firestore
     override suspend fun addCar(car: Car) {
         dbCars.document(car.name).set(car)
-            .addOnSuccessListener {
-                println("Car saved")
-            }
-            .addOnFailureListener { e ->
-                println("Error saving car: $e")
-            }
+        .addOnSuccessListener { println("Car saved") }
+        .addOnFailureListener { e -> println("Error saving car: $e") }
     }
 
+    // Get user-specific cars from Firestore
     override suspend fun getCars(user: String): Flow<List<Car>> = callbackFlow{
         val subscription = dbCars
             .whereEqualTo("userEmail", user)
@@ -40,8 +39,6 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
             if(snapshot != null){
                 var cars: MutableList<Car> = mutableListOf()
                 for(document in snapshot.documents){
-
-
                     val car = convertSnapshotToCar(document)
                     cars.add(car)
                 }
@@ -60,7 +57,7 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
         awaitClose{ subscription.remove() }
     }
 
-
+    // Get all cars from Firestore
     override suspend fun getCars(): Flow<List<Car>> = callbackFlow{
         val subscription = dbCars
             .addSnapshotListener{ snapshot, error ->
@@ -71,7 +68,6 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
                 if(snapshot != null){
                         var cars: MutableList<Car> = mutableListOf()
                         for (document in snapshot.documents) {
-
                             val car = convertSnapshotToCar(document)
                             cars.add(car)
                         }
@@ -90,6 +86,7 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
         awaitClose{ subscription.remove() }
     }
 
+    // Get a specific car from Firestore
     override suspend fun getCar(name: String): Flow<Car> = callbackFlow{
         val docRef = dbCars.document(name)
         val subscription = docRef.addSnapshotListener { snapshot, error ->
@@ -114,6 +111,7 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
         awaitClose { subscription.remove() }
     }
 
+    // Delete a car from Firestore
     override suspend fun delete(car: Car) {
         dbCars.document(car.name)
             .delete()
@@ -122,6 +120,7 @@ class CarRepositoryFirestore(val db: FirebaseFirestore): CarRepository{
     }
 }
 
+//Convert Firestore DocumentSnapshot to Car object
 fun convertSnapshotToCar(document: DocumentSnapshot): Car{
     val user = document.getString("userEmail") ?: ""
     val name = document.getString("name") ?: ""
@@ -146,6 +145,7 @@ fun convertSnapshotToCar(document: DocumentSnapshot): Car{
     return Car(user, name, partsList, vin)
 }
 
+//Defining CarRepository methods
 interface CarRepository{
     suspend fun addCar(car: Car)
     suspend fun getCars(user: String): Flow<List<Car>>

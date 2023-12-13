@@ -24,9 +24,11 @@ import androidx.navigation.NavController
 import com.example.appdev2_assignment2.R
 import com.google.firebase.auth.FirebaseAuth
 
-
+/**
+ * Displays information about the app and contact details of the creators.
+ */
 @Composable
-fun About(auth: FirebaseAuth, navController: NavController){
+fun About(){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -47,9 +49,7 @@ fun About(auth: FirebaseAuth, navController: NavController){
 
         Text(
             text = "About Us",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
@@ -61,27 +61,27 @@ fun About(auth: FirebaseAuth, navController: NavController){
 
         Text(
             text = "Contact Us",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
+        // Contact Information
         val uriHandler = LocalUriHandler.current
 
+        // Clickable email
         Text(
-            text = "Email: yensannguyen@gmail.com",
+            text = "Email: eikedoodle1@gmail.com",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .padding(bottom = 8.dp)
-                .clickable { uriHandler.openUri("mailto:yensanngyuen@gmail.com") }
+                .clickable { uriHandler.openUri("mailto:eikedoodle1@gmail.com") }
         )
 
+        // Clickable phone number
         Text(
             text = "Phone: +123 456 7890",
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier
-                .clickable { uriHandler.openUri("tel:+1234567890") }
+            modifier = Modifier.clickable { uriHandler.openUri("tel:+1234567890") }
         )
     }
 }

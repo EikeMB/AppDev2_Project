@@ -21,16 +21,14 @@ class CarPartRepositoryFirestore(val db: FirebaseFirestore): CarPartRepository{
 
     val dbParts = db.collection("parts")
 
+    // Add car part to Firestore
     override suspend fun addCarPart(part: CarPart) {
         dbParts.document(part.name).set(part)
-            .addOnSuccessListener {
-                println("Success adding carPart")
-            }
-            .addOnFailureListener {e ->
-                println("Failure adding carPart. Error: $e")
-            }
+        .addOnSuccessListener { println("Success adding carPart") }
+        .addOnFailureListener {e -> println("Failure adding carPart. Error: $e") }
     }
 
+    // Get all car parts from Firestore
     override suspend fun getParts(): Flow<List<CarPart>>  = callbackFlow{
         val subscription = dbParts
             .addSnapshotListener { snapshot, error ->
@@ -41,8 +39,6 @@ class CarPartRepositoryFirestore(val db: FirebaseFirestore): CarPartRepository{
                 if(snapshot != null){
                     var parts: MutableList<CarPart> = mutableListOf()
                     for(document in snapshot.documents){
-
-
                         val part = convertSnapshotToCarPart(document)
                         parts.add(part)
                     }
@@ -53,7 +49,6 @@ class CarPartRepositoryFirestore(val db: FirebaseFirestore): CarPartRepository{
                         println("Parts has become null")
                         trySend(listOf<CarPart>())
                     }
-
                 }else{
                     println("Parts collection does not exist")
                     trySend(listOf<CarPart>())
@@ -62,6 +57,7 @@ class CarPartRepositoryFirestore(val db: FirebaseFirestore): CarPartRepository{
         awaitClose { subscription.remove()}
     }
 
+    // Get a specific car part  from Firestore
     override suspend fun getPart(name: String): Flow<CarPart>  = callbackFlow{
         val docRef = dbParts.document(name)
         val subscription = docRef.addSnapshotListener { snapshot, error ->
@@ -86,6 +82,7 @@ class CarPartRepositoryFirestore(val db: FirebaseFirestore): CarPartRepository{
         awaitClose { subscription.remove() }
     }
 
+    // Get car parts of a specific type from Firestore
     override suspend fun getPartsOfType(type: PartType): Flow<List<CarPart>>  = callbackFlow{
         val subscription = dbParts
             .whereEqualTo("type", type.name)
@@ -117,6 +114,7 @@ class CarPartRepositoryFirestore(val db: FirebaseFirestore): CarPartRepository{
         awaitClose { subscription.remove() }
     }
 
+    // Delete a car part from Firestore
     override suspend fun delete(carPart: CarPart) {
         dbParts.document(carPart.name)
             .delete()
@@ -127,7 +125,7 @@ class CarPartRepositoryFirestore(val db: FirebaseFirestore): CarPartRepository{
 }
 
 
-
+//Convert Firestore DocumentSnapshot to CarPart object
 fun convertSnapshotToCarPart(document: DocumentSnapshot): CarPart{
     val name = document.getString("name") ?: ""
     val image = document.getString("image")?: ""
@@ -139,8 +137,8 @@ fun convertSnapshotToCarPart(document: DocumentSnapshot): CarPart{
     return CarPart(name, image, modelNum, description, type, price)
 }
 
+// Define CarPartRepository methods
 interface CarPartRepository{
-
     suspend fun addCarPart(part: CarPart)
     suspend fun getParts(): Flow<List<CarPart>>
     suspend fun getPart(name: String): Flow<CarPart>

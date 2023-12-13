@@ -52,6 +52,9 @@ import com.example.compose.lightBlueOnPrimary
 import com.example.compose.lightBluePrimary
 import com.google.firebase.auth.FirebaseAuth
 
+/**
+ * Composable function for the sign-up screen.
+ */
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,27 +65,19 @@ fun SignUpScreen(
     userViewModel: UserViewModel
 ) {
     var username by remember { mutableStateOf("") }
-    var email by remember {
-        mutableStateOf("")
-    }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("18") }
-    var picture by remember {
-        mutableStateOf("")
-    }
+    var picture by remember { mutableStateOf("") }
 
     // ERROR INPUT FIELD
     var usernameError by remember { mutableStateOf<String?>(null) }
-    var emailError by remember {
-        mutableStateOf<String?>(null)
-    }
+    var emailError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
     var confirmPasswordError by remember { mutableStateOf<String?>(null) }
     var ageError by remember { mutableStateOf<String?>(null) }
-    var pictureError by remember {
-        mutableStateOf<String?>(null)
-    }
+    var pictureError by remember { mutableStateOf<String?>(null) }
     val error = remember { mutableStateOf<String?>(null) }
 
 
@@ -95,7 +90,6 @@ fun SignUpScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-
         // TITLE
         Text(
             text = "Sign Up", // Your title text
@@ -105,47 +99,33 @@ fun SignUpScreen(
             modifier = Modifier.padding(top = 50.dp, bottom = 125.dp)
         )
 
-
         TextField(
             value = email,
-            onValueChange = {newText ->
-                email = newText
-            },
+            onValueChange = {newText -> email = newText },
             label = { Text(text = "Enter your email", color = lightBlueOnPrimary) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             isError = emailError != null,
         )
-        emailError?.let { error ->
-            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
-        }
+        emailError?.let { error -> Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp)) }
 
         // USERNAME INPUT
         TextField(
             value = username,
-            onValueChange = { newText ->
-                username = newText
-            },
+            onValueChange = { newText -> username = newText },
             label = { Text("Enter your Username", color = lightBlueOnPrimary) }, // Add the placeholder
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             isError = usernameError != null,
         )
-        usernameError?.let { error ->
-            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
-        }
-
-
-
+        usernameError?.let { error -> Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp)) }
 
         //PASSWORD INPUT
         TextField(
             value = password,
-            onValueChange = { newText ->
-                password = newText
-            },
+            onValueChange = { newText -> password = newText },
             visualTransformation = PasswordVisualTransformation(),
             label = { Text("Enter your Password", color = lightBlueOnPrimary) }, // Add the placeholder
             modifier = Modifier
@@ -153,16 +133,12 @@ fun SignUpScreen(
                 .padding(8.dp),
             isError = passwordError != null,
         )
-        passwordError?.let { error ->
-            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
-        }
+        passwordError?.let { error -> Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp)) }
 
         //CONFIRM PASSWORD
         TextField(
             value = confirmPassword,
-            onValueChange = { newText ->
-                confirmPassword = newText
-            },
+            onValueChange = { newText -> confirmPassword = newText },
             visualTransformation = PasswordVisualTransformation(),
             label  = { Text("Enter your Confirm Password", color = lightBlueOnPrimary) },
             modifier = Modifier
@@ -170,48 +146,31 @@ fun SignUpScreen(
                 .padding(8.dp),
             isError = confirmPasswordError != null,
         )
-        confirmPasswordError?.let { error ->
-            Text(text = error, color = Color.Red, modifier = Modifier.padding(8.dp))
-        }
+        confirmPasswordError?.let { error -> Text(text = error, color = Color.Red, modifier = Modifier.padding(8.dp)) }
 
         //AGE BOX
         TextField(
             value = age,
-            onValueChange = { newText ->
-                age = newText
-            },
+            onValueChange = { newText -> age = newText },
             label = { Text("Enter your Age", color = lightBlueOnPrimary) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             isError = ageError != null,
         )
-        ageError?.let { error ->
-            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
-        }
+        ageError?.let { error -> Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp)) }
 
         TextField(
             value = picture,
-            onValueChange = { newText ->
-                picture = newText
-            },
+            onValueChange = { newText -> picture = newText },
             label = { Text("Enter the link to your profile picture online.", color = lightBlueOnPrimary) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             isError = pictureError != null,
         )
-        pictureError?.let { error ->
-            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
-        }
-
-        error.value?.let { error ->
-            Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp))
-        }
-
-
-
-
+        pictureError?.let { error -> Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp)) }
+        error.value?.let { error -> Text(text = error, color = Color.Red, modifier = Modifier.padding(vertical = 5.dp)) }
 
 
         //REGISTER BUTTON
@@ -238,26 +197,25 @@ fun SignUpScreen(
 
             },
             colors = ButtonDefaults.buttonColors(
-                lightBluePrimary, // Use lightBluePrimary as the background color
-                contentColor = lightBlueOnPrimary // Use lightBlueOnPrimary as the content color
+                lightBluePrimary,
+                contentColor = lightBlueOnPrimary
             )
-        ) {
-            Text("Register")
-        }
+        ) { Text("Register") }
 
         //LOGIN BUTTON
         Button(
             onClick = {navController.navigate("LoginScreenRoute")},
             colors = ButtonDefaults.buttonColors(
-                lightBluePrimary, // Use lightBluePrimary as the background color
-                contentColor = lightBlueOnPrimary // Use lightBlueOnPrimary as the content color
+                lightBluePrimary,
+                contentColor = lightBlueOnPrimary
             )
-        ) {
-            Text("Login")
-        }
+        ) { Text("Login") }
     }
 }
 
+/**
+ * Validates the user input for sign-up.
+ */
 fun validateInputSignUp(
     email: String,
     username: String,

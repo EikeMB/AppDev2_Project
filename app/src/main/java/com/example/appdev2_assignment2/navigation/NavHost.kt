@@ -18,9 +18,9 @@ import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.example.appdev2_assignment2.ui.About
 import com.example.appdev2_assignment2.ui.CommonScaffold
+import com.example.appdev2_assignment2.ui.CreatePage
 import com.example.appdev2_assignment2.ui.HomePage
 import com.example.appdev2_assignment2.ui.LoginScreen
-import com.example.appdev2_assignment2.ui.Page2
 import com.example.appdev2_assignment2.ui.SignUpScreen
 import com.example.appdev2_assignment2.ui.SummaryPage
 import com.example.appdev2_assignment2.ui.UserProfilePage
@@ -64,7 +64,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
                     launch { carViewModel.getAllCars() }
                 }
                 CommonScaffold(navController = navController, userViewModel = userViewModel, defaultCar) {
-                    HomePage(auth, navController, carViewModel, partViewModel, userViewModel, defaultCar)
+                    HomePage( navController, carViewModel, defaultCar)
                 }
             }
             else{
@@ -74,7 +74,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
         composable("CreateScreenRoute") {
             if(auth.currentUser != null){
                 CommonScaffold(navController = navController, userViewModel = userViewModel, defaultCar) {
-                    Page2(auth, navController, carViewModel, partViewModel, userViewModel, defaultCar)
+                    CreatePage(navController, carViewModel, partViewModel, userViewModel, defaultCar)
                 }
             }
             else{
@@ -84,7 +84,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
         composable("SummaryScreenRoute") {
             if(auth.currentUser != null){
                 CommonScaffold(navController = navController, userViewModel = userViewModel, defaultCar) {
-                    SummaryPage(auth, navController, carViewModel, partViewModel, userViewModel, defaultCar)
+                    SummaryPage( navController, carViewModel, userViewModel, defaultCar)
                 }
             }
             else{
@@ -94,7 +94,7 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
         composable("AboutScreenRoute") {
             if(auth.currentUser != null){
                 CommonScaffold(navController = navController, userViewModel = userViewModel, defaultCar) {
-                    About(auth, navController)
+                    About()
                 }
             }
             else{
@@ -114,11 +114,6 @@ fun MainNavHost(navController: NavHostController, auth: FirebaseAuth, userViewMo
                     CommonScaffold(navController = navController, userViewModel = userViewModel, defaultCar) {
                         UserProfilePage(
                             userViewModel = userViewModel,
-                            onProfilePictureChange = { /* implement the logic */ },
-                            onNameChange = { /* implement the logic */ },
-                            onAgeChange = { /* implement the logic */ },
-                            onPasswordChange = { /* implement the logic */ },
-                            onApplyChanges = { /* implement the logic */ },
                             navController = navController,
                             auth = auth,
                             carViewModel = carViewModel

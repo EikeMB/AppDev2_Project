@@ -59,85 +59,23 @@ import com.example.compose.lightBlueOnPrimary
 import com.example.compose.lightBluePrimaryContainer
 
 
-@Composable
-private fun partSection(partsList: List<CarPart>, partChosenName: String, partChosen: PartType, selectedOption: CarPart, onOptionSelected: (CarPart) -> Unit, defaultCar: MutableState<Car?>){
-    val expanded = remember { mutableStateOf(false) }
 
-    Surface(
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier
-            .padding(vertical = 4.dp, horizontal = 8.dp)
-            .background(lightBluePrimaryContainer)
-            .clickable { expanded.value = !expanded.value }
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(vertical = 4.dp, horizontal = 8.dp)
-                .animateContentSize(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                )
-        ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(12.dp),
-                //verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text(text = partChosenName)
-                }
-                if (expanded.value) {
-
-                    partsList.filter { it.type == partChosen }.forEach { part ->
-                        PartInfo(
-                            part = part,
-                            selectedOption = selectedOption,
-                            onOptionSelected = onOptionSelected,
-                            defaultCar =  defaultCar
-
-                        )
-                    }
-
-                }
-            }
-            IconButton(
-                onClick = { expanded.value = !expanded.value },
-            ) {
-                Icon(
-                    imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                    contentDescription = if (expanded.value) {
-                        stringResource(R.string.show_less)
-                    } else {
-                        stringResource(R.string.show_more)
-                    }
-                )
-            }
-        }
-    }
-}
-
-
+/**
+ * Allows users to select car parts and configure a car.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("StateFlowValueCalledInComposition", "CoroutineCreationDuringComposition")
 @Composable
-fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel, defaultCar: MutableState<Car?>) {
+fun CreatePage(navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel, defaultCar: MutableState<Car?>) {
 
+    // Retrieve user data
     val user by userViewModel.activeUser.collectAsState(initial = AppUser("","",0,""))
     val coroutineScope = rememberCoroutineScope()
 
-    coroutineScope.launch {
-        kotlinx.coroutines.coroutineScope {
-            launch { partViewModel.getAllParts() }
-        }
-    }
+    // Fetch all car parts
+    coroutineScope.launch { kotlinx.coroutines.coroutineScope { launch { partViewModel.getAllParts() } } }
 
+    // Get lists of car parts and initialize selected options
     val partList by partViewModel.allParts.collectAsState(initial = emptyList())
     var nameError by rememberSaveable{ mutableStateOf<String?>(null)}
 
@@ -182,8 +120,6 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
     val (accessoriesSelectedOption, accessoriesOnOptionSelected) = remember { mutableStateOf(accessories) }
 
 
-
-    val creating = true
     var carName by remember { mutableStateOf("") }
 
     if(defaultCar.value != null){
@@ -215,7 +151,6 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
             .verticalScroll(rememberScrollState())
     ){
 
-
         Row(
             modifier = Modifier
                 .padding(12.dp)
@@ -236,15 +171,13 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
                 onValueChange = { newText ->
                     carName = newText
                 },
-                placeholder = { Text("Car Name") }, // Add the placeholder
+                placeholder = { Text("Car Name") },
                 modifier = Modifier
                     .padding(8.dp)
                     .height(50.dp)
                     .width(150.dp)
                     .weight(1f)
             )
-            
-
 
             Button(
                 onClick = {
@@ -285,7 +218,75 @@ fun Page2(auth: FirebaseAuth, navController: NavController, carViewModel: CarVie
 }
 
 
+/**
+ * Display a dropdown section for specific car part.
+ */
+@Composable
+private fun partSection(partsList: List<CarPart>, partChosenName: String, partChosen: PartType, selectedOption: CarPart, onOptionSelected: (CarPart) -> Unit, defaultCar: MutableState<Car?>){
+    val expanded = remember { mutableStateOf(false) }
 
+    Surface(
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier
+            .padding(vertical = 4.dp, horizontal = 8.dp)
+            .background(lightBluePrimaryContainer)
+            .clickable { expanded.value = !expanded.value }
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(12.dp),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(text = partChosenName)
+                }
+                if (expanded.value) {
+
+                    partsList.filter { it.type == partChosen }.forEach { part ->
+                        PartInfo(
+                            part = part,
+                            selectedOption = selectedOption,
+                            onOptionSelected = onOptionSelected,
+                            defaultCar =  defaultCar
+
+                        )
+                    }
+                }
+            }
+            IconButton(
+                onClick = { expanded.value = !expanded.value },
+            ) {
+                Icon(
+                    imageVector = if (expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                    contentDescription = if (expanded.value) {
+                        stringResource(R.string.show_less)
+                    } else {
+                        stringResource(R.string.show_more)
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+/**
+ * Composable function to display detailed information of specific car part.
+ */
 @Composable
 private fun PartInfo(
     part: CarPart,
@@ -294,7 +295,6 @@ private fun PartInfo(
     defaultCar: MutableState<Car?>
 ) {
     val expanded = remember { mutableStateOf(false) }
-    val extraPadding = if (expanded.value) 48.dp else 0.dp
 
     Surface(
         color = MaterialTheme.colorScheme.secondary,
@@ -304,7 +304,6 @@ private fun PartInfo(
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
-            //verticalAlignment = Alignment.CenterVertically
         ) {
             Row(modifier = Modifier
                 .padding(12.dp)

@@ -46,35 +46,22 @@ import com.example.appdev2_assignment2.auth.delete
 import com.example.appdev2_assignment2.auth.signOut
 import com.google.firebase.auth.FirebaseAuth
 
+
+/**
+ * Composable for the user profile page.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun UserProfilePage(
     userViewModel: UserViewModel,
-    onProfilePictureChange: () -> Unit,
-    onNameChange: () -> Unit,
-    onAgeChange: () -> Unit,
-    onPasswordChange: () -> Unit,
-    onApplyChanges: () -> Unit,
     navController: NavController,
     auth: FirebaseAuth,
     carViewModel: CarViewModel
 )  {
-
-
     val user by userViewModel.activeUser.collectAsState(initial = AppUser("", "", 0, ""))
-
-    var newImageLink by remember {
-        mutableStateOf("")
-    }
-
-    var newNameText by remember{
-        mutableStateOf("")
-    }
-
-    var newAgeText by remember {
-        mutableStateOf("")
-    }
-
+    var newImageLink by remember { mutableStateOf("") }
+    var newNameText by remember{ mutableStateOf("") }
+    var newAgeText by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -95,6 +82,8 @@ fun UserProfilePage(
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
         )
+
+        //New image link input
         TextField(
             value = newImageLink,
             onValueChange = { newImageLink = it },
@@ -103,6 +92,7 @@ fun UserProfilePage(
                 .fillMaxWidth()
                 .padding(8.dp)
         )
+
         // Change Profile Picture Button
         Button(
             onClick = {
@@ -112,9 +102,7 @@ fun UserProfilePage(
                 newImageLink = ""
             },
             modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Change Profile Picture")
-        }
+        ) { Text("Change Profile Picture") }
 
         // User's Name
         Text("Name: ${user.name}")
@@ -122,12 +110,10 @@ fun UserProfilePage(
             value = newNameText,
             onValueChange = { newNameText = it },
             label = { Text("New Name") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 
-// Change Name Button
+        // Change Name Button
         Button(
             onClick = {
                 var newUser = user
@@ -150,6 +136,7 @@ fun UserProfilePage(
                 .fillMaxWidth()
                 .padding(8.dp)
         )
+
         // Change Age Button
         Button(
             onClick = {
@@ -158,32 +145,21 @@ fun UserProfilePage(
                 userViewModel.addUser(newUser)
             },
             modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Change Age")
-        }
+        ) { Text("Change Age") }
 
+        // Sign Out Button
         Button(
             onClick = {
                 signOut(auth, navController)
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ){
-            Text(text = "Sign Out", color = Color.Red, fontWeight = FontWeight.Bold)
-        }
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
+        ){ Text(text = "Sign Out", color = Color.Red, fontWeight = FontWeight.Bold) }
         val cars by carViewModel.userCars.collectAsState(initial = emptyList())
+
+        // Delete Account Button
         Button(
-            onClick = {
-                delete(auth, navController, userViewModel, user, carViewModel, cars)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ){
-            Text(text = "Delete account", color = Color.Red, fontWeight = FontWeight.Bold)
-        }
-
-
+            onClick = { delete(auth, navController, userViewModel, user, carViewModel, cars) },
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
+        ){ Text(text = "Delete account", color = Color.Red, fontWeight = FontWeight.Bold) }
     }
 }

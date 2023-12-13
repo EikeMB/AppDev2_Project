@@ -48,13 +48,16 @@ import com.example.appdev2_assignment2.ViewModels.CarViewModel
 import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 
+
+/**
+ * Composable of summary page displaying car parts summary and buttons to modify/delete
+ */
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun SummaryPage(auth: FirebaseAuth, navController: NavController, carViewModel: CarViewModel, partViewModel: CarPartViewModel, userViewModel: UserViewModel, defaultCar: MutableState<Car?>) {
+fun SummaryPage( navController: NavController, carViewModel: CarViewModel, userViewModel: UserViewModel, defaultCar: MutableState<Car?>) {
     val user by userViewModel.activeUser.collectAsState()
     LazyColumn  {
         item {
-
         PartSummary(part = PartType.Body, defaultCar = defaultCar.value)
         PartSummary(part = PartType.Engine, defaultCar = defaultCar.value)
         PartSummary(part = PartType.Wheels, defaultCar = defaultCar.value)
@@ -76,23 +79,16 @@ fun SummaryPage(auth: FirebaseAuth, navController: NavController, carViewModel: 
                         },
                         modifier = Modifier
                             .padding(8.dp).weight(1f)
-                    ) {
-                        Text("Modify")
-                    }
+                    ) { Text("Modify") }
                     Button(
                         onClick = {
                             carViewModel.deleteCar(defaultCar.value!!)
                             navController.navigate("MainScreenRoute")
                         },
-                        modifier = Modifier
-                            .padding(8.dp).weight(1f)
-                    ) {
-                        Text("Delete")
-                    }
+                        modifier = Modifier.padding(8.dp).weight(1f)
+                    ) { Text("Delete") }
                 }
             }
-
-            //Spacer(modifier = Modifier.weight(1f))
 
             val carParts = defaultCar.value?.parts ?: emptyList()
             val totalPrice = carParts.sumOf { it.price }
@@ -100,28 +96,23 @@ fun SummaryPage(auth: FirebaseAuth, navController: NavController, carViewModel: 
                 text = "Total Price: $totalPrice$",
                 modifier = Modifier.padding(20.dp).weight(1f)
             )
-
             }
         }
     }
-
 }
 
 
+/**
+ * Displaying summary of a specific car part.
+ */
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun PartSummary(
-    part: PartType,
-    defaultCar: Car?,
-) {
+fun PartSummary(part: PartType, defaultCar: Car?)
+{
     var partChosen = defaultCar?.parts?.find {  it.type == part }
     var image: String
-    if(partChosen != null){
-        image = partChosen.image
-    }
-    else{
-        image = ""
-    }
+    if(partChosen != null){ image = partChosen.image }
+    else{ image = "" }
     Row(
         modifier = Modifier
             .padding(15.dp)
@@ -133,10 +124,7 @@ fun PartSummary(
             modifier = Modifier
                 .weight(1.6f)
                 .padding(horizontal = 5.dp),
-
         ) {
-            // Image
-
             GlideImage(
                 model = image,
                 contentDescription = "part picture",
@@ -144,7 +132,6 @@ fun PartSummary(
                     .size(50.dp)
                     .clip(shape = CircleShape)
             )
-
             Spacer(modifier = Modifier.height(4.dp))
 
             // Text
@@ -161,7 +148,7 @@ fun PartSummary(
             // Middle: Description
             Column(
                 modifier = Modifier
-                    .weight(2.5f) // Adjust weight to occupy more space
+                    .weight(2.5f)
                     .padding(horizontal = 8.dp),
                 verticalArrangement = Arrangement.Center
             ) {
@@ -186,13 +173,6 @@ fun PartSummary(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        color = Color.Black // Adjust the color as needed
+        color = Color.Black
     )
 }
-
-//@Preview
-//@Composable
-//fun SummaryPagePreview() {
-//    // This is where you'll call your SummaryPage Composable
-//    SummaryPage()
-//}
