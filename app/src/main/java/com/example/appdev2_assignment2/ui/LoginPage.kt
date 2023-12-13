@@ -37,11 +37,6 @@ import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.unit.sp
 import com.example.appdev2_assignment2.R
-import com.example.compose.darkBluePrimary
-import com.example.compose.greySurface
-import com.example.compose.lightBlueOnPrimary
-import com.example.compose.lightBluePrimary
-import com.example.compose.lightBluePrimaryContainer
 
 /**
  * Allows users to input their username and password to login in.
@@ -75,7 +70,7 @@ fun LoginScreen(
         // TITLE
         Text(
             text = "Car Builder App",
-            color = darkBluePrimary,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 50.dp, bottom = 125.dp),
             style = LocalTextStyle.current.copy(
                 fontSize = 36.sp,
@@ -87,7 +82,7 @@ fun LoginScreen(
         TextField(
             value = username,
             onValueChange = { newText -> username = newText },
-            placeholder = { Text("Enter your Username...", color = lightBlueOnPrimary) },
+            placeholder = { Text("Enter your Username...", color = MaterialTheme.colorScheme.onPrimaryContainer) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -107,7 +102,7 @@ fun LoginScreen(
             value = password,
             onValueChange = { newText -> password = newText },
             visualTransformation = PasswordVisualTransformation(),
-            placeholder = { Text("Enter your Password...", color = lightBlueOnPrimary) },
+            placeholder = { Text("Enter your Password...", color = MaterialTheme.colorScheme.onPrimaryContainer) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -134,16 +129,14 @@ fun LoginScreen(
                 }
             },
             shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-                rememberUpdatedState(Color(0xFFADD8E6)).value,
-            ),
-        ) { Text("Login", color = darkBluePrimary, fontWeight = FontWeight.Bold) }
+            colors = ButtonDefaults.buttonColors(rememberUpdatedState(MaterialTheme.colorScheme.primaryContainer).value),
+        ) { Text("Login", color = MaterialTheme.colorScheme.onPrimaryContainer, fontWeight = FontWeight.Bold) }
 
         //SIGN UP BUTTON
         Button(
             onClick = { navController.navigate("SignUpScreenRoute") },
             shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(rememberUpdatedState(Color(0xFFADD8E6)).value),
-        ) { Text("Sign up", color = darkBluePrimary, fontWeight = FontWeight.Bold) }
+            colors = ButtonDefaults.buttonColors(rememberUpdatedState(MaterialTheme.colorScheme.primaryContainer).value),
+        ) { Text("Sign up", color = MaterialTheme.colorScheme.onPrimaryContainer, fontWeight = FontWeight.Bold) }
     }
 }

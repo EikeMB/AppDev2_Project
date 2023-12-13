@@ -32,6 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -105,7 +107,8 @@ fun UserProfilePage(
         ) { Text("Change Profile Picture") }
 
         // User's Name
-        Text("Name: ${user.name}")
+        Text("Name: ${user.name}", modifier = Modifier.semantics {
+            this.contentDescription = "User Name" })
         TextField(
             value = newNameText,
             onValueChange = { newNameText = it },
@@ -127,7 +130,9 @@ fun UserProfilePage(
         }
 
         // User's Age
-        Text("Age: ${user.age}")
+        Text("Age: ${user.age}", modifier = Modifier.semantics {
+            this.contentDescription = "User Age" }
+        )
         TextField(
             value = newAgeText,
             onValueChange = { newAgeText = it },
@@ -153,13 +158,13 @@ fun UserProfilePage(
                 signOut(auth, navController)
             },
             modifier = Modifier.fillMaxWidth().padding(8.dp)
-        ){ Text(text = "Sign Out", color = Color.Red, fontWeight = FontWeight.Bold) }
+        ){ Text(text = "Sign Out", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold) }
         val cars by carViewModel.userCars.collectAsState(initial = emptyList())
 
         // Delete Account Button
         Button(
             onClick = { delete(auth, navController, userViewModel, user, carViewModel, cars) },
             modifier = Modifier.fillMaxWidth().padding(8.dp)
-        ){ Text(text = "Delete account", color = Color.Red, fontWeight = FontWeight.Bold) }
+        ){ Text(text = "Delete account", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold) }
     }
 }

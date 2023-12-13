@@ -54,9 +54,6 @@ import com.example.appdev2_assignment2.ViewModels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.background
-import com.example.compose.darkBluePrimary
-import com.example.compose.lightBlueOnPrimary
-import com.example.compose.lightBluePrimaryContainer
 
 
 
@@ -229,7 +226,7 @@ private fun partSection(partsList: List<CarPart>, partChosenName: String, partCh
         color = MaterialTheme.colorScheme.primary,
         modifier = Modifier
             .padding(vertical = 4.dp, horizontal = 8.dp)
-            .background(lightBluePrimaryContainer)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .clickable { expanded.value = !expanded.value }
     ) {
         Row(

@@ -63,7 +63,7 @@ fun TopBar(userViewModel: UserViewModel, navController: NavHostController) {
             text = "Car Builder",
             modifier = Modifier.weight(3f),
             fontSize = 24.sp,
-            color = Color(0xFFFFFFFF)
+            color = MaterialTheme.colorScheme.onPrimary
         )
         GlideImage(
             model = user.picture,
