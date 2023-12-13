@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.appdev2_assignment2"
+    namespace = "com.example.car_builder"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.appdev2_assignment2"
+        applicationId = "com.example.car_builder"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
