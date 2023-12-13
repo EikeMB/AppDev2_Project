@@ -62,9 +62,9 @@ fun LoginScreen(
     ) {
         // TITLE
         Text(
-            text = "Car Builder App",
+            text = "Car Builder",
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(top = 50.dp, bottom = 125.dp),
+            modifier = Modifier.padding(top = 50.dp, bottom = 125.dp).align(Alignment.CenterHorizontally),
             style = LocalTextStyle.current.copy(
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold
