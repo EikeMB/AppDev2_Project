@@ -1,8 +1,9 @@
-# The car builder
+# The Car Builder App
 
 The Car Builder App is an interactive and user-friendly tool that empowers users to customize and visualize their dream cars. Whether you are a car enthusiast or someone looking to explore various car configurations, this app provides a seamless and engaging experience.
 
 ## Overview
+
 The Car Builder App is an application that lets you choose different parts of a car to create a custom car. Similar to a pc partpicker, it also comprises several key pages, each serving a distinct purpose:
 
 ### Home Page
